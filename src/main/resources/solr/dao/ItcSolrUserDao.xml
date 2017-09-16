@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="solr.dao.ItcSolrUserDao">
+    <sql id="baseUserColum">
+        su.USER_ID userId,
+        su.NAME name,
+        su.JOB job,
+        su.TITLE title,
+        su.EMAIL email,
+        su.MOBILE mobile,
+        su.OFFICE_TEL officeTel,
+        su.MICRO_TEL micorTel
+    </sql>
+    <sql id="baseDeptColum">
+        so.ORG_CODE orgCode,
+        so.NAME name,
+        so.PARENT_CODE parentCode,
+        so.DEL_IND delInd
+    </sql>
+
+    <!--查询所有用户-->
+    <select id="queryUser" resultType="solr.bean.SolrUser">
+        SELECT
+        <include refid="baseUserColum"/>
+        FROM SEC_USER su
+    </select>
+    <!--查询用户搜在部门编号-->
+    <select id="queryDeptCodeByUserId" parameterType="string" resultType="string">
+        SELECT ORG_CODE FROM SEC_ORGANIZATION_USER WHERE USER_ID = #{userId}
+    </select>
+    <!--查询所有父级-->
+    <select id="queryUserDeptment" parameterType="string" resultType="solr.bean.SolrOrganization">
+        SELECT <include refid="baseDeptColum"/>
+        FROM SEC_ORGANIZATION so
+        START WITH so.ORG_CODE = #{orgCode}
+        CONNECT BY PRIOR so.PARENT_CODE = so.ORG_CODE ORDER BY so.ORG_CODE
+    </select>
+</mapper>
