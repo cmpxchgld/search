@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJava.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+
+	<title>高级搜索</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+	</script>
+</head>
+<body style="font-size:14px">
+	<h4>建议</h4>
+	<p>模糊搜索框、表头搜索、高级搜索栏都是方便用户的手段而已，而不是强制标准（当然一个没有也不行），在开发时可以根据实际需要灵活选择。不推荐同时使用多种搜索，这会让前端开发过于复杂，并且后端在一个方法要处理好多参数。</p>
+	<p>实际上，在第一版组件库中，很多代码都是以例子的形式给出，从b6版以后，这些代码变成了封装，这其中有好也有坏处，在这个例子就能看出，本来需要的变量被藏了起来。</p>
+
+	<h4>模糊搜索框</h4>
+	<p>对于简单的表格，一个模糊搜索框就可以了，这种框可以支持多种条件，比如姓名和工号（需要后台的支持）。</p>
+	<p>你可以根据下面代码创建一个模糊搜索框，<strong style="color:#f00">需要注意的是，按钮和input并不等高，组件库的input要比Bootstrap原版的input矮一些，因而需要开发者自行调整其高度</strong>。</p>
+	<pre class="brush:xml">
+		&lt;div class="input-group input-group-sm" style="width:150px;float:left;margin-left:6px">
+	        &lt;input type="text" id="search" icon="itcui_btn_mag" placeholder="请输入姓名或账号" style="width:150px"/>     
+	    &lt;/div>
+    </pre>
+    <p>对应的js代码</p>
+    <pre class="brush:js">
+    	var keyword = "";
+
+    	$(document).ready(function(){
+    		$("#seach").iInput("init",{
+    			onSearch : search;
+    		});
+    	});
+
+    	function search(kw){
+    		keyword = kw;
+    		//这里的mytable要换成datagrid对应的id
+    		delete(_itc_grids["mytable"]);
+			var pager = $("#mytable").datagrid("getPager"); 
+			pager.pagination("select",1);
+    	};
+    </pre>
+    <p>同时在datagrid/iDatagrid的初始化参数中要加入一条：</p>
+    <pre class="brush:js">
+    	queryParams : {
+    		"search" : function(){
+    			return keyword;
+    		}
+    	}
+    </pre>
+	<p>后台的接口只需要根据search参数是否为空来判断是否在进行搜索，并返回对应的数据。</p>
+
+	<h4>自定义搜索表单</h4>
+	<p>自定义搜索表单的方式和模糊搜索的原理差不多，都是通过使用函数的方式为datagrid的url动态设置参数和值，然后在按下搜索按钮的时候通过修改标记变量重置分页器。但是首先，需要一个高级搜索按钮：</p>
+	<pre class="brush:xml">
+		&lt;div class="btn-group btn-group-sm pull-left">
+		    &lt;button type="button" class="btn btn-default" data-toggle="button" id="btnSearch" onclick="advSearch()">高级搜索&lt;/button>
+		&lt;/div>
+	</pre>
+	<p>注意这里的data-toggle不能少，否则没有凹陷状态。然后，我们需要自己在工具栏下额外创建一个高级搜索表单，这个表单因为样式过于奇特，无法提供统一的封装。</p>
+	<pre class="brush:xml">
+		&lt;!--注意这里我们用的是row样式，因为这里面除了按钮还有很多别的东西-->
+		&lt;!-- 注意这里的pull-left和float:left-->
+		&lt;div id="advSearchBar" class="row bbox" style="font-size:12px">
+			&lt;span class="ctrl-label pull-left">时间类别：&lt;/span>
+			&lt;select id="timeType" style="float:left;width:120px">
+				&lt;option value="1">签发时间&lt;/option>
+				&lt;option value="2">创建时间&lt;/option>
+				&lt;option value="3">许可时间&lt;/option>
+				&lt;option value="4">结束时间&lt;/option>
+			&lt;/select>
+			&lt;span class="ctrl-label pull-left" style="margin-left:6px">从：&lt;/span>
+			&lt;div class="pull-left" id="dFrom">&lt;/div>
+			&lt;span class="ctrl-label pull-left">到：&lt;/span>
+			&lt;div class="pull-left" id="dTo">&lt;/div>
+			&lt;span class="ctrl-label pull-left" style="margin-left:6px">工作票状态：&lt;/span>
+			&lt;select id="ticketType" style="float:left;width:120px">
+				&lt;option value="1">全部状态&lt;/option>
+				&lt;option value="2">已签发&lt;/option>
+				&lt;option value="3">已许可&lt;/option>
+			&lt;/select>
+			&lt;div class="btn-group btn-group-sm fl" style="margin-left:6px">
+			    &lt;button type="button" class="btn btn-default" onclick="search()">搜索&lt;/button>
+			&lt;/div>
+			&lt;div class="btn-group btn-group-sm fl">
+			    &lt;button type="button" class="btn btn-default">导出结果&lt;/button>
+			&lt;/div>
+		&lt;/div>
+	</pre>
+	<p>对应的JS代码：</p>
+	<pre class="brush:js">
+		$(document).ready(function(){
+			$("#timeType").iCombo("init");
+			$("#ticketType").iCombo("init");			
+			$("#dFrom").iDate("init",{datepickerOpts:{format:"yyyy-mm-dd",minView:2}});
+			$("#dTo").iDate("init",{datepickerOpts:{format:"yyyy-mm-dd",minView:2}});
+		});
+		function advSearch(){
+			var btn = $("#btnSearch");
+			if(btn.hasClass("active")){
+				$("#advSearchBar").show();
+			}
+			else{
+				$("#advSearchBar").hide();
+			}
+		}
+	</pre>
+	<p>同样的，在search函数中要设置变量，只不过这次设置的要更多：</p>
+	<pre class="brush:js">
+		function search(){
+			keyword = JSON.stringify({
+				timeType : $("#timeType").iCombo("getVal"),
+				ticketType : $("#ticketType").iCombo("getVal"),
+				dFrom : $("#dFrom").val(),
+				dTo : $("#dTo").val()
+			});
+			//这里的mytable要换成datagrid对应的id
+    		delete(_itc_grids["mytable"]);
+			var pager = $("#mytable").datagrid("getPager"); 
+			pager.pagination("select",1);
+		}
+	</pre>
+	<p>只不过，这次后台拿到的search参数是一个json字符串，需要反序列化得到json对象后，取到上面的4个参数。</p>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>API - 数据表格</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bs_doc_ext.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+		$(document).ready(function(){
+		    $("#test_grid1").iDatagrid("init",{
+		        "pageSize":10,//默认每页显示的数目 只能从服务器取得
+		        "url": "../import?method=datagrid",
+		        "onLoadError": function(){
+		        	//加载错误的提示 可以根据需要添加
+		        	$("#grid1_wrap,#toolbar_wrap").hide();
+		        	$("#grid1_error").show();
+		        },
+		        "onLoadSuccess" : function(data){
+		        	//远程无数据需要隐藏整个表格和对应的工具条，然后在无数据信息中指引用户新建
+		        	if(data && data.total==0){
+		        		$("#grid1_wrap,#toolbar_wrap").hide();
+		        		$("#grid1_empty").show();
+		        	}
+		        }
+		    });
+		}); 
+
+	</script>
+
+</head>
+<body style="font-size:14px">
+	<h4>Datagrid</h4>
+	<p>组件库中的Datagrid基于EasyUI的datagrid封装，除了本文档中特别提到的使用方法，以及不推荐的API之外，所有源生API均可以使用。</p>
+
+	<h4>例子（远程数据，带上下分页器）</h4>	
+	<div class="bbox toolbar-with-pager" id="toolbar_wrap">
+		<!-- 这里可以在分页器的同排渲染一个按钮工具栏出来 在下面的toolbar1中 -->
+		<div id="toolbar1" class="btn-toolbar ">
+			<div class="btn-group btn-group-sm">
+		        <button type="button" class="btn btn-default">按钮1</button>
+		        <button type="button" class="btn btn-default">按钮2</button>
+		        <button type="button" class="btn btn-default">按钮3</button>
+		        <button type="button" class="btn btn-default">按钮4</button>
+		    </div>
+		</div>
+	    <!-- 上分页器部分 这里可以通过属性bottompager指定下分页器的DIV-->
+	    <div id="pagination_1" class="toolbar-pager" bottompager="#bottomPager">        
+	    </div>
+	</div>
+	<div id="grid1_wrap" style="width:100%">
+		<table id="test_grid1" pager="#pagination_1" class="eu-datagrid">
+		    <thead>
+		        <tr>
+		            <th data-options="field:'classroom',width:80">考场</th>
+		            <th data-options="field:'name',width:80">学生姓名</th>
+		            <th data-options="field:'idnum',width:150">身份证号</th>
+		            <th data-options="field:'stunum',width:100">学号</th>
+		            <th data-options="field:'score1',width:80,sortable:true">笔试成绩</th>
+		            <th data-options="field:'score2',width:80">机试成绩</th>
+		        </tr>
+		    </thead>
+		</table>
+	</div>
+	<!-- 下页器部分-->
+	<div id="bottomPager" style="width:100%;margin-top:6px">
+	</div>
+	<!-- 错误信息-->
+	<div class="row" id="grid1_error" style="display:none">
+		无法从服务器获取数据，请检查网络是否正常
+	</div>
+	<!-- 无数据 -->
+	<div class="row" id="grid1_empty" style="display:none">
+		没有xxxxxxx数据，单击这里创建新的....
+	</div>
+	<p>使用JS初始化Datagrid（不推荐以纯HTML的方式初始化）：</p>
+	<pre class="brush:html">
+		&lt;div class="bbox toolbar-with-pager" id="toolbar_wrap">
+			&lt;!-- 这里可以在分页器的同排渲染一个按钮工具栏出来 在下面的toolbar1中 -->
+			&lt;div id="toolbar1" class="btn-toolbar ">
+				&lt;div class="btn-group btn-group-sm">
+			        &lt;button type="button" class="btn btn-default">按钮1&lt;/button>
+			        &lt;button type="button" class="btn btn-default">按钮2&lt;/button>
+			        &lt;button type="button" class="btn btn-default">按钮3&lt;/button>
+			        &lt;button type="button" class="btn btn-default">按钮4&lt;/button>
+			    &lt;/div>
+			&lt;/div>
+		    &lt;!-- 上分页器部分 这里可以通过属性bottompager指定下分页器的DIV-->
+		    &lt;div id="pagination_1" class="toolbar-pager" bottompager="#bottomPager">        
+		    &lt;/div>
+		&lt;/div>
+		&lt;div id="grid1_wrap" style="width:100%">
+			&lt;!--eu-datagrid样式可以保证表格在窗口大小变化时自动重调（框架提供）-->
+			&lt;table id="test_grid1" pager="#pagination_1" class="eu-datagrid">
+			    &lt;thead>
+			        &lt;tr>
+			            &lt;th data-options="field:'classroom',width:80">考场&lt;/th>
+			            &lt;th data-options="field:'name',width:80">学生姓名&lt;/th>
+			            &lt;th data-options="field:'idnum',width:150">身份证号&lt;/th>
+			            &lt;th data-options="field:'stunum',width:100">学号&lt;/th>
+			            &lt;th data-options="field:'score1',width:80,sortable:true">笔试成绩&lt;/th>
+			            &lt;th data-options="field:'score2',width:80">机试成绩&lt;/th>
+			        &lt;/tr>
+			    &lt;/thead>
+			&lt;/table>
+		&lt;/div>
+		&lt;!-- 下页器部分-->
+		&lt;div id="bottomPager" style="width:100%;margin-top:6px">
+		&lt;/div>
+		&lt;!-- 错误信息-->
+		&lt;div class="row" id="grid1_error" style="display:none">
+			无法从服务器获取数据，请检查网络是否正常
+		&lt;/div>
+		&lt;!-- 无数据 -->
+		&lt;div class="row" id="grid1_empty" style="display:none">
+			没有xxxxxxx数据，单击这里创建新的....
+		&lt;/div>
+	</pre>
+	<pre class="brush:js">
+		$(document).ready(function(){
+		    $("#test_grid1").iDatagrid("init",{
+		        "pageSize":10,//默认每页显示的数目 只能从服务器取得
+		        "url": "../import?method=datagrid",
+		        "onLoadError": function(){
+		        	//加载错误的提示 可以根据需要添加
+		        	$("#grid1_wrap,#toolbar_wrap").hide();
+		        	$("#grid1_error").show();
+		        },
+		        "onLoadSuccess" : function(data){
+		        	//远程无数据需要隐藏整个表格和对应的工具条，然后在无数据信息中指引用户新建
+		        	if(data && data.total==0){
+		        		$("#grid1_wrap,#toolbar_wrap").hide();
+		        		$("#grid1_empty").show();
+		        	}
+		        }
+		    });
+		});	
+	</pre>
+	<p>需要注意以下几点：</p>
+	<ul>
+		<li>字段至少要有field参数，width无论是定宽还是自动调整大小都不能带单位</li>
+		<li style="color:#F00">JS方式初始化datagrid必须去掉样式easyui-datagrid，否则会导致两次数据加载</li>
+		<li>表格宽度为100%时不能加width:100%的样式</li>
+		<li>推荐不限制表格高度，限制表格高度时，表格默认会保留滚动条位。</li>
+		<li>远程数据源加载失败时，分页器无法初始化。</li>
+	</ul>
+
+	<h4>支持的数据类型</h4>
+	<p>为了保证分页器的工作正常，无论远程还是本地数据，都应该转换为{rows:[],total:总行数}样式的JSON数据。在本封装中，远程数据源使用url参数指定（分页、排序、搜索都针对这一个url），本地数据源通过data参数指定（使用iDatagrid的init方法初始化）。数据例子如下：</p>
+	<pre class="brush:js">
+		{"total":38,"rows":[{"stunum":"2501101030","classroom":"25011010","idnum":"420321198612211523","score2":"55","name":"张靓","score1":"80"},{"stunum":"2501101016","classroom":"25011010","idnum":"500224198607257977","score2":"55","name":"罗祖川","score1":"60"},{"stunum":"2501101005","classroom":"25011010","idnum":"510502198607190717","score2":"65","name":"任寅","score1":"67"},{"stunum":"2501101020","classroom":"25011010","idnum":"513002198702025133","score2":"0","name":"王勇","score1":"0"},{"stunum":"2501101004","classroom":"25011010","idnum":"513601198307234070","score2":"55","name":"何太平","score1":"70"}]}
+	</pre>
+
+	<h4>禁用的参数</h4>
+	<p>editors：组件库替换了原先EasyUI的编辑器样式，修改该参数会破坏这一功能。</p>
+	<p>view：不能修改datagrid的默认布局</p>
+	<p>multiSort：暂时不支持多字段混合排序</p>
+
+	<h4>慎用的方法</h4>
+	<p>load/loadData - 由于分页器封装绑定了datagrid的大量操作，通过load函数加载数据无法触发这些操作，在使用封装时，应该使用url直接传入远程数据，或者通过_data或者data（b5版以后）传入本地数据。在不需要分页器时可以使用本方法。</p>
+
+
+	<h4>扩展方法</h4>
+	<p>$.iDatagrid（b5版）提供了对EasyUI datagrid的一些扩展，但是源生方法还需要使用$.datagrid执行。</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">方法</td>
+				<td width="150px">参数</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>beginSearch</td>
+				<td>Object</td>
+				<td>开始表格搜索。可选参数如下：
+					<ul>
+						<li>remoteSearch - 远程搜索时必须指定为 true，本地搜索可以忽略</li>
+						<li>onParseArgs - 对搜索参数的处理函数，仅远程搜索有效，默认按field:value的方式将所有搜索框的值追加到数据源URL中（如给定参数url为method=data，则搜索时构建的url为method=data&amp;field1=value1&amp;field2=value2...）。可以按如下例子对请求参数和格式进行修改：
+							<pre class="brush:js">
+								$("#test_grid1").iDatagrid("beginSearch",{"remoteSearch":true,"onParseArgs":function(arg){
+						            return {"search":JSON.stringify(args)};
+						        }});
+							</pre>
+							此时在后端对search参数解序列化即可拿到k:v形式的搜索请求。
+							<br/>
+							beginSearch还支持参数noSearchColumns，其属性为object，表示不进行表头搜索的列编号（<strong style="color:#F00">从0开始，需要计算隐藏列</strong>），如1、3、5列不进行搜索，则需要设置noSearchColumns:{0:true,2:true,4:true}
+						</li>
+					</ul>
+					需要注意的是，对于非固定列宽的表格，应该以按钮等手动操作触发表头搜索。
+					<br/>
+					当某列指定了编辑器（editor参数），且其type为"combobox"时，表头搜索会初始化该字段为下拉框，对于下拉框，本地搜索为等值判断，远程搜索时对应字段的id会有下划线开头，如"id"变为"_id"，请注意处理。字段例子（datagrid的column定义）如下：
+					<pre class="brush:js">
+						{field:'name',width:80,sortable:true,title:'姓名','editor':{
+							"type" : "combobox",
+							"options" : {
+								"data" : [
+									["路人1","路人1"],
+									["路人2","路人2"],
+									["路人3","路人3"],
+									["路人4","路人4"],
+									["路人5","路人5"]
+								]					
+							}
+						}},
+					</pre>
+					注：combobox是可以从参数设置远程数据源的，表头搜索不要求combobox有初始数据。封装会自动添加“所有”这个选项（值为null）。
+				</td>
+			</tr>
+			<tr>
+				<td>endSearch</td>
+				<td>无</td>
+				<td>结束表格搜索</td>
+			</tr>
+			<tr>
+				<td>init</td>
+				<td>Object</td>
+				<td>用于简化表格的初始化过程（支持分页、表头搜索、本地全数据排序），这里的Object参数是Easy UI源生的所有参数，使用本地数据源时，例子如下（远程数据源请参考新版示例）：
+					<pre class="brush:js">
+						$("#test_grid1").iDatagrid("init",{
+						    "pageSize":5,
+						    "data" :getData(1,100)//getData函数用于创建100条虚拟数据 这里直接传入所有数据即可
+						}); 
+						$("#test_grid1").iPager("init",{target:"#pagination_1"});
+					</pre>
+					使用init方法初始化时：
+					<ul>
+						<li>强制添加分页器（需要在table的html中通过pager属性指定分页器的div）以及相关函数和标志位</li>
+						<li>如果有变量styleOpt定义则行样式选项自动开启</li>
+						<li>自动按照TIMSS标准添加分页数列表（但是每页显示的默认记录数要传入，这个数据只能从后台获得）</li>
+						<li>自动对不限高表格去掉滚动条位预留</li>
+						<li>自动应用远程排序</li>
+						<li>自动对100%大小的表格添加浏览器resize事件</li>
+						<li>默认开启列宽适应</li>
+					</ul>					
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4>扩展事件</h4>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">事件</td>
+				<td width="150px">参数</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>onRenderFinish</td>
+				<td>无</td>
+				<td>本事件用于初始化分页器（远程数据源），当使用远程数据源时，必须在该事件中初始化分页器。</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4>修正行选框的样式</h4>
+	<p>在$.datagrid选项打的onRenderFinish中执行$("#yourtable").iFixCheckbox()即可修正选择框的样式，iDatagrid会自动修正。</p>
+
+	<h4>行编辑时的表单验证</h4>
+	<p>使用$("#datagrid").iValidDatagrid()可以验证编辑行数据的有效性，需要注意的是，这个验证必须在提交时进行，如果第一次验证后有行新增，那么目前会出现问题（其实修改起来难度也不大，只不过需要收集一些关于性能的数据，这些数据会在console中打出来）。</p>
+	<p>该方法需要将datagrid以form包起来，如：</p>
+	<pre class="brush:xml">
+		&lt;form id="testform">
+		    &lt;table id="test_datagrid3" style="width:650px;height:300px">
+		    &lt;/table>
+	    &lt;/form>
+	</pre>
+	<p>然后仿照表单在editor参数中设置要验证的规则</p>
+	<pre class="brush:js">
+		{
+			"field":"name",
+			"title":"姓名",
+			"width":120,
+			"editor":{
+				"type":"text",
+				"rules" : {
+					"maxChLength" : 6
+				}
+			}
+		}
+	</pre>
+	<p>验证通过$.iValidDatagrid函数会返回true，否则返回false</p>
+	<p>试用：组件演示-数据表格-数据操作，其中移动电话验证纯数字，人名最多3个中文汉字。</p>
+
+</body>
+</html>

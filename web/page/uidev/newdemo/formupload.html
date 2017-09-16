@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJava.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../component/css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bootstrap-theme.css" media="all"/>
+	<title>在表单中实现文件上传/下载</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>准备工作</h4>
+	<p>请确保你使用的UI组件为最新版，并且更新了新版的ITC framework和TIMSS2-core代码，否则无法使用其中的后台接口。</p>
+
+	<h4>在线演示</h4>
+	<p>你可以登陆http://10.0.250.52/itcauth（用户名890128密码1）来查看在线版的文件上传/下载演示。</p>
+
+	<h4>原理</h4>
+	<p>通用接口将文件/上传下载都简化为ID操作，这样开发者使用统一的接口，将文件上传到服务器上，组件会将文件改名，并返回一个随机创建的ID，所有的下载、删除、数据库关联都针对这个ID操作，即便是恶意用户突破了权限，也很难根据一个ID猜出其他的文件，更何况通用接口要求上传、下载、删除都必须登陆操作，如果真不需要登陆请提供一个虚拟用户在session中。</p>
+
+	<h4>在表单中创建文件下载/上传字段</h4>
+	<p>新版表单已经可以支持类别为fileupload的字段，需要设置所有参数，在页面中，初始化代码如下：</p>
+	<pre class="brush:js">
+		var fields = [{id:"field1",title:"没什么用"},
+		              {id:"field2",title:"没什么用"},
+		              {id:"field3",title:"没什么用"},
+		              {id:"field4",title:"没什么用"}];
+		var fields2 = [
+		{id:"attachment",title:" ",type:"fileupload",wrapXsWidth:12,wrapMdWidth:12,options:{
+			"uploader" : "<%=basePath%>upload?method=uploadFile&jsessionid=<%=sessId%>",
+			"delFileUrl" : "<%=basePath%>upload?method=delFile&key=<%=valKey%>",
+			"downloadFileUrl" : "<%=basePath%>upload?method=downloadFile",
+			"swf" : "<%=basePath%>nightly/js/uploadify.swf",
+			"fileSizeLimit":10*1024,
+			"initFiles" : <%=fm%>,
+			"delFileAfterPost" : true
+		}}];
+		$("#form1").iForm('init',{"fields":fields});
+		$("#form2").iForm('init',{"fields":fields2,"options":{
+			labelFixWidth : 1,
+			labelColon : false
+		}});
+		$("#form2_wrap").iFold("init");
+	</pre>
+	<p style="color:#f00;font-weight:bold">根据最新规范，附件位于表单底部（和邮箱/TIMSS1一样划分出单独区域），上传按钮跟随表单而不单独放置在按钮工具栏中</p>
+	<pre class="brush:xml">
+		&lt;form id="form1" style="width:100%">
+	
+		&lt;/form>
+		&lt;div id="form2_wrap" grouptitle="附件">
+			&lt;form id="form2" style="width:100%">
+			
+			&lt;/form>
+		&lt;/div>
+	</pre>
+	<p>这里需要说明以下几点，请务必注意：</p>
+	<ul>
+		<li>upload方法在网站的根下，请在初始化时注意拼接路径</li>
+		<li>文件上传组件占用面积较多，开发者必须手动指定单独成行使用，即使用linebreak参数。</li>
+		<li>swf参数由于某种原因，请务必指定，远程引用时路径为http://10.0.250.52/uidev/nightly/js/uploadify.swf</li>
+		<li>delFileAfterPost指定后，删除初始化的文件只删除ID，并不会真的删除文件，需要在表单提交后处理，话句话说不提交表单文件不被真实删除。</li>
+		<li>为了保证浏览器和flash公用session，请在uploader参数中手动添加jsessionid，获取方法为：
+		<pre class="brush:java">
+			String sessId = request.getSession().getId();
+		</pre></li>
+		<li>如果需要显示已上传的文件，只能在参数中的initFiles指定，目前不支持通过setVal方法修改文件列表。</li>
+	</ul>
+
+	<h4>关联数据库</h4>
+
+	<p>如果没有关联数据库，一个文件在上传后2个小时，也会被清理线程自动清理掉。因此，上传文件后，要在提交表单时关联文件。</p>
+	<p>对表单使用getVal方法时，可以在对应字段获得已上传文件的ID（包括初始化显示的部分），这些ID用逗号分隔，在后台除了要绑定业务数据时，还需要使用AttachmentMapper提供的setAttachmentsBinded方法绑定文件。</p>
+
+	<p>setAttachmentsBinded的参数如下：</p>
+	<pre class="brush:java">
+		/**
+		 * 绑定附件
+		 * @param fildIds	附件ID
+		 * @param binded	是否绑定1表示绑定，0表示解除绑定
+		 */
+		void setAttachmentsBinded(@Param("ids") String[] fildIds,@Param("binded") int binded);
+	</pre>
+	<p>只要对ID字符串按逗号split，就可以拿到fileIds的参数，然后调用setAttachmentsBinded(ids,1)就可以设置文件为绑定状态，此时文件会永远保存在磁盘中，不会被清理。</p>
+
+	<h4>删除鉴权</h4>
+	<p>在参数delFileUrl中，有一个值为FAEB35816858C0900B8373B5FE31ABB7B56580C1F844D7966C13BFF4D17119FD的参数key，这个字符串为删除的鉴权码，如果没有鉴权码是无法执行删除操作的。</p>
+
+	<p>鉴权码的获得方法为</p>
+	<pre class="brush:java">
+		String valKey = FileUploadUtil.getValidateStr(operator, FileUploadUtil.DEL_OWNED);
+	</pre>
+	<p>FileUploadUtil需要引用com.yudean.itc.util.FileUploadUtil包，这个包属于基础权限组件部分。其中的operator为SecureUser对象，一般情况下应该直接拿Session（对于TIMSS1/2，可以直接用SecureUser operator = (SecureUser)session.getAttribute(Constant.secUser)拿到）的当前用户。第二个参数为删除级别，FileUploadUtil.DEL_OWNED表示只能删除自己上传的文件，DEL_ALL则表示可以删除所有文件。每个key的有效时间为2个小时。</p>
+
+	<h4>提交表单时删除文件</h4>
+	<p>一个表单提交时，其关联文件包含两部分，一是通过initFiles设置的文件（编辑模式才有），二是新追加的文件，对于追加的文件，无论编辑还是新建，其删除都是直接在服务器进行，这样提交时只要绑定有效ID即可。而对于initFiles设置的文件，如果打开delFileAfterPost选项，前台的删除只会移除id，而且不会有确定提示框，真正的删除需要用户自己通过比对数据，找出被删除的文件id，然后调用setAttachmentsBinded解除文件的绑定，这样下次清理时文件就会被彻底从服务器删除。</p>
+
+	<h4>使用封装获取初始化列表</h4>
+	<p>你可以用以下代码拿到一组文件的JSON表示（需要传入ArrayList of string的参数，每个string为一个文件id）</p>
+	<pre class="brush:java">
+	  	ArrayList&lt;String> ids = new ArrayList&lt;String>();
+	  	ids.add("140374369779480");
+	  	ids.add("140374369795581");
+	  	ids.add("140374369816682");
+	  	ids.add("140374369831083");
+	  	//强烈不建议修改Constant.basePath的值，目前默认的文件保存目录为网站根的upload/file下，文件和下级保存目录都会随机化
+	  	ArrayList&lt;HashMap&lt;String,Object>> fileMap = FileUploadUtil.getJsonFileList(Constant.basePath, ids);
+	</pre>
+	<p>将fileMap转为JSON表示后即可以用作初始列表的值，其中Constant位于com.yudean.itc.util.Constant。</p>
+
+	<h4>操作单个文件</h4>
+	<p>下面3个方法是IAttachmentManager（需要Spring自动装载）提供的源生方法，实际上除了retrieveAttachment，更推荐使用封装，即让封装去清理未绑定的文件。这里的distPath都可以使用Constant.basePath的值。</p>
+	<pre class="brush:java">
+		/**
+		 * 保存上传的文件
+		 * @param in
+		 * @param originalFilename 原文件名，须包含扩展名
+		 * @param distPath 存储文档的顶层文件夹物理路径
+		 * @return 保存后的文件名 attachId，系统另存之后会不带扩展名
+		 * @throws IOException
+		 */
+		String saveAttachment(InputStream in, String distPath, String originalFilename, @Operator  SecureUser operator) throws IOException;
+		
+		/**
+		 * 根据保存后的文件名读取附件
+		 * @param distPath 存储文档的顶层文件夹物理路径
+		 * @param attachmentName 文件ID
+		 * @return 附件的文件存储在Attachment.getFile()
+		 */
+		Attachment retrieveAttachment( String distPath, String attachmentName);
+		
+		/**
+		 * 删除指定的附件 
+		 * @param distPath 存储文档的顶层文件夹物理路径
+		 * @param attachId 文件名，参考{@link #saveAttachment(InputStream, String, String)} 
+		 */
+		void deleteAttachment(String distPath, String attachId);
+	</pre>
+</body>
+</html>

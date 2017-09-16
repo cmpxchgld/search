@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../component/css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bootstrap-theme.css" media="all"/>
+	<title>在选项卡和iframe之间进行操作</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>在选项卡和iframe之间进行操作</h4>
+	<p>整个ITC前端主框架的核心就是各种iframe之间的操作，为什么要这么做，为什么要这么设计，不止一次在各种文档和说明里我提到过这个问题，那么这里再对关键点整合一下：</p>
+	<ul>
+		<li>div能做到的iframe也能做到，而且只需要多不到2行的代码，页面模板什么复制粘贴就可以做到了</li>
+		<li>iframe之间彼此独立，自己编写自己的页面，不会有城门失火殃及池鱼的问题</li>
+		<li>由于EasyUI dialog的编写特点，某些div中很容易实现的效果（比如菜单穿越对话框）无法实现</li>
+		<li>iframe天生可以跨域，能加载任意的页面，甚至某些炫酷的效果必须要用iframe做到，这在文件上传中几乎成了功众所周知的方案（互联网公司经常将文件服务器单独放置，这样和主站点跨域几乎是不用想的）。</li>
+		<li>因为要将对话框全屏居中（所谓“极致”原则），原本方便的div操作也变成了跨iframe操作，div的简便性不再。</li>
+	</ul>
+
+	<h4>ITC前端主框架的设计</h4>
+	<p>ITC前端主框架遵循如下的设计思路</p>
+	<ul>
+		<li>每个选项卡触发独立的iframe，选项卡下的导航树共享一个iframe，这些iframe有特定的class和id命名原则（如果是在timss2下）</li>
+		<li>所有的选项卡iframe都在index页面中</li>
+		<li>对话框弹出的也是iframe，这些iframe和tab的iframe在同一个index页面中，也是平级的</li>
+		<li>对于特殊需求，使用padding-left和border-box模型留出额外空间，然后在index页面中插入新的iframe，这也是为了尽量减少iframe的层级关系。</li>
+	</ul>
+	<p>这种看似复杂的设计，有一个好处是所有iframe位于同级，只要通过_parent()函数切入到index中，就可以操作任何一个iframe以及其内部的元素了。</p>
+	
+	<h4>如何操作跨iframe操作</h4>
+	<p>需要注意的是，跨iframe操作变量是不允许的，所以如果你需要跨iframe操作，被操作的一定是dom元素，或者是一个函数。实际上，这意思就是无论是<strong style="color:#f00">取值还是赋值，都需要通过函数进行</strong>，$的本质也是函数。</p>
+	
+	<p>（1）iframe的跨级操作</p>
+	<p>在目前应用中，iframe的跨级操作只有一种，那就是手动关闭对话框：</p>
+	<pre class="brush:js">
+		_parent().$("#itcDlg").dialog("close");
+	</pre>
+	<p>可以看出，从iframe内访问iframe的元素比较简单，直接使用_parent()方法（框架提供）调用$或者对应的函数即可。因为这太简单了，所以我们并没有提供什么FW.closeDialog之类的封装。</p>
+
+	<p>（2）iframe平级操作</p>
+	<p>除了跨级操作，对话框/对话框，选项卡/对话框，选项卡/选项卡之间的操作都属于平级操作。</p>
+	<p>对于任何有id（<strong style="color:#f00">获得一个iframe的id的最简单方式就是去调试工具里看一下</strong>）的iframe（实际上是操作用的window对象）都可以使用该语句：</p>
+	<pre class="brush:js">
+		var p = _parent().window.document.getElementById("iframe的id").contentWindow;
+	</pre>
+	<p>对于这个window对象，你可以进行你想要的操作</p>
+	<pre class="brush:js">
+		p.doAction();
+		p.$("#someElement");
+	</pre>
+
+	<p>如果doAction()是定义在另外一个页面的函数，这个函数用于刷新某些字段，你可以在新建选项卡的关闭代码中，加上这个doAction，就可以做到关闭后刷新原选项卡的效果了。实际上，通过绑定事件可以做到更规范的实现（甚至是更炫酷的效果，比如阻止选项卡关闭，或者选项卡关闭时自动保存等效果），但是因为这其中存在引用陷阱，而且这个陷阱对于ie各个版本和chrome深浅还不一样，所以目前事件系统共仅用于内部功能实现。</p>
+
+	<p style="color:#f00">但是，一个陷阱解决了，不代表没有陷阱了。因为跨选项卡操作时，只有一个选项卡是可视的，其余的选项卡都是display:none，你说这等价于这些选项卡不在视口内么？有些东西是不能简单通过w3c规范推测的。这里只提醒一点：<strong>跨选项卡操作不要涉及创建操作，刷新是没问题的，因为在display:none的元素中进行操作，会有意想不到的bug，而且这在EasyUI中是经常出现的。</strong></p>
+
+	<h4>一些简单操作</h4>
+	<p>FW系列函数提供了封装，用于更简单的操作。</p>
+	<p>获取当前激活的选项卡的window对象：</p>
+	<pre class="brush:js">
+		var frame = FW.getFrame(FW.getCurrentTabId());//你不需关心任何东西，这一定是正确的，前提是：当前激活，选项卡
+		frame.doAction();
+	</pre>
+
+	<p>在当前激活的选项卡下打开一个页面</p>
+	<pre class="brush:js">
+		FW.navigate("http://news.163.com");
+	</pre>
+
+	<p>创建新选项卡时，让新选项卡关闭时跳回原选项卡</p>
+	<pre class="brush:js">
+		var prefix = new Date().getTime() + "" + Math.floor(Math.abs(Math.random()*100));
+	    FW.addTabWithTree({
+	        id : "netease" + prefix,
+	        url : "http://news.163.com",
+	        name : "网易新闻",
+	        tabOpt : {
+	            closeable : true,
+	            afterClose : function(id){
+	                //至少要执行deleteTab这行，否则无法再次打开该选项卡
+	                FW.deleteTab(id),
+	                //这里我们也不需要知道当前选项卡是什么了
+	                FW.activeTabById(FW.getCurrentTabId());
+	            }
+	        }
+	    });
+	</pre>
+
+	<p>删除当前选项卡</p>
+	<pre class="brush:js">
+		//需要注意，即便是设置closeable=false，一样可以通过该函数关闭选项卡，这是一个强制动作
+		FW.deleteTabById(FW.getCurrentTabId());
+	</pre>
+
+	<h4>作用域和命名空间</h4>
+	<p>虽然在实际使用中，iframe操作就那么两种情况，但是不要晕，js代码在哪里执行，命名空间就在哪里，不要因为功能搞混。</p>
+	<p>例子1：对话框操作</p>
+	<ul>
+		<li>打开对话框</li>
+		<li>做出一些选择</li>
+		<li>对话框页面中定义了getSelected函数，这个函数从列表里获取选择项，不是平级也不是跨级操作</li>
+		<li>点击确定按钮，确定按钮的事件是在主页面绑定的，因此事件里需要用平级操作调用getSelected函数</li>
+		<li>根据选择值操作表单，不是平级也不是跨级操作，直接$("#form").iForm即可，因为表单和事件定义都在一个页面里</li>
+		<li>手动关闭对话框（假定要判断是否选择为空），这是个跨级操作，需要_parent().$.dialog(~)进行操作</li>
+	</ul>
+
+	<p>例子2：双击对话框里的某一项操作</p>
+	<ul>
+		<li>打开对话框</li>
+		<li>双击列表里的某一项</li>
+		<li>从列表里获取选择项，不是平级也不是跨级操作</li>
+		<li>在对话框中操作选项卡的页面，向表单赋值，这是平级操作，但是可以用简便代码的方法，因为操作的一定是当前选项卡</li>
+		<li>操作结束后，关闭对话框，这是个跨级操作</li>
+	</ul>
+</body>
+</html>

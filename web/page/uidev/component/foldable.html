@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<link rel="stylesheet" type="text/css" href="../package/css/itcui.dev.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../package/css/bs_extend.css" media="all"/>	
+	<script type="text/javascript" src="../package/js/itcui.dev.js"></script>
+	<title>折叠区域</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			$("#foldable_area1").ITCUI_Foldable();
+			$("#foldable_area2").ITCUI_Foldable();
+		});		
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<div class="alert alert-warning">
+		由于SyntaxHighlighter会破坏JQuery的部分方法，该页面并未实现代码高亮。
+    </div>
+    <div class="alert alert-warning">
+		根据2014/5/20对UI规范的修改，折叠区域正式废除，原有折叠区域的折叠功能正式取消，仅保留标题和上边框线
+    </div>
+	<h4>创建一个折叠区域</h4>	
+	<p>使用ITCUI_Foldable方法可以为任何一个DIV添加可折叠效果（ID的命名无任何要求，也可以不添加id使用class选择。）</p>
+	<div id="foldable_area1" grouptitle="测试折叠区域：1">
+		<p>美军一部水下拖曳声波定位仪正搭载在澳大利亚“海洋之盾”号军舰上，在澳大利亚珀斯附近海域探测马航失联客机黑匣子，此前澳方宣布探测到疑似黑匣子信号。对此，美国海军在声明中说，澳美搜寻力量目前仍在珀斯西北大约950海里处继续合作展开探测工作，双方正抓紧时间力争再度获取疑似信号，并将在相关海域启用另一部由美军提供的侧扫声呐设备——“金枪鱼”自动水下航行器，以期对可能发现的残骸碎片进行扫描、拍照。</p>
+		<p>美军第七舰队发言人威廉·马克斯当天通过电子邮件发表声明说，美澳搜寻人员两次侦测到疑似信号的确“令人感到鼓舞”，但美方目前仍保持“谨慎乐观”，下一步仍须通过拖曳声波定位仪再度侦测到信号，并由侧扫声呐设备拍照来进一步核实。</p>
+	</div>
+	<p>HTML部分：</p>
+	<pre class="brush:xml">
+		&lt;div id="foldable_area1" grouptitle="测试折叠区域：1">
+			&lt;div class="row">111111&lt;/div>
+			&lt;div class="row">222222&lt;/div>
+			&lt;div class="row">111111&lt;/div>
+			&lt;div class="row">222222&lt;/div>
+			&lt;div class="row">111111&lt;/div>
+			&lt;div class="row">222222&lt;/div>
+		&lt;/div>
+		&lt;div id="foldable_area2" grouptitle="测试折叠区域：2">
+			&lt;div class="row">111111&lt;/div>
+			&lt;div class="row">222222&lt;/div>
+			&lt;div class="row">111111&lt;/div>
+			&lt;div class="row">222222&lt;/div>
+			&lt;div class="row">111111&lt;/div>
+			&lt;div class="row">222222&lt;/div>
+		&lt;/div>
+	</pre>
+	<p>JS部分：</p>
+	<pre class="brush:js">
+		$(document).ready(function(e){
+			$("#foldable_area1").ITCUI_Foldable();
+			$("#foldable_area2").ITCUI_Foldable();
+		});
+	</pre>
+	<p>你也可以用函数控制折叠区域：</p>
+	<div id="foldable_area2" grouptitle="测试折叠区域：1">
+		<p>美军一部水下拖曳声波定位仪正搭载在澳大利亚“海洋之盾”号军舰上，在澳大利亚珀斯附近海域探测马航失联客机黑匣子，此前澳方宣布探测到疑似黑匣子信号。对此，美国海军在声明中说，澳美搜寻力量目前仍在珀斯西北大约950海里处继续合作展开探测工作，双方正抓紧时间力争再度获取疑似信号，并将在相关海域启用另一部由美军提供的侧扫声呐设备——“金枪鱼”自动水下航行器，以期对可能发现的残骸碎片进行扫描、拍照。</p>
+		<p>美军第七舰队发言人威廉·马克斯当天通过电子邮件发表声明说，美澳搜寻人员两次侦测到疑似信号的确“令人感到鼓舞”，但美方目前仍保持“谨慎乐观”，下一步仍须通过拖曳声波定位仪再度侦测到信号，并由侧扫声呐设备拍照来进一步核实。</p>
+	</div>
+	<ul>
+		<li><a onclick="$('#foldable_area2').ITCUI_Foldable('fold')">折叠该区域</a></li>
+		<li><a onclick="$('#foldable_area2').ITCUI_Foldable('expand')">展开该区域</a></li>
+		<li><a onclick="$('#foldable_area2').ITCUI_Foldable('toggle')">折叠/展开该区域</a></li>
+		<li><a onclick="$('#foldable_area2').ITCUI_Foldable('hide')">隐藏该区域</a></li>
+		<li><a onclick="$('#foldable_area2').ITCUI_Foldable('show')">显示该区域</a></li>
+	</ul>
+	<p>代码</p>
+	<pre>
+		&lt;li>&lt;a onclick="$('#foldable_area2').ITCUI_Foldable('fold')">折叠该区域&lt;/a>&lt;/li>
+		&lt;li>&lt;a onclick="$('#foldable_area2').ITCUI_Foldable('expand')">展开该区域&lt;/a>&lt;/li>
+		&lt;li>&lt;a onclick="$('#foldable_area2').ITCUI_Foldable('toggle')">折叠/展开该区域&lt;/a>&lt;/li>
+		&lt;li>&lt;a onclick="$('#foldable_area2').ITCUI_Foldable('hide')">隐藏该区域&lt;/a>&lt;/li>
+		&lt;li>&lt;a onclick="$('#foldable_area2').ITCUI_Foldable('show')">显示该区域&lt;/a>&lt;/li>
+	</pre>
+
+	<h4>自动隐藏无内容区域</h4>
+	<p>默认情况下，对无内容（没有任何元素或者第一层子级元素的display均为none）会自动隐藏，可以设置opts.hideOnEmpty关闭这一功能。</p>
+	<p>↓折叠测试区域</p>
+	<div id="test_autohide" grouptitle="测试自动隐藏区域">
+		<div id="autohide_content">
+			<p>“自来水里的避孕药”“舟山人头发里汞超标”“南京猪肉含铅超标”“惠州猪肝铜超标”等骇人听闻的不实言论，经薛蛮子推广、转发，从2012年4月开始在网上扩散发酵，争议、疑虑、恐慌迅速蔓延，引发了当地人对生活环境和食品安全的恐慌，也给当地的产业发展、政府机关的公信力造成严重的负面影响。薛蛮子说，他在网络上的寻衅滋事，就是起因于转发董良杰的这些所谓的“环保”微博，“我没有任何核实，也没有得到任何确认，就很贸然地转发了”。</p>
+		</div>
+	</div>
+	<p>↑折叠测试区域</p>
+	<ul>
+		<li><a onclick="$('#autohide_content').hide()">隐藏区域内的内容</a></li>
+		<li><a onclick="$('#test_autohide').ITCUI_Foldable()">将区域设置为折叠样式</a></li>
+		<li><a onclick="$('#test_autohide').ITCUI_Foldable('show')">重新显示折叠区域</a></li>
+	</ul>
+
+	<h4>事件绑定</h4>
+	<p>在初始化时，可以以ITCUI_Foldable(null,opts)的参数初始化折叠区域，opts中允许定义如下两个事件：</p>
+	<ul>
+		<li>onExpand - 展开后执行的函数</li>
+		<li>onFold - 折叠后执行的函数</li>
+	</ul>
+	<p>这两个函数都在动画完成后执行。</p>
+</body>
+</html>

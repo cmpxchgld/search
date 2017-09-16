@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			$(".toggler").click(function(e){
+				var id = $(this).attr("id");
+				if($(this).html()=="显示代码"){
+					$(this).html("隐藏代码");
+					$("#" + id + "_div").show();
+				}
+				else{
+					$(this).html("显示代码");
+					$("#" + id + "_div").hide();
+				}
+			});
+		});
+
+		
+	</script>
+	<style type="text/css">
+		.row{margin-top:4px;margin-bottom:4px;}
+		p{text-indent:2em;}
+		h4{margin-top:18px;}
+		.toggler{font-size:12px}
+	</style>
+	<title>导航树</title>
+</head>
+<body style="margin:16px;font-size:14px">
+	<div class="alert alert-warning">
+		导航树的大小和伸缩是OA风格框架实现的部分
+    </div>
+    <div class="alert alert-warning">
+		该说明页为组件的最原始形式，一般情况下，你可以使用163邮箱风格框架中提供的更完善封装完成常用操作。除非你对组件足够熟悉，否则不应该直接使用这里的源生函数。
+	</div>
+	<h4>创建导航树</h4>
+	<p>使用以下代码可以创建UI规范主框架使用的导航树</p>
+	<pre class="brush:js;">
+		function test(arg){
+			alert("正在点击的是：" + arg);
+		}
+
+		var treeData = [
+			{
+				"grouptitle" : "测试组1",
+				"initexpand" : true,
+				"items" : [
+					{"title":"功能1","action":test},
+					{"title":"功能2","action":test},
+					{"title":"功能3","action":test},
+				]
+			},
+			{
+				"grouptitle" : "测试组2",
+				"initexpand" : true,
+				"items" : [
+					{"title":"功能1"},
+					{"title":"功能2"},
+					{"title":"功能3"},
+				]
+			}
+		];
+		$(document).ready(function(e){
+			$("#mainframe_navtree").ITCUI_NavTree("init",treeData,{});
+		});
+	</pre>
+	<p>当某个节点的items为null时，且该节点拥有ID属性，该节点将和其他子节点一样可以点击，并且没有前面的尖叫号，此时该节点必须有id属性以绑定事件。</p>
+	<p>在和ITC前端主框架一起使用时，可以对导航树直接绑定权限，只需要为每个节点添加privilege属性即可。</p>
+
+	<h4>构造函数</h4>
+	<pre class="brush:js;">
+		$(tree_selector).ITCUI_NavTree("init",treeData,opts);
+	</pre>
+	<p>其中，</p>
+	<p>treeData为存放树节点的数组，每个节点为Object类型，其字段定义为：</p>
+	<table class="table table-bordered table-striped" style="width:650px">
+		<thead>
+			<tr>
+				<th width="30%">字段名</th>
+				<th width="70%">说明</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>grouptitle</td>
+				<td>组标题，可以为纯文本或者html代码</td>
+			</tr>
+			<tr>
+				<td>initexpand</td>
+				<td>在树初始化时该组是否展开，boolean</td>
+			</tr>
+			<tr>
+				<td>items</td>
+				<td>该组的元素，数组类型，其中每一项为Object类型，字段定义为：<br />
+					title - TreeItem的标题<br/>
+					action - 点击时触发的动作，当传入一个function时，会自动将TreeItem的ID作为参数传入，如果为字符串，则直接使用eval方式执行<br/>
+					initselect - 在树创建时是否默认选择该项，boolean
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>opts为树选项，Object类型，字段定义为：</p>
+	<table class="table table-bordered table-striped" style="width:650px">
+		<thead>
+			<tr>
+				<th width="30%">字段名</th>
+				<th width="70%">说明</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>treeId</td>
+				<td>树的ID，如果需要在一个页面创建多个导航树时需要为每棵树赋予不同ID，默认为itc_navtree</td>
+			</tr>
+			<tr>
+				<td>expandOnlyOne</td>
+				<td>是否每次只能展开一组节点，boolean</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<h4>元素命名</h4>
+	<p>导航树的各个元素命名如下：</p>
+	<p>树ID - 默认为itc_navtree，可以修改</p>
+	<p>组ID - itc_navtree_组标号，标号从0开始</p>
+	<p>每组中Item的ID - itc_navtree_item_组编号_项编号，编号从0开始</p>
+
+	<h4>方法</h4>
+	<p>所有方式的调用方式均为：</p>
+	<pre class="brush:js;">
+		$(tree_selector).ITCUI_NavTree("调用的方法",args);
+	</pre>
+	<ul>
+		<li>highlight - 高亮某个节点，参数为id,noexpand，其中id为节点标识符，noexpand表示不需要展开节点，默认为false，该方法仅为样式修改，不会触发回调函数。</li>
+		<li>switchto - 切换到某个节点，参数为id，和highlight不同的是，该方法会触发回调函数，并且调整树的展开情况。</li>
+		<li>getstate - 获得树的展开和高亮情况</li>
+		<li>loadstate - 加载树的状态，用于在多页面切换时保存树的状态，参数为getstate获得的对象</li>
+	</ul>
+</body>
+</html>

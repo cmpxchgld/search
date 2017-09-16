@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bs_doc_ext.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>	
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<title>Datagrid</title>
+	<script type="text/javascript">
+		var sort;
+		var localSortData = [];
+		var TOTAL_COUNT = 100;
+		var cssMapping = {
+			bigTheme : "../package/css/itc_dg_big.css",
+			midTheme : "../package/css/itc_dg_mid.css",
+			smallTheme : "../package/css/itc_dg_small.css",
+		};
+		var columns = [[
+			{field:'ck',checkbox:true},
+			{field:'id',width:80,title:'编号'},
+			{field:'name',width:80,sortable:true,title:'姓名','editor':{
+				"type" : "combobox",
+				"options" : {
+					"data" : [
+						["","不限",true],
+						["路人1","路人1"],
+						["路人2","路人2"],
+						["路人3","路人3"],
+						["路人4","路人4"],
+						["路人5","路人5"]
+					]					
+				}
+			}},
+			{field:'phone',width:100,title:'电话'},
+			{field:'remark',width:200,title:'备注'}
+		]];
+		var styleOpt = {
+			styles : [
+				{
+					"id":"bigTheme",
+					"title":"宽松显示"
+				},{
+				
+					"id":"midTheme",
+					"title":"适中显示"
+				},{
+
+					"id":"smallTheme",
+					"title":"紧凑显示"
+				}
+			],
+			defStyle : "midTheme",
+			onChangeStyle : function(id){
+				ITC_LoadCSS(cssMapping[id]);
+				$("#test_grid1").datagrid("reload");
+			}
+		};
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			var pageData = getData(1,5);
+			$("#test_grid1").datagrid({
+				"pagination":true,
+				"pageSize":5,
+				"pageList":[5,10,15,20,30],
+				"fitColumns":true,
+				"_data":getData(1,100),
+				"data":getData(1,5),
+				"columns" : columns
+			});	
+			$("#test_grid1").ITCUI_Pagination("create","#pagination_1",styleOpt);
+			
+			$("#btn_advlocal").click(function(){
+				if($(this).hasClass("active")){
+					$("#test_grid1").ITCUI_GridSearch("end");
+				}
+				else{
+					$("#test_grid1").ITCUI_GridSearch("init");
+				}
+			});
+		});	
+		
+		function getData(pageNumber, pageSize){
+			var rtn = [];
+			for(var i=0;i<pageSize;i++){
+				var data = {};
+				data["id"] = (pageNumber-1)*pageSize + i + 1;
+				data["name"] = "路人" + data["id"];
+				data["phone"] = "13800138000";
+				data["remark"] = "xxxxxxxxx";
+				rtn.push(data);
+			}
+			return {"total":TOTAL_COUNT,"rows":rtn};
+		}
+
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">	
+	<div class="alert alert-warning">
+		本页中给出的所有例子（包括分页和排序）必须依赖ITCUI_Pagination方能实现，如果不需要分页功能可以将放置Pagination的DIV设置为display:none。
+    </div>
+    <div class="alert alert-warning">
+    	为了保证显示效果，请确保每列有足够的宽度。
+    </div>
+    <div class="alert alert-warning">
+    	由于onRenderFinish事件执行时，datagrid的渲染还没完成（差最后的resize，这是个异步方法无法追踪），此时无法得到正确列宽，因此对于非定宽表格，只能由按钮触发表头搜索功能，而定宽表格应该将列宽设为实际列宽，而不应该开启fitColumns选项自动计算列宽。
+    </div>
+	<h4>表头搜索 - 本地</h4>
+	
+	<p>下列代码演示如何在本地数据启用表头搜索功能：</p>
+	<div class="btn-group btn-group-sm">
+		<button type="button" class="btn btn-default" data-toggle="button" id="btn_advlocal">高级搜索</button>
+	</div>
+	<div id="pagination_1" style="width:650px;">
+		
+	</div>
+	<table id="test_grid1" style="width:650px;">
+
+	</table>
+	<p>注：这里的行选框只为了测试对齐效果，没有任何其他意义。</p>
+	<p>启用表头搜索：</p>
+	<pre class="brush:js">
+		$("#test_grid1").ITCUI_GridSearch("init");
+	</pre>
+	<p>结束表头搜索（不会重置数据）：</p>
+	<pre class="brush:js">
+		$("#test_grid1").ITCUI_GridSearch("end");
+	</pre>
+
+	<p>从b5版开始，表头搜索支持自动跳过隐藏列（属性为hidden的列，但是需要注意的是，属性为hidden的列依然会被datagrid渲染，只不过display=none，这并不是很好）</p>
+	<p>同时，表头搜索允许跳过部分列，方法是在执行init方法时，增加选项noSearchColumns，形如：</p>
+	<pre class="brush:js">
+		$("#test_grid1").ITCUI_GridSearch("init",noSearchColumns:{3:true});
+	</pre>
+	<p>其中noSearchColumns的格式为列编号:true，列编号从0开始，需要计算复选框列以及隐藏列。</p>
+
+	<h4>表头搜索 - 远程</h4>
+	<p>远程搜索时需要使用ITCUI_GridSearch("init",opts)初始化，其中opts.remoteSearch为true。具体代码请参考“综合演示（在线）”一节</p>
+</body>
+</html>

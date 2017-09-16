@@ -1,0 +1,550 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>API - 自动表单</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bs_doc_ext.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+		$(document).ready(function(){
+			var fields = [
+				{id:"id",type:"hidden"},
+				{title : "姓名", id : "name"},
+				{title : "年龄", id : "age"},
+				{
+					title : "毕业学校", 
+					id : "school",
+					type : "combobox",
+					data : [
+						["bju","北京大学"],
+						["tsu","清华大学"],
+						["sjd","上海交通大学"],
+						["fd","复旦大学"],
+						["whu","武汉大学"]
+					]
+				},
+				{title : "身份证号", id : "idnum"},
+				{title : "手机", id : "mobile"},
+				{title : "电子邮箱", id : "mail"},
+				{title : "生日", id:"dob",type:"date"},
+				{
+					title : "家庭住址", 
+					id : "addr",
+					linebreak:true,
+					wrapXsWidth:12,
+					wrapMdWidth:8
+				},
+				{title : "祖籍", id : "hometown"},
+				{
+					title : "个人简介", 
+					id : "resume",
+					type : "textarea",
+					linebreak:true,
+					wrapXsWidth:12,
+					wrapMdWidth:12,
+					labelMdWidth:1
+				},
+				{
+					title : "资格证书", 
+					id : "cert",
+					type : "checkbox",
+					data : [
+						['law','律师'],
+						['teacher','教师'],
+						['doctor','医生']
+					]
+				},
+				{
+					title : "工作经验", 
+					id : "workexp",
+					type : "radio",
+					data : [
+						['a','应届',true],
+						['b','1-3年'],
+						['c','3年以上']
+					]
+				},
+				{
+					title : "更新时间",
+					id : "updatetime",
+					type : "label",
+					dataType : "datetime"
+				}
+			];
+			$("#form1").iForm("init",{"fields":fields});
+			$("#form1").iForm("setVal",{updatetime:1403228450704,dob:614828450704});
+		}); 
+
+	</script>
+
+</head>
+<body style="font-size:14px">
+	<h4>自动表单</h4>
+	<p>自动表单$.iForm是对常用表单操作（生成、赋值/取值、模式变换、验证）等的系列封装，本组件运行需要额外引用jQuery Validation</p>
+	<p>自动表单的初始化方法为：</p>
+	<pre class="brush:js">
+		$("#myform").iForm("init",{"options":{....},"fields":fields});
+	</pre>
+	<p>其中#myform为一个form（不能换成div）</p>
+
+	<h4>例子</h4>
+	<form id="form1" style="width:100%">
+
+	</form>
+	<pre class="brush:js">
+		var fields = [
+			{id:"id",type:"hidden"},
+			{title : "姓名", id : "name"},
+			{title : "年龄", id : "age"},
+			{
+				title : "毕业学校", 
+				id : "school",
+				type : "combobox",
+				data : [
+					["bju","北京大学"],
+					["tsu","清华大学"],
+					["sjd","上海交通大学"],
+					["fd","复旦大学"],
+					["whu","武汉大学"]
+				]
+			},
+			{title : "身份证号", id : "idnum"},
+			{title : "手机", id : "mobile"},
+			{title : "电子邮箱", id : "mail"},
+			{title : "生日", id:"dob",type:"date"},
+			{
+				title : "家庭住址", 
+				id : "addr",
+				linebreak:true,
+				wrapXsWidth:12,
+				wrapMdWidth:8
+			},
+			{title : "祖籍", id : "hometown"},
+			{
+				title : "个人简介", 
+				id : "resume",
+				type : "textarea",
+				linebreak:true,
+				wrapXsWidth:12,
+				wrapMdWidth:12
+			},
+			{
+				title : "资格证书", 
+				id : "cert",
+				type : "checkbox",
+				data : [
+					['law','律师'],
+					['teacher','教师'],
+					['doctor','医生']
+				]
+			},
+			{
+				title : "工作经验", 
+				id : "workexp",
+				type : "radio",
+				data : [
+					['a','应届',true],
+					['b','1-3年'],
+					['c','3年以上']
+				]
+			},
+			{
+				title : "更新时间",
+				id : "updatetime",
+				type : "label",
+				dataType : "datetime"
+			}
+		];
+		$("#form1").iForm("init",{"fields":fields});
+		$("#form1").iForm("setVal",{updatetime:1403228450704,dob:614828450704});
+	</pre>
+
+	<h4>属性</h4>
+	<p>此处说的所有属性都是$.iForm("init",{"options":opts})中opts的参数</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">属性</td>
+				<td width="150px">类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>xsWidth</td>
+				<td>int(1-12)</td>
+				<td>每一个字段在小屏幕下占的宽度，取1/12的整数倍，默认6表示占屏幕的6/12即1/2</td>
+			</tr>
+			<tr>
+				<td>mdWidth</td>
+				<td>int(1-12)</td>
+				<td>每一个表单项在中等屏幕下的宽度，默认为4即1/3</td>
+			</tr>
+			<tr>
+				<td>labelWidth</td>
+				<td>int</td>
+				<td>标签宽度，默认为3即1/4，则表单输入框占3/4，该参数仅对fixLabelWidth=false时有效</td>
+			</tr>
+			<tr>
+				<td>labelFixWidth</td>
+				<td>int</td>
+				<td>固定标签宽度时标签的宽度，默认为100px，该参数仅对fixLabelWidth=true时有效</td>
+			</tr>
+			<tr>
+				<td>container</td>
+				<td>boolean</td>
+				<td>是否在表单外增加一个容器，设置此项为true时表单将有最大宽度，这个最大宽度等同于栅格系统中规定的.container的宽度，默认为false，除非有特殊要求，不建议开启该选项。</td>
+			</tr>
+			<tr>
+				<td>validate</td>
+				<td>boolean</td>
+				<td>是否开启表单验证，默认为false，设定为true时必须有jQuery Validation的引用，否则表单无法渲染</td>
+			</tr>
+			<tr>
+				<td>fieldPrefix</td>
+				<td>string</td>
+				<td>表单元素id的前缀，默认为f_，则如果一个字段的id为name，则该（假设为文本框）元素的真实id为f_name，可以用$("#f_name")操作该元素。fieldPrefix为全局选项无法被覆盖，如果对个别字段应用前缀，建议直接修改字段的id参数。</td>
+			</tr>
+			<tr>
+				<td>namePrefix</td>
+				<td>string</td>
+				<td>name的前缀，默认为空（b5之前一样为f_），可以通过设置该项构造特殊的取值结果，如设置namePrefix="myObject."，则取得的表单值形如{"myObject.name":"LiLei","myObject.age":13}。namePrefix为全局选项无法被覆盖，如果对个别字段应用前缀，建议直接修改字段的name参数。</td>
+			</tr>
+			<tr>
+				<td>validate</td>
+				<td>boolean</td>
+				<td>是否开启表单验证，默认为false，设定为true时必须有jQuery Validation的引用，否则表单无法渲染</td>
+			</tr>
+			<tr>
+				<td>fixLabelWidth</td>
+				<td>boolean</td>
+				<td>是否固定标签的长度，在b7版后，该属性默认变为true，除非对响应式布局和媒体查询(@media)足够熟悉，不推荐使用变宽标签。</td>
+			</tr>
+			<tr>
+				<td>labelColon</td>
+				<td>boolean</td>
+				<td>是否在每个字段后加一个冒号，默认为true</td>
+			</tr>
+			<tr>
+				<td>initAsReadonly</td>
+				<td>boolean</td>
+				<td>是否默认以只读模式初始化表单，默认为false即初始化为编辑模式，需要注意的是：
+				<ul>
+					<li>只读模式默认会隐藏所有字段，第一次加载初值时会根据初值显示字段（主要是减少表单闪动的幅度），但是通过value设置初值的除外。</li>
+					<li style="color:#f00">只读模式下只支持getVal方式取值，$.val()对字段失效。</li>					
+					<li>由于时间原因，只读模式初始化目前只支持定宽标签（自动表单默认值）。</li>
+				</ul>
+				</td>
+			</tr>
+			<tr>
+				<td>validMsg</td>
+				<td>Object</td>
+				<td>验证错误的信息，此项可以在opts中全局设置，也可以在表单项中设置，不推荐直接全局修改该参数。</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4>字段支持</h4>
+	<p>在fields中以[{},{}...]的形式定义所有字段，字段的公共属性如下：</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">属性</td>
+				<td width="150px">类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>type</td>
+				<td>string</td>
+				<td>字段类型，默认为text即单行文本框</td>
+			</tr>
+			<tr>
+				<td>title</td>
+				<td>string</td>
+				<td>字段的标签</td>
+			</tr>
+			<tr>
+				<td>id</td>
+				<td>string</td>
+				<td>字段的标识符，将和前缀fieldPrefix组成真实id</td>
+			</tr>
+			<tr>
+				<td>name</td>
+				<td>string</td>
+				<td>取值/post时字段的参数名，默认同id</td>
+			</tr>
+			<tr>
+				<td>data</td>
+				<td>object/array</td>
+				<td>初始化时的附加数据，对于checkbox,radio,combobox有效，格式如下：
+				<pre class="brush:js">
+					{
+				        title : "工作经验", 
+				        id : "workexp",
+				        type : "radio",
+				        data : [
+				            ['a','应届',true],
+				            ['b','1-3年'],
+				            ['c','3年以上']
+				        ]
+				    }
+				</pre>
+				data中的每一个元素有都是Array[3]，其中分别为id（用于取/赋值）、title（用于显示）、是否默认选择，该格式在前端手写最为方便。
+				<br/>
+				combo支持的数据格式请参考下拉框的API说明。
+				</td>
+			</tr>
+			<tr>
+				<td>linebreak</td>
+				<td>boolean</td>
+				<td>设置为true此字段前强制换行，默认情况下所有表项均写到一个row中，使用响应式布局调整每行显示个数</td>
+			</tr>
+			<tr>
+				<td>wrapXsWidth</td>
+				<td>int(1-12)</td>
+				<td>小屏幕下占的宽度，默认使用xsWidth即6，对于多行文本框可以设置为12以占满全部宽度</td>
+			</tr>
+			<tr>
+				<td>wrapMdWidth</td>
+				<td>int(1-12)</td>
+				<td>中等屏幕下占的宽度，默认使用mdWidth即4，对于多行文本框可以设置为12以占满全部宽度</td>
+			</tr>
+			<tr>
+				<td>labelXsWidth</td>
+				<td>int(1-12)</td>
+				<td>标签在小屏幕下的宽度，默认使用labelWidth即3，只对非定宽标签有效</td>
+			</tr>
+			<tr>
+				<td>labelMdWidth</td>
+				<td>int(1-12)</td>
+				<td>标签在中等屏幕下的宽度，默认使用labelWidth即3，只对非定宽标签有效</td>
+			</tr>
+			<tr>
+				<td>inputXsWidth</td>
+				<td>int(1-12)</td>
+				<td>输入框（或者其他元素）在小屏幕下的宽度，默认使用12-labelXsWidth</td>
+			</tr>
+			<tr>
+				<td>inputMdWidth</td>
+				<td>int(1-12)</td>
+				<td>输入框（或者其他元素）在中等屏幕下的宽度，默认使用12-labelMdWidth</td>
+			</tr>
+			<tr>
+				<td>privilege</td>
+				<td>string</td>
+				<td>字段所需权限，在指定全局参数privMapping时，没有权限的字段不会被渲染</td>
+			</tr>
+			<tr>
+				<td>value</td>
+				<td>string</td>
+				<td>字段的初值，对于包含异步数据的表单（如指定url的combobox）还是推荐使用setVal方法</td>
+			</tr>
+			<tr>
+				<td>rules</td>
+				<td>object</td>
+				<td>表单验证规则，具体参考jQuery validation的文档或者本站点中表单验证一节</td>
+			</tr>
+			<tr>
+				<td>messages</td>
+				<td>object</td>
+				<td>失败时的文字信息，一般情况下不需要指定，手动指定的每一条信息都应该找到对应的rules</td>
+			</tr>
+			<tr>
+				<td>options</td>
+				<td>object</td>
+				<td>组件的其他选项，一般情况下不需要使用此参数。如果组件支持额外的初始化参数，可以在此指定。需要注意的是，对于date/datetime类型的字段，options里可以直接写bootstrap datetimepicker的源生参数，不需要再添加外层的dtpOpts了。</td>
+			</tr>
+			<tr>
+				<td>height</td>
+				<td>int</td>
+				<td>字段高度（不带单位），默认为combobox或者input的高度26px，目前只支持指定多行文本框（textarea）的高度。</td>
+			</tr>
+			<tr>
+				<td>render</td>
+				<td>function(id)</td>
+				<td>在字段默认渲染部分结束后执行的函数，可以用来改变字段样式或者添加新功能，其中的参数id为带前缀的真实id，可以直接用选择器$("#" + id)选择。</td>
+			</tr>
+			<tr>
+				<td>getHtml</td>
+				<td>function(id)</td>
+				<td>定义字段的html代码如何拼接，在使用自定义字段时必须实现该函数。该函数应该返回一段表示字段的html代码。</td>
+			</tr>
+			<tr>
+				<td>getValue</td>
+				<td>function(id)</td>
+				<td>定义如何取到字段的值，在使用自定义字段时必须实现该函数。</td>
+			</tr>
+			<tr>
+				<td>setValue</td>
+				<td>function(val,id)</td>
+				<td>定义如何为字段设置值，在使用自定义字段时必须实现该函数。</td>
+			</tr>
+			<tr>
+				<td>formatter</td>
+				<td>function(val)</td>
+				<td>在显示字段值前进行格式化，一般来说只有label和自定义字段有必要设置该参数。</td>
+			</tr>
+			<tr>
+				<td>getTarget</td>
+				<td>function(id)</td>
+				<td>定义如何到选择字段的某一部分（任何一部分均可），只读变换时需要借助该函数选择字段的所有可视部分并隐藏。如假设自定义控件生日选择器（年月日均为下拉），传入ID为birthday，则3个下拉框的id为f_birthday_year、f_birthday_month、f_birthday_day，此时表单根据原始id无法选择到字段，此时就需要定义：
+				<pre class="brush:js">
+					field.getTarget = function(id){
+						return $("#" + id + "_year");
+					};
+				</pre></td>
+			</tr>
+			<tr>
+				<td>dataType</td>
+				<td>string</td>
+				<td>字段的数据类型，目前
+				<ul>
+				<li>取值为"date"或者"datetime"，只对label和date/datetime字段有效，当设置该参数时，表单会将传入的数据当成是一个JS时间戳，并显示为yyyy-MM-dd或者yyyy-MM-dd hh:mm样式的字符串。</li>
+				<li>取值为enum，这是一个为TIMSS2定制的适配参数，仅适用于combobox字段，而且必须与enumCat和value字段配合使用。当使用此取值时，需要同时设置enumCat属性，此时表单会将combobox初始化为一个枚举列表，key为某枚举类别下的code，显示文字为其label</li>
+				<li>取值为password，只对单行文本框有效，此时对应文本框变为密码框。</li>
+				</ul></td>
+			</tr>
+			<tr>
+				<td>enumCat</td>
+				<td>string</td>
+				<td>当字段为枚举时，其枚举的类别code，配合dataType="enum"使用。</td>
+			</tr>
+			<tr>
+				<td>breakAll</td>
+				<td>boolean</td>
+				<td>当字段为label或者进入只读变换时，超长内容是否换行显示，默认为false，即只显示一行多余的打省略号靠鼠标提示显示完整内容。</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>自动表单中每个字段必须为26px高度，否则会导致对齐问题，目前支持以下字段：</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>text</td>
+				<td>单行文本框，默认类型</td>
+			</tr>
+			<tr>
+				<td>label</td>
+				<td>只读字段，可以使用formatter参数格式化显示的内容。</td>
+			</tr>
+			<tr>
+				<td>textarea</td>
+				<td>多行文本框，由于高度不确定，建议对于textarea设置为另起一行并占据整个宽度。</td>
+			</tr>
+			<tr>
+				<td>combobox</td>
+				<td>下拉框，支持iCombo（b5版）以后的所有扩展参数</td>
+			</tr>
+			<tr>
+				<td>checkbox</td>
+				<td>复选框，需要data参数才可以初始化</td>
+			</tr>
+			<tr>
+				<td>radio</td>
+				<td>单选框，需要data参数才可以初始化</td>
+			</tr>
+			<tr>
+				<td>date</td>
+				<td>日期（带选择器），取值赋值格式都为yyyy-MM-dd或者JS时间戳<br/>
+				对于date/datetime，可以在字段中的options里添加startDate和endDate指定日期范围，如：
+				<pre class="brush:js">
+				{title : "生日", id:"dob",type:"date",options:{"startDate":"1980-01-01"}}
+				</pre></td>
+			</tr>
+			<tr>
+				<td>datetime</td>
+				<td>日期时间（带选择器），取值赋值格式都为yyyy-MM-dd hh:mm或者JS时间戳</td>
+			</tr>
+			<tr>
+				<td>hidden</td>
+				<td>隐藏字段，不会显示，也无法编辑，但是可以赋值、取值，用于在表单提交时附加额外数据</td>
+			</tr>
+			<tr>
+				<td>userdefine</td>
+				<td>自定义控件，需要实现getTarget等几个函数，具体参考上面字段属性部分。</td>
+			</tr>
+			<tr>
+				<td>fileupload</td>
+				<td>文件上传/下载，具体参考新版示例以及API文档中的内容。</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4>方法</h4>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">方法</td>
+				<td width="150px">参数</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>getVal</td>
+				<td>(可选)string</td>
+				<td>无参数时取得表单当前所有字段的值，返回值格式为{字段name（带前缀）:字段值}。当指定参数时，将返回对应id字段的值。</td>
+			</tr>
+			<tr>
+				<td>setVal</td>
+				<td>object</td>
+				<td>为表单加载数据，数据格式为{字段id（无前缀）:字段值}</td>
+			</tr>
+			<tr>
+				<td>setFullVal</td>
+				<td>object</td>
+				<td>为表单加载数据，用法同setVal，但是该方法对于未指定（或者值等价于null，所以数字0应该赋值"0"字符串）的字段会清空，在只读模式下也会隐藏未指定的字段，因此请慎用该方法。</td>
+			</tr>
+			<tr>
+				<td>beginEdit</td>
+				<td>(可选)string/array</td>
+				<td>启动表单的编辑模式，当传入string或者string数组时（值为字段不带前缀的id），将只启动特定字段的编辑模式。</td>
+			</tr>
+			<tr>
+				<td>endEdit</td>
+				<td>(可选)string/array</td>
+				<td>将表单转为只读模式，当传入string或者string数组时（值为字段不带前缀的id），将只启动特定字段的只读模式。</td>
+			</tr>
+			<tr>
+				<td>show</td>
+				<td>string/array</td>
+				<td>显示一个或者一组字段，参数为不带前缀的id或者id数组。</td>
+			</tr>
+			<tr>
+				<td>hide</td>
+				<td>string/array</td>
+				<td>隐藏一个或者一组字段，参数为不带前缀的id或者id数组。</td>
+			</tr>
+			<tr>
+				<td>valid</td>
+				<td>-</td>
+				<td>验证表单，验证通过返回true，一次验证会显示所有不合格的字段。<strong style="color:#f00">需要特别注意，$.validate由jQ validation提供，使用方法为$("#myform").valid()</strong></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4>事件</h4>
+	<p>iForm暂时不提供事件</p>
+</body>
+</html>

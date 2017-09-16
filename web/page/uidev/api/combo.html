@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>API - 下拉框</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bs_doc_ext.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+		$(document).ready(function(){
+		    $("#test_combobox1").iCombo("init");
+		    $("#test_combobox2").iCombo("init");
+		    $("#test_combobox3").iCombo("init",{
+		    	data : [
+			        ["bju","北京大学"],
+			        ["tsu","清华大学",true],
+			        ["bju","北京大学",true],
+			        ["fdu","复旦大学"]
+			    ],
+			    multiSelect : true
+		    });
+		    $("#test_combobox4").iCombo("init");
+		    $("#test_combobox4").iCombo("loadData",[
+			        ["bju","北京大学"],
+			        ["tsu","清华大学",true],
+			        ["bju","北京大学"],
+			        ["fdu","复旦大学"]
+			 ]);
+		    $("#test_combobox5").iCombo("init",{
+		    	url : "combodata.json"
+		    }).iCombo("setDefaultVal","-1").iCombo("setTxt","未初始化默认文字");
+		}); 
+
+	</script>
+
+</head>
+<body style="font-size:14px">
+	<h4>下拉框</h4>
+	<p>下拉框是iCombo是UI组件库完全独立开发的功能，支持复选，不支持编辑。需要编辑功能建议使用iHint下拉提示（你可以去网易邮箱看看自动发信的年月日都是不能输的）。</p>
+
+	<h4>例子</h4>
+	<p>iCombo必须以select标签初始化，但是数据来源可以是html或者是js：</p>
+	<div class='row'>
+		<select id="test_combobox1" style="width:150px">
+		    <option value="a">选项1</option>
+		    <option value="b">选项2</option>
+		    <option value="c">选项3</option>
+		    <option value="d">选项4</option>
+		</select>
+	</div>
+	<div class='row'>
+		<select id="test_combobox2" style="width:150px" multiselect=true maxlength=18>
+		    <option value="a">选项A</option>
+		    <option value="b">选项B</option>
+		    <option value="c">选项C</option>
+		    <option value="d" multichecked=true>选项D</option>
+		    <option value="e" multichecked=true>选项E</option>
+		</select>
+	</div>
+	<pre class="brush:xml">
+		&lt;select id="test_combobox1" style="width:150px">
+		    &lt;option value="a">选项1&lt;/option>
+		    &lt;option value="b">选项2&lt;/option>
+		    &lt;option value="c">选项3&lt;/option>
+		    &lt;option value="d">选项4&lt;/option>
+		&lt;/select>
+		&lt;select id="test_combobox2" style="width:150px" multiselect=true maxlength=18>
+		    &lt;option value="a">选项A&lt;/option>
+		    &lt;option value="b">选项B&lt;/option>
+		    &lt;option value="c">选项C&lt;/option>
+		    &lt;option value="d" multichecked=true>选项D&lt;/option>
+		    &lt;option value="e" multichecked=true>选项E&lt;/option>
+		&lt;/select>
+	</pre>
+	<pre class="brush:js">
+		$("#test_combobox1").iCombo("init");
+		$("#test_combobox2").iCombo("init");
+	</pre>
+	<p>或者通过js设置数据。</p>
+	<div class="row">
+		<select id="test_combobox3" style="width:150px">
+		</select>
+	</div>
+	<pre class="brush:js">
+		$("#test_combobox3").iCombo("init",{
+	    	data : [
+		        ["bju","北京大学"],
+		        ["tsu","清华大学",true],
+		        ["bju","北京大学",true],
+		        ["fdu","复旦大学"]
+		    ],
+		    multiSelect : true
+	    });
+	</pre>
+	<p>也可以动态对Combobox加载数据</p>
+	<div class="row">
+		<select id="test_combobox4" style="width:150px">
+		</select>
+	</div>
+	<pre class="brush:js">
+		$("#test_combobox4").iCombo("loadData",[
+	        ["bju","北京大学"],
+	        ["tsu","清华大学",true],
+	        ["bju","北京大学"],
+	        ["fdu","复旦大学"]
+		]);
+	</pre>
+	<p>还可以使用远程数据源延迟初始化</p>
+	<div class="row">
+		<select id="test_combobox5" style="width:150px">
+		</select>
+	</div>
+	<pre class="brush:js">
+		 $("#test_combobox5").iCombo("init",{
+	    	url : "combodata.json"
+	    }).iCombo("setDefaultVal","-1").iCombo("setTxt","未初始化默认文字");
+	</pre>
+	
+	<h4>属性</h4>
+	<p>此处说的所有属性都是$.iCombo("init",{"options":opts})中opts的参数</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">属性</td>
+				<td width="150px">类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>multiSelect</td>
+				<td>boolean</td>
+				<td>是否支持多选</td>
+			</tr>
+			<tr>
+				<td>data</td>
+				<td>object/array</td>
+				<td>可用的选项，目前支持以下两种结构：
+				<pre class="brush:js">
+					var data1 = {
+				        "bju":"北京大学",
+				        "tsu":"清华大学",
+				        "nju":"南京大学"
+				    };
+				</pre>
+				当数据有序且需要指定默认值时：
+				<pre class="brush:js">
+					var data2 = [
+				        ["bju","北京大学"],
+				        ["tsu","清华大学",true],
+				        ["bju","北京大学"]
+				    ];
+				</pre>
+				</td>
+			</tr>
+			<tr>
+				<td>wrapWidth</td>
+				<td>int</td>
+				<td>下拉框下拉部分的宽度，默认等同于select的宽度。</td>
+			</tr>
+			<tr>
+				<td>url</td>
+				<td>string</td>
+				<td>使用的数据源url，用于在点击时初始化iCombo</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4>方法</h4>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">方法</td>
+				<td width="150px">参数</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>init</td>
+				<td>object</td>
+				<td>构造函数</td>
+			</tr>
+			<tr>
+				<td>getVal</td>
+				<td>-</td>
+				<td>获取当前的选项（多选以半角逗号分开）</td>
+			</tr>
+			<tr>
+				<td>setVal</td>
+				<td>string/object</td>
+				<td>修改选项，单选时直接传入选项id，多选时传入{id:true}样式的object</td>
+			</tr>
+			<tr>
+				<td>setDefaultVal</td>
+				<td>object</td>
+				<td>设置未初始化时使用getVal取到的值，当使用远程数据源时需要调用该方法。</td>
+			</tr>
+			<tr>
+				<td>getTxt</td>
+				<td>object</td>
+				<td>获得显示的文字（无省略号）</td>
+			</tr>
+			<tr>
+				<td>setTxt</td>
+				<td>object</td>
+				<td>设置显示的文字</td>
+			</tr>
+			<tr>
+				<td>loadData</td>
+				<td>object/array</td>
+				<td>动态设置Combobox的选项，选项格式同初始化时的data参数。</td>
+			</tr>
+			<tr>
+				<td>remoteLoadOn</td>
+				<td>string</td>
+				<td>远程数据加载的时机，取值为"set"、"init"或"click"，
+				<ul>
+					<li>click - 默认值，即第一次点击combo时加载远程数据</li>
+					<li>set - 加载数据时，如果调用了iCombo的setVal方法，会触发数据加载并设定默认值（推荐在EasyUI表格行编辑设置初值时使用该选项）</li>
+					<li>init - 初始化时，此情况下因为异步的原因不支持初值设定</li>
+				</ul></td>
+			</tr>
+			<tr>
+				<td>displayItemCount</td>
+				<td>int</td>
+				<td>每页显示条目的数目，默认为6，超过该数值会显示滚动条。</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4>事件</h4>
+	<p>此处的事件需要作为初始化（$.iCombo("init")）时的参数添加进去。</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">事件</td>
+				<td width="150px">参数</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>onChange</td>
+				<td>val,this</td>
+				<td>当选项变更时触发该事件，第二个参数是指向iCombo的一个jQ object，一般不需要该参数。</td>
+			</tr>
+			<tr>
+				<td>onRemoteData</td>
+				<td>val</td>
+				<td>当远程数据加载时触发该事件，该事件可以用于格式化远程加载的数据，需要返回一个满足iCombo要求的数据。</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

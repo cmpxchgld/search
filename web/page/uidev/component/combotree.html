@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+
+
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>	
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<title>下拉树</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			var tree_data = [{
+			    "id": "node1",
+			    "text": "父节点1",
+			    "state": "open",
+			    "children": [{
+			        "id": "node11",
+			        "text": "子节点1",
+			        "selected" : true
+			    },{
+			        "id": "node12",
+			        "text": "子节点2"
+			    }]
+			},{
+			    "id": "node2",
+			    "text": "父节点2"
+			}];
+			var tree_data = [{
+			    "id": "node1",
+			    "text": "父节点1",
+			    "state": "open",
+			    "children": [{
+			        "id": "node11",
+			        "text": "子节点1",
+			        "selected" : true
+			    },{
+			        "id": "node12",
+			        "text": "子节点2"
+			    },{
+			        "id": "node13",
+			        "text": "子节点3",
+			        "checked" : true
+			    } ,{
+			        "id": "node14",
+			        "text": "子节点4",
+			        "checked" : true
+			    }]
+			},{
+			    "id": "node2",
+			    "text": "父节点2"
+			}];
+			$("#combotree1").ITCUI_ComboTree("create",{"data":tree_data});
+			$("#combotree2").ITCUI_ComboTree("create",{"data":tree_data,"checkbox":true});
+		});		
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<div class="alert alert-info">
+		本ComboTree使用EasyUI的树与符合UI规范的下拉框组合而成，因此支持EasyUI树的所有参数和功能（包括数据操作）
+    </div>
+	
+	<h4>创建ComboTree</h4>
+	<p>单选ComboTree</p>
+	<div class="row">
+		<select id="combotree1" style="width:150px" treewidth="200px" treeheight="200px"></select>
+	</div>
+	<p>复选ComboTree</p>
+	<div class="row">
+		<select id="combotree2" style="width:150px" treewidth="200px" treeheight="200px"></select>
+	</div>
+	<p>在创建Combotree时，只需要将原有Easyui的Tree函数改为：</p>
+	<pre class="brush:js">
+		$("#combotree1").ITCUI_ComboTree("create",opt);
+	</pre>
+	<p>其中opt为原有树的选项，如果要多选（暂未完成），则需要额外在opt中指定checkbox为true。</p>
+	<p>需要特别注意的是，本版本的Combotree需要以select初始化，而不是input。</p>
+	<pre class="brush:xml">
+		&lt;select id="f_dept" style="width:100%" treewidth="200px" treeheight="200px"></select>
+	</pre>
+	
+	<h4>参数</h4>
+	<p>Combotree支持以下参数：</p>
+	<ul>
+		<li>treewidth - 树选择区的宽度</li>
+		<li>treeheight - 树选择区的高度</li>
+		<li>deftext - 当没有选择任何一项时默认的文字</li>
+		<li>defval - 当没有选择任何一项时的默认值</li>
+	</ul>
+	<p>由于input系列可能存在值/显示内容不一的情况，请使用deftext和defval进行赋值，而不是使用val。</p>
+
+	<h4>获取选择的值</h4>
+	<p>对于单选树，使用getValue方法将返回当前的值（如果没选择则返回defval）：</p>
+	<pre class="brush:js">
+		$("#combotree1").ITCUI_ComboTree("getValue");
+	</pre>
+	<p>除了create和getValue之外的所有方法将被EasyUI的树源生执行。</p>
+</body>
+</html>

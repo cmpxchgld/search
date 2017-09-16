@@ -1,0 +1,371 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/shBrushCss.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<script type="text/javascript" src="../package/js/itcui.dev.js"></script>
+	<script type="text/javascript" src="../package/js/itc_util.js"></script>
+	<link rel="stylesheet" type="text/css" href="../package/css/itcui.dev.css" media="all"/>
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			$('#event_dropdown').on('show.bs.dropdown', function () {
+			  	alert("菜单显示之前");
+			});
+			$('#event_dropdown').on('shown.bs.dropdown', function () {
+			  	alert("菜单显示之后");
+			});
+			$('#event_dropdown').on('hide.bs.dropdown', function () {
+			  	alert("菜单消失之前");
+			});
+			$('#event_dropdown').on('hidden.bs.dropdown', function () {
+			  	alert("菜单消失之后");
+			});
+			$(".toggler").click(function(e){
+				var id = $(this).attr("id");
+				if($(this).html()=="显示代码"){
+					$(this).html("隐藏代码");
+					$("#" + id + "_div").show();
+				}
+				else{
+					$(this).html("显示代码");
+					$("#" + id + "_div").hide();
+				}
+			});
+			createJsonMenu1();
+		});
+
+		function getChk(){
+			alert("自动换行的选择结果:" + ITCUtil.getMenuCheckVal("para1"));
+		}
+
+		function getSelect(){
+			alert("文字大小：" + ITCUtil.getMenuSelectVal("#jsonmenu1","fontsize"));
+		}
+
+		function createJsonMenu1(){
+			var menu = [
+				{title:"新建"},
+				{title:"打开"},
+				{title:"关闭"},
+				{title:"-"},
+				{
+					title:"文字大小",
+					submenu:[
+						{title:"小",group:"fontsize",select:true,id:"fs_small"},
+						{title:"中",group:"fontsize",select:true,selected:true,id:"fs_mid"},
+						{title:"大",group:"fontsize",select:true,id:"fs_big"}
+					]
+				},
+				{
+					title:"段落设置",
+					submenu:[
+						{title:"自动换行",check:true,checked:true,id:"para1"},
+						{title:"自动行距",check:true,id:"para2"},
+						{title:"首字母自动大写",check:true,checked:true,id:"para3"},
+						{title:"英文单词不换行",check:true,checked:true,id:"para4"}
+					]
+				}
+			];
+			ITCUtil.createMenu("#jsonmenu1",menu);
+		}
+	</script>
+	<title>菜单</title>
+	<style>
+		.my_icon{
+			background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAMAAAAolt3jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAA////pdmf3QAAADhJREFUeNpcjkkKAAAIAqf/fzqItMVTpgwSR3zLqKw7so7KgiKV50PfG8VGNXvIcdOLequ8PwUYADeoAIJRiA9PAAAAAElFTkSuQmCC");
+			width:14px;
+			height: 14px;
+			display: inline-block;
+		}
+		.toggler{font-size:12px}
+	</style>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>创建一个菜单</h4>
+
+	<div class="dropdown">
+	  <a data-toggle="dropdown" href="#">单击我显示菜单</a>
+	  <ul class="dropdown-menu" role="menu">
+	    <li><a href="#">菜单项1</a></li>
+	    <li><a href="#">菜单项2</a></li>
+	    <li><a href="#">菜单项3</a></li>
+	  </ul>
+	</div>
+	<div class="row">	
+		<a id="create_menu" class="toggler">显示代码</a>
+	</div>
+	<div id="create_menu_div" style="display:none">
+		<p>一个菜单的创建包括几个部分，包括：</p>
+		<p>（1）一个class为dropdown的容器，这个容器并不会因为菜单的放入而改变高度，只是用来组合菜单和触发菜单的元素；</p>
+		<p>（2）用于触发菜单的元素，其data-toggle="dropdown"</p>
+		<p>（3）一组由列表表示的菜单，注意菜单动作和文字需要写到a标签中，同时需要为a设置class为menuitem方可正确显示样式。设置菜单项li的class为divider可以显示一条分割线</p>
+		<pre class="brush: xml;">
+			&lt;div class="dropdown">
+			  &lt;a data-toggle="dropdown" href="#">单击我显示菜单&lt;/a>
+			  &lt;ul class="dropdown-menu" role="menu">
+			    &lt;li>&lt;a href="#">菜单项1&lt;/a>&lt;/li>
+			    &lt;li>&lt;a href="#">菜单项2&lt;/a>&lt;/li>
+			    &lt;li>&lt;a href="#">菜单项3&lt;/a>&lt;/li>
+			  &lt;/ul>
+			&lt;/div>
+		</pre>
+		<p style="color:#ff0000">需要强调的是，外层DIV不能设置overflow:hidden，否则会导致菜单显示错误。</p>
+		<p>实际上，触发菜单的元素不一定是独立的DIV，可以是任何位置的任何元素（暂时不知道absolute布局的元素会有什么问题），如下面的代码（用在右上角的设置菜单）</p>
+		<pre class="brush:xml;">
+			&lt;ul class="head_link" style="margin-right:6px">
+				&lt;li class="li_username">&lt;a class="itcui_link" href="&lt;%=basePath %>login?method=logout">退出&lt;/a>&lt;/li>
+				&lt;li>|&lt;/li>
+				&lt;li class="dropdown">
+					&lt;a class="itcui_link" id="set" data-toggle="dropdown">设置&lt;/a>
+					&lt;ul class="dropdown-menu pull-right" role="menu">
+					    &lt;li>&lt;a onclick="showEditPass()">修改密码&lt;/a>&lt;/li>
+					    &lt;li>&lt;a onclick="showEditProfile()">编辑资料&lt;/a>&lt;/li>
+					&lt;/ul>
+				&lt;/li>
+				&lt;li>|&lt;/li>
+				&lt;li>&lt;a class="itcui_link" href="#">帮助&lt;/a>&lt;/li>
+			&lt;/ul>
+		</pre>
+	</div>
+
+	<h4>多级菜单</h4>
+	<div class="dropdown">
+	  <a data-toggle="dropdown" href="#">单击我显示多级菜单</a>
+	  <ul class="dropdown-menu" role="menu">
+	    <li class="dropdown-submenu">
+	    	<a  href="#">菜单项1</a>
+	    	<ul class="dropdown-menu">
+                <li><a href="#">二级菜单1</a></li>
+                <li><a  href="#">二级菜单2</a></li>
+            	<li class="dropdown-submenu">
+            		<a href="#">二级菜单3</a>
+            		<ul class="dropdown-menu">
+            			<li><a href="#">三级菜单1</a></li>
+            		</ul>
+            	</li>
+            </ul>
+	    </li>
+	    <li><a href="#">菜单项2</a></li>
+	    <li class="divider"></li>
+	    <li><a href="#">菜单项3</a></li>
+	  </ul>
+	</div>
+	<div class="row">	
+		<a id="create_multi_menu" class="toggler">显示代码</a>
+	</div>
+	<div id="create_multi_menu_div" style="display:none">
+		<p>通过设置某一菜单项的class为dropdown-menu，并在其后附加一组菜单，可以实现多级菜单。</p>
+		<pre class="brush: xml;">
+			&lt;div class="dropdown">
+			  &lt;a data-toggle="dropdown" href="#">单击我显示多级菜单&lt;/a>
+			  &lt;ul class="dropdown-menu" role="menu">
+			    &lt;li class="dropdown-submenu">
+			    	&lt;a href="#">菜单项1&lt;/a>
+			    	&lt;ul class="dropdown-menu">
+		                &lt;li>&lt;a href="#">二级菜单1&lt;/a>&lt;/li>
+		                &lt;li>&lt;a href="#">二级菜单2&lt;/a>&lt;/li>
+		            	&lt;li>&lt;a href="#">二级菜单3&lt;/a>&lt;/li>
+		            &lt;/ul>
+			    &lt;/li>
+			    &lt;li>&lt;a href="#">菜单项2&lt;/a>&lt;/li>
+			    &lt;li class="divider">&lt;/li>
+			    &lt;li>&lt;a href="#">菜单项3&lt;/a>&lt;/li>
+			  &lt;/ul>
+			&lt;/div>
+		</pre>
+	</div>
+
+	<h4>向左侧弹出菜单</h4>	
+	<div class="dropdown" style="float:right">
+		<a data-toggle="dropdown">点我</a>
+		<!--这里的pull-right可以让主菜单和屏幕最右侧对齐-->
+		<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">
+			<!--这里的pull-left可以让子菜单在主菜单右侧弹出-->
+			<li class="dropdown-submenu pull-left">
+				<a  href="#">菜单项1</a>
+				<ul class="dropdown-menu">
+					<li><a>二级菜单1</a></li>
+					<li><a>二级菜单2</a></li>
+					<li><a>二级菜单3</a></li>
+				</ul>
+			</li>
+		<li><a>菜单项2</a></li>
+		<li class="divider"></li>
+		<li><a>菜单项3</a></li>
+		</ul>
+	</div>
+	<div class="row">	
+		<a id="left_menu" class="toggler">显示代码</a>
+	</div>
+	<div id="left_menu_div" style="display:none">
+		<p>当可以预见菜单必须向左侧弹出时，可以通过增加pull-left类强制让子菜单向左侧弹出。如果没有使用这两个类，菜单默认向左侧展开，且主菜单与控制菜单弹出的handle左侧对齐。</p>
+		<div class="alert alert-info">
+			在Bootstrap3中，pull-right和pull-left等价于强制（important）的float:left和float:right
+	    </div>
+	    <pre class="brush:xml">
+			&lt;div class="dropdown" style="float:right">
+				&lt;a data-toggle="dropdown">点我&lt;/a>
+				&lt;!--这里的pull-right可以让主菜单和屏幕最右侧对齐-->
+				&lt;ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel">
+					&lt;!--这里的pull-left可以让子菜单在主菜单右侧弹出-->
+					&lt;li class="dropdown-submenu pull-left">
+						&lt;a  href="#">菜单项1&lt;/a>
+						&lt;ul class="dropdown-menu">
+							&lt;li>&lt;a>二级菜单1&lt;/a>&lt;/li>
+							&lt;li>&lt;a>二级菜单2&lt;/a>&lt;/li>
+							&lt;li>&lt;a>二级菜单3&lt;/a>&lt;/li>
+						&lt;/ul>
+					&lt;/li>
+				&lt;li>&lt;a>菜单项2&lt;/a>&lt;/li>
+				&lt;li class="divider">&lt;/li>
+				&lt;li>&lt;a>菜单项3&lt;/a>&lt;/li>
+				&lt;/ul>
+			&lt;/div>		
+		</pre>
+	</div>
+
+
+	<h4 style="clear:both">为菜单添加图标</h4>
+	<p>（1）使用Font Awesome提供的符号字体添加图标（推荐）</p>
+	<div class="dropdown">
+	  <a data-toggle="dropdown" href="#">单击我显示带图标菜单</a>
+	  <ul class="dropdown-menu" role="menu">
+	    <li><a href="#"><i class="icon-home"></i>主页</a></li>
+		<li><a href="#"><i class="icon-book"></i>参考资源</a></li>
+		<li><a href="#"><i class="icon-pencil"></i>记事</a></li>
+		<li><a href="#"><i class="icon-cogs"></i>设置</a></li>
+	  </ul>
+	</div>
+	<div class="row">	
+		<a id="icon_menu" class="toggler">显示代码</a>
+	</div>
+	<div id="icon_menu_div" style="display:none">
+		<p>关于Font Awesome的完整使用方式，请参考说明文档中“资源”-“图标字体”。</p>
+		<p>请在a标签上设置超链接或者动作，同时注意示例代码中标签的组合方式和顺序！</p>
+		<pre class="brush: xml;">
+			&lt;div class="dropdown">
+			  &lt;a data-toggle="dropdown" href="#">单击我显示带图标菜单&lt;/a>
+			  &lt;ul class="dropdown-menu" role="menu">
+			    &lt;li>&lt;a href="#">&lt;i class="icon-home">&lt;/i>主页&lt;/a>&lt;/li>
+				&lt;li>&lt;a href="#">&lt;i class="icon-book">&lt;/i>参考资源&lt;/a>&lt;/li>
+				&lt;li>&lt;a href="#">&lt;i class="icon-pencil">&lt;/i>记事&lt;/a>&lt;/li>
+				&lt;li>&lt;a href="#">&lt;i class="icon-cogs">&lt;/i>设置&lt;/a>&lt;/li>
+			  &lt;/ul>
+			&lt;/div>
+	</pre>
+	</div>
+	<p>（2）使用自定义图片作为图标</p>
+	
+	<div class="dropdown">
+	  <a data-toggle="dropdown" href="#">单击我显示带自定义图标菜单</a>
+	  <ul class="dropdown-menu" role="menu">
+	    <li><a href="#"><i class="my_icon"></i>主页</a></li>
+	  </ul>
+	</div>
+	<div class="row">	
+		<a id="image_menu" class="toggler">显示代码</a>
+	</div>
+	<div id="image_menu_div" style="display:none">
+		<p>图标的大小推荐为14x14px，并可以根据需要使用CSS调整图片位置。</p>
+		<p>CSS</p>
+		<pre class="brush: css;">
+			.my_icon{
+				background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAMAAAAolt3jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAA////pdmf3QAAADhJREFUeNpcjkkKAAAIAqf/fzqItMVTpgwSR3zLqKw7so7KgiKV50PfG8VGNXvIcdOLequ8PwUYADeoAIJRiA9PAAAAAElFTkSuQmCC");
+				width:14px;
+				height: 14px;
+				display: inline-block;
+			}
+		</pre>
+		<p>HTML</p>
+		<pre class="brush: xml;">
+			&lt;div class="dropdown">
+			  &lt;a data-toggle="dropdown" href="#">单击我显示带自定义图标菜单&lt;/a>
+			  &lt;ul class="dropdown-menu" role="menu">
+			    &lt;li>&lt;a href="#">&lt;i class="my_icon">&lt;/i>主页&lt;/a>&lt;/li>
+			  &lt;/ul>
+			&lt;/div>
+		</pre>
+	</div>
+
+	<h4>事件绑定</h4>
+	
+	<div class="dropdown" id="event_dropdown">
+	  <a data-toggle="dropdown" href="#">此处是正常显示的菜单</a>
+	  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+	    <li><a href="#">菜单项1</a></li>
+	    <li><a href="#">菜单项2</a></li>
+	    <li><a href="#">菜单项3</a></li>
+	  </ul>
+	</div>
+	<div class="row">	
+		<a id="event_menu" class="toggler">显示代码</a>
+	</div>
+	<div id="event_menu_div" style="display:none">
+		<p>根据需要，你可以使用JS控制菜单的弹出和收回，或者在菜单显示/消失之前/后绑定事件。具体请参考以下代码</p>
+		<pre class="brush: js;">
+			$(document).ready(function(e){
+				$('#event_dropdown').on('show.bs.dropdown', function () {
+				  	alert("菜单显示之前");
+				});
+				$('#event_dropdown').on('shown.bs.dropdown', function () {
+				  	alert("菜单显示之后");
+				});
+				$('#event_dropdown').on('hide.bs.dropdown', function () {
+				  	alert("菜单消失之前");
+				});
+				$('#event_dropdown').on('hidden.bs.dropdown', function () {
+				  	alert("菜单消失之后");
+				});
+			});
+		</pre>
+		<p>同时，使用$("#myMenu").dropdown('toggle')可以控制菜单的伸缩。</p>
+	</div>
+
+	<h4>生成跨frame/iframe的菜单</h4>
+	<p>导航选项卡的下拉菜单即使用此方法生成，此处无额外演示。</p>
+	<div class="row">	
+		<a id="cross_menu" class="toggler">显示代码</a>
+	</div>
+	<div id="cross_menu_div" style="display:none">
+		<p>正常情况下，dropdown可以使用前面的方法生成，但是在某些情况下无法这样：</p>
+		<ul>
+			<li>菜单需要横跨带有z-index属性的Object</li>
+			<li>菜单的触发对象和菜单本身不在一个DIV中</li>
+			<li>菜单的外层Wrap被设置了大小，尤其是height</li>
+			<li>菜单的外层Wrap不是Div（可能是li或者其他元素）</li>
+		</ul>
+		<p>此时需要使用JS，将菜单和菜单的实际触发对象分离。</p>
+		<p>用JS代码添加一个菜单：</p>
+		<pre class="brush:js">
+			navHtml += '&lt;li class="itcui-navigation-item-options-menu-button itcui-navigation-item" style="float:left">';
+			navHtml += '&lt;b>&lt;/b>&lt;/li>';
+			menuHtml = '&lt;div class="dropdown" style="position:absolute" id="itcui_nav_toggler_wrap">';
+			menuHtml += '&lt;a data-toggle="dropdown" id="itcui_nav_toggler">&lt;/a>';
+			menuHtml += '&lt;ul class="dropdown-menu" role="menu">'
+			menuHtml += '&lt;li>&lt;a>关闭所有选项卡&lt;/a>&lt;/li>';
+			menuHtml += '&lt;/ul>';
+			menuHtml += '&lt;/div>';
+			$("body").append(menuHtml);
+		</pre>
+		<p>这里注意，菜单的Wrap和触发Object都带有独立的ID，同时Wrap被设置为postion:absolute以保证可以横跨主页面的iframe</p>
+		<p>在按钮单击时触发菜单：</p>
+		<pre class="brush:js">
+			var pos = ITC_GetAbsPos(this);
+			$("#itcui_nav_toggler_wrap").css({
+				"top":pos.top+32,
+				"left":pos.left
+			});
+			$("#itcui_nav_toggler").dropdown("toggle");
+		</pre>
+	</div>
+</body>
+</html>

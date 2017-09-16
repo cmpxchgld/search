@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html style="height:100%;width:100%">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>UI演示系统</title>
+<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" />	
+<title>资产树</title>
+<script>
+	var currDragNode = null;
+	var nodeType = {
+		"org" : {"name":"机构","level":1},
+		"area" : {"name":"区域","level":2},
+		"system" : {"name":"系统","level":3},
+		"device" : {"name":"设备","level":4},
+		"component" : {"name":"配件","level":5}
+	};
+	
+	function initTree(){
+		$('#asset_tree').tree({
+			url : "../tree?method=assetData",
+			dnd : true,
+			onBeforeDrag : function(node){
+				//不准拖拽1级部门节点
+				if(node.type=="org"){
+					return false;
+				}
+				return true;
+			},
+			onSelect : function(node){
+				if(node.type=="org" || node.type=="area"){
+					go("demo/assetlist.html");
+				}
+				else{
+					go("demo/infodemo.html");
+				}
+			},
+			onStartDrag : function(node){
+				//拖拽时关闭右键菜单
+				$("#wt_menu_tree").removeClass("open");
+				currDragNode = node;
+			},
+			onDragOver : function(target,source){
+				var t = $('#asset_tree').tree("getNode",target);
+			},
+			onBeforeDrop : function(target, source,point){
+				var t = $('#asset_tree').tree("getNode",target);
+				//只支持将一个节点移动到另外一个节点内
+				if(point!="append"){
+					return false;
+				}
+				var tp = nodeType[currDragNode.type].name;
+				FW.confirm("确认移动|是否将" + tp + "“" + currDragNode.text + "”移动到“" + t.text + "”？",function(){
+					var node = $('#asset_tree').tree("pop",currDragNode.target);
+					$('#asset_tree').tree("append",{
+						parent : t.target,
+						data : node
+					});
+				});
+				//这里先返回false拒绝树的源生移动功能 要点了确定手动移动
+				return false;
+			},
+			onContextMenu : function(e, node){
+				e.preventDefault();
+				_parent().$("#wtTreeMenu").css({
+					left:e.pageX + 200,
+					top:e.pageY + 89
+				});
+				_parent().$("#wtTreeMenuToggle").dropdown("toggle");
+			}			
+		});		
+	}
+	
+	function go(url){
+		if(FW.getCurrentTabId()!="treeDemo"){
+			FW.activeTabById("treeDemo");			
+		}			
+		FW.navigate(url);
+	}
+	function initTabEvent(){
+		//防止事件重复注册wtTreeEventId可以随便起 但是不要和别人的重复 如果改掉下面的set也要改
+		if(FW.get("wtTreeEventId")){
+			return;
+		}
+		//选项卡事件注册 onAfterTabSwitch为选项卡切换完成（包括树加载）的事件 由框架提供
+		var id1 = FW.registerEvent("onAfterTabSwitch", function(id){
+			var id = FW.getCurrentTabId();
+			var tid = FW.getCurrentNavTreeId();//当前激活的树节点ID
+			var mc = _parent().$("#mainframe_content");
+			if((id=="treeDemo"&&tid=="nav6_1") || (id!="treeDemo"&&id.indexOf("treeDemo")==0)){
+				mc.addClass("pleft230");
+				_parent().$("#wtAssetTree").show();
+			}
+			else{
+				mc.removeClass("pleft230");
+				_parent().$("#wtAssetTree").hide();
+			}
+		});
+		FW.set("wtTreeEventId",id1);
+		//导航树事件注册 navTreeItemClick为导航树点击的事件
+		FW.registerEvent("navTreeItemClick",function(id){
+			var mc = _parent().$("#mainframe_content");
+			if(id=="nav6_1"){
+				mc.addClass("pleft230");
+				_parent().$("#wtAssetTree").show();
+			}
+			else{
+				mc.removeClass("pleft230");
+				_parent().$("#wtAssetTree").hide();
+			}
+		});
+	}
+	
+	function initTreeMenu(){
+		var p = _parent();
+		$("#wtTreeMenu").appendTo(p.$("body"));
+		p.$("#newNodeAtCurrLevel").click(function(){
+			alert("这里写树菜单的实际动作");
+		});		
+	}
+	
+	$(document).ready(function(){
+		$("#search").iInput("init");
+		initTreeMenu();
+		initTree();
+		initTabEvent();
+		FW.registerEvent("onBlankClick",function(){
+			_parent().$("#wtTreeMenu").removeClass("open");
+		});
+	});
+</script>
+</head>
+<body class="bbox" style="height:100%;width:100%">
+	<div style="padding-top:28px;width:100%;height:100%">
+		<div class="input-group input-group-sm bbox" style="width:210px;position:absolute;top:0px">
+			<input type="text" placeholder="按名称或位置搜索" id="search" icon="itcui_btn_mag"/>     
+		</div>
+		<div style="width:100%;height:100%;overflow:auto">
+			<ul id="asset_tree" style="width:100%">
+				
+			</ul>
+		</div>
+		<div class="dropdown" id="wtTreeMenu" style="position:absolute">
+			<a data-toggle="dropdown" id="wtTreeMenuToggle"></a>
+			<ul class="dropdown-menu" role="menu">
+				<li><a class="menuitem" id="newNodeAtCurrLevel">新建同级节点</a></li>
+				<li><a class="menuitem">新建下级节点</a></li>
+				<li><a class="menuitem">删除</a></li>
+				<li><a class="menuitem">重命名</a></li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>

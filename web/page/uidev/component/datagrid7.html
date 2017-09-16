@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/shBrushJava.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bs_doc_ext.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>	
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<title>Datagrid综合演示（远程）</title>
+	<script type="text/javascript">
+		var cssMapping = {
+			bigTheme : "../package/css/itc_dg_big.css",
+			midTheme : "../package/css/itc_dg_mid.css",
+			smallTheme : "../package/css/itc_dg_small.css",
+		}
+		var styleOpt = {
+			styles : [
+				{
+					"id":"bigTheme",
+					"title":"宽松显示"
+				},{
+				
+					"id":"midTheme",
+					"title":"适中显示"
+				},{
+
+					"id":"smallTheme",
+					"title":"紧凑显示"
+				}
+			],
+			defStyle : "midTheme",
+			onChangeStyle : function(id){
+				ITC_LoadCSS(cssMapping[id]);
+				$("#test_grid1").datagrid("reload");
+			}
+		};
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			$("#test_grid1").datagrid({
+				"pagination":true,
+				"pageSize":5,
+				"pageList":[5,10,15,20,30],
+				"fitColumns":true,
+				"url": "../import?method=datagrid",
+				"remoteSort" : true,
+				"onRenderFinish" : function(){
+					$("#test_grid1").ITCUI_Pagination("create","#pagination_1",styleOpt);		
+				}
+			});
+			$("#btn_advlocal").click(function(){
+				if($(this).hasClass("active")){
+					$("#test_grid1").ITCUI_GridSearch("end");
+				}
+				else{
+					$("#test_grid1").ITCUI_GridSearch("init",{"remoteSearch":true,"onParseArgs":function(arg){
+						var s = "";
+						var tmp = [];
+						for(var k in arg){
+							tmp.push(k);
+							tmp.push(arg[k] || "null");
+						}
+						return {"search":tmp.join(",")};
+					}});
+				}
+			});
+		});	
+		
+
+
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">	
+	<h4>Datagrid综合演示（远程）</h4>
+	<div style="width:100%;height:32px">
+		<div class="btn-group btn-group-sm">
+			<button type="button" class="btn btn-default" data-toggle="button" id="btn_advlocal">高级搜索</button>
+		</div>
+		<div id="pagination_1" style="width:200px;" class="pull-right">		
+		</div>
+	</div>
+	<div style="clear:both"></div>
+	<table class="easyui-datagrid" id="test_grid1" style="">
+		<thead>
+			<tr>
+				<th data-options="field:'classroom',width:80">考场</th>
+				<th data-options="field:'name',width:80">学生姓名</th>
+				<th data-options="field:'idnum',width:150">身份证号</th>
+				<th data-options="field:'stunum',width:100">学号</th>
+				<th data-options="field:'score1',width:80,sortable:true">笔试成绩</th>
+				<th data-options="field:'score2',width:80">机试成绩</th>
+			</tr>
+		</thead>
+		<tbody>
+			
+		</tbody>
+	</table>
+	<p>JS代码（搜索/分页/排序）：</p>
+	<pre class="brush:js">
+		$("#test_grid1").datagrid({
+			"pagination":true,
+			"pageSize":5,
+			"pageList":[5,10,15,20,30],
+			"fitColumns":true,
+			"url": "../import?method=datagrid",
+			"remoteSort" : true,
+			"onRenderFinish" : function(){
+				$("#test_grid1").ITCUI_Pagination("create","#pagination_1",styleOpt);		
+			}
+		});
+		$("#btn_advlocal").click(function(){
+			if($(this).hasClass("active")){
+				$("#test_grid1").ITCUI_GridSearch("end");
+			}
+			else{
+				$("#test_grid1").ITCUI_GridSearch("init",{"remoteSearch":true,"onParseArgs":function(arg){
+					var s = "";
+					var tmp = [];
+					for(var k in arg){
+						tmp.push(k);
+						tmp.push(arg[k] || "null");
+					}
+					return {"search":tmp.join(",")};
+				}});
+			}
+		});
+	</pre>
+
+	<p>JAVA代码（无数据库操作，仅作参考！）</p>
+	<pre class="brush:java">
+		private void testDataGrid(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+			HttpSession session = request.getSession();
+			ArrayList&lt;HashMap&lt;String,Object>> tabData = (ArrayList&lt;HashMap&lt;String, Object>>) session.getAttribute("tabdata");
+			if(tabData==null){
+				tabData = new ArrayList&lt;HashMap&lt;String,Object>>();
+				String[] rows = testData.split("BR");
+				for(String row:rows){
+					String[] cols = row.split(",");
+					HashMap&lt;String,Object> dgRow = new HashMap&lt;String, Object>();
+					dgRow.put("classroom", cols[0]);
+					dgRow.put("name", cols[1]);
+					dgRow.put("idnum", cols[2]);
+					dgRow.put("stunum", cols[3]);
+					dgRow.put("score1", cols[4]);
+					dgRow.put("score2", cols[5]);
+					tabData.add(dgRow);
+				}
+				session.setAttribute("tabdata", tabData);
+			}		
+			String sort = trimStrToNull(request.getParameter("sort"));
+			String order = trimStrToNull(request.getParameter("order"));
+			//处理排序参数
+			if(sort!=null && order!=null){
+				HashMap&lt;String,Object> testRow = tabData.get(0);
+				//保证排序字段存在
+				if(testRow.containsKey(sort)){
+					if(order.equals("desc")){
+						Collections.sort(tabData, new Comparator&lt;HashMap&lt;String, Object>>(){
+							public int compare(HashMap&lt;String, Object> o1,
+									HashMap&lt;String, Object> o2) {
+								return Integer.parseInt((String) o2.get("score1")) - Integer.parseInt((String) o1.get("score1")); 
+							}
+						});
+					}
+					else{
+						Collections.sort(tabData, new Comparator&lt;HashMap&lt;String, Object>>(){
+							public int compare(HashMap&lt;String, Object> o1,
+									HashMap&lt;String, Object> o2) {
+								return Integer.parseInt((String) o1.get("score1")) - Integer.parseInt((String) o2.get("score1"));
+							}
+						});
+					}				
+				}
+			}
+			//处理分页和搜索
+			String search = trimStrToNull(request.getParameter("search"));
+			HashMap&lt;String,String> searchMap = new HashMap&lt;String, String>();
+			if(search!=null){
+				String[] parsedArgs = search.split(",");
+				if(parsedArgs.length>=2&&parsedArgs.length%2==0){
+					for(int i=0;i&lt;parsedArgs.length/2;i++){
+						if(parsedArgs[2*i+1].equals("null")){
+							parsedArgs[2*i+1] = null;
+						}
+						searchMap.put(parsedArgs[2*i], trimStrToNull(parsedArgs[2*i+1]));
+					}
+				}
+			}
+			Integer page = getIntegerParam(request,"page",1);
+			Integer rows = getIntegerParam(request, "rows", 5);
+			ArrayList&lt;HashMap&lt;String,Object>> fSearchRows = new ArrayList&lt;HashMap&lt;String,Object>>();
+			//第一次过滤 搜索
+			for(int i=0;i&lt;tabData.size();i++){
+				boolean noAdd = false;
+				HashMap&lt;String,Object> row = tabData.get(i);
+				for(String k:searchMap.keySet()){
+					String col = (String) row.get(k);
+					if(searchMap.get(k)!=null && !col.contains(searchMap.get(k))){
+						noAdd = true;
+						continue;
+					}
+				}
+				if(!noAdd){
+					fSearchRows.add(row);
+				}
+			}
+			//第二次过滤 分页
+			ArrayList&lt;HashMap&lt;String,Object>> fRows = new ArrayList&lt;HashMap&lt;String,Object>>();
+			int c =0;
+			while(c&lt;rows){
+				int n = (page-1)*rows+c;
+				if(n==fSearchRows.size()){
+					break;
+				}
+				fRows.add(fSearchRows.get(n));
+				c++;
+			}
+			HashMap&lt;String,Object> outResult = new HashMap&lt;String, Object>();
+			outResult.put("total", fSearchRows.size());
+			outResult.put("rows",fRows);
+			outputJson(response, outResult);
+		}
+	</pre>
+</body>
+</html>

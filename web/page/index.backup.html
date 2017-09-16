@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+     <script src="../react/react.min.js"></script>
+    <script src="../react/react-dom.min.js"></script>
+    <script src="../react/browser.min.js"></script>
+    <script src="../antd/antd.min.js"></script>
+    <link href="../antd/antd.css" rel="stylesheet"/>
+    <link href="../fonts/antd_icon_font/iconfont.css" rel="stylesheet">
+    <link href="../css/index.css" rel="stylesheet"/>
+    <script src="../react/jquery.min.js"></script>
+    <script src="../js/dao.js"></script>
+    <script src="../js/index.js" type="text/babel"></script>
+    <script type="text/javascript" src="../js/jquery.fancybox.pack.js?v=2.1.5"></script>
+	<link rel="stylesheet" type="text/css" href="../css/jquery.fancybox.css?v=2.1.5" media="screen" />
+	<link rel="stylesheet" type="text/css" href="../css/jquery.fancybox-buttons.css?v=1.0.5" />
+	<script type="text/javascript" src="../js/jquery.fancybox-buttons.js?v=1.0.5"></script>
+	<link rel="stylesheet" type="text/css" href="../css/jquery.fancybox-thumbs.css?v=1.0.7" />
+	<script type="text/javascript" src="../js/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+	<script type="text/javascript" src="../js/jquery.fancybox-media.js?v=1.0.6"></script>
+    <script type="text/javascript">
+    	function pic(value){
+    		var url = "/solrsearch/solr/getpic.do";
+      	  CALLJSON(url,{fileName:value},function (e){
+      		  console.log(e)
+      		$.fancybox.open(e.pic, {
+      			helpers : {
+					title : {
+						type : 'inside'
+					},
+					buttons	: {}
+				}
+			});
+      	  })
+      	  }
+    </script> 
+  </head>
+  <body>
+    <div id="index"></div>
+  </body>
+</html>

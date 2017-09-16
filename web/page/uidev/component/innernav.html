@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+		
+	</script>
+	<style type="text/css">
+		.row{margin-top:4px;margin-bottom:4px;}
+		p{text-indent:2em;}
+		h4{margin-top:18px;}
+		.toggler{font-size:12px}
+	</style>
+	<title>页内导航菜单</title>
+</head>
+<body style="margin:16px;font-size:14px">
+	<div class="alert alert-info">
+		该组件为Bootstrap提供，本组件库并未做任何修改。请根据实际需要灵活选用
+    </div>
+	<h4>水平导航</h4>
+	<ul class="nav nav-pills">
+		<li class="active"><a href="#">首页</a></li>
+		<li><a href="#">个人信息</a></li>
+		<li><a href="#">收藏</a></li>
+	</ul>
+	<pre class="brush:xml">
+		&lt;ul class="nav nav-pills">
+			&lt;li class="active">&lt;a href="#">首页&lt;/a>&lt;/li>
+			&lt;li>&lt;a href="#">个人信息&lt;/a>&lt;/li>
+			&lt;li>&lt;a href="#">收藏&lt;/a>&lt;/li>
+		&lt;/ul>
+	</pre>
+
+	<h4>垂直导航</h4>
+	<ul class="nav nav-pills nav-stacked" style="width:200px">
+		<li class="active"><a href="#">章节1:xxxxxxxxxx</a></li>
+		<li><a href="#">章节2:xxxxxxxx</a></li>
+		<li><a href="#">章节3:xxxxxxxxx</a></li>
+	</ul>
+	<pre class="brush:xml">
+		&lt;ul class="nav nav-pills nav-stacked" style="width:200px">
+			&lt;li class="active">&lt;a href="#">章节1:xxxxxxxxxx&lt;/a>&lt;/li>
+			&lt;li>&lt;a href="#">章节2:xxxxxxxx&lt;/a>&lt;/li>
+			&lt;li>&lt;a href="#">章节3:xxxxxxxxx&lt;/a>&lt;/li>
+		&lt;/ul>
+	</pre>
+
+	<h4>事件</h4>
+	<p>默认情况下，bootstrap并未提供导航菜单的事件，但是通过为页面中的段落设置锚点，并开启滚动监视功能，可以做到非常好的效果。</p>
+	<a href="innernav_demo.html" target="_blank">在新窗口打开演示页面（IE限定）</a>
+	<pre class="brush:xml">
+		&lt;body style="margin:16px" data-spy="scroll" data-target="#navbar">
+			&lt;div style="width:200px;float:left" id="navbar">
+				&lt;ul class="nav nav-pills nav-stacked">
+				    &lt;li>&lt;a href="#jan">1月&lt;/a>&lt;/li>
+				    &lt;li>&lt;a href="#feb">2月&lt;/a>&lt;/li>
+				    &lt;li>&lt;a href="#mar">3月&lt;/a>&lt;/li>
+				    &lt;li>&lt;a href="#apr">4月&lt;/a>&lt;/li>
+				    &lt;li>&lt;a href="#may">5月&lt;/a>&lt;/li>
+				    &lt;li>&lt;a href="#jun">6月&lt;/a>&lt;/li>
+				    &lt;li>&lt;a href="#jul">7月&lt;/a>&lt;/li>
+				    &lt;li>&lt;a href="#aug">8月&lt;/a>&lt;/li>
+				    &lt;li>&lt;a href="#sep">9月&lt;/a>&lt;/li>
+				    &lt;li>&lt;a href="#oct">10月&lt;/a>&lt;/li>
+				    &lt;li>&lt;a href="#nov">11月&lt;/a>&lt;/li>
+				    &lt;li>&lt;a href="#dec">12月&lt;/a>&lt;/li>
+				&lt;/ul>
+			&lt;/div>
+			&lt;div id="content" style="width:400px;float:left">
+				&lt;p id="jan">&lt;strong>一月&lt;/strong>&lt;/p>
+			&lt;/div>			
+	</pre>
+</body>
+</html>

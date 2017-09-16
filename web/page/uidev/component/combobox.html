@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>
+	<link rel="stylesheet" href="css/font-awesome.min.css" />
+	<link rel="stylesheet" href="css/bs_doc_ext.css" />
+	<link href="js/skins/flat/blue.css" rel="stylesheet" />
+	<!--
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+		<script type="text/javascript" src="js/itcui_ext.js"></script>
+	<script src="js/icheck.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" href="../css/itcui.css" />
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" media="all"/>
+	-->
+	<title>下拉框</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			$('#test_combobox1').ITCUI_ComboBox();	
+			$('#test_combobox2').ITCUI_ComboBox();	
+			$('#test_combobox3').ITCUI_ComboBox();
+			$('#test_combobox4').ITCUI_ComboBox();
+			$('#test_onchange').ITCUI_ComboBox(null,{"onChange":function(val){
+				alert("你选择了" + val);
+			}});
+			initJsonCombo();
+		});
+
+		function initJsonCombo(){
+			var data1 = {
+				"bju":"北京大学",
+				"tsu":"清华大学",
+				"nju":"南京大学"
+			};
+
+			var data2 = [
+				["bju","北京大学"],
+				["tsu","清华大学","selected"],
+				["bju","北京大学"]
+			];
+
+			$("#test_combobox5").ITCUI_ComboBox(null,{data:data1});
+			$("#test_combobox6").ITCUI_ComboBox(null,{data:data2});
+		}
+
+	</script>
+</head>
+<body style="margin:16px;font-size:14px" class="bbox">
+	<h4>从Html创建一个下拉框</h4>
+	<select id="test_combobox1" style="width:150px">
+		<option value="a">选项1</option>
+		<option value="b">选项2</option>
+		<option value="c">选项3</option>
+		<option value="d" selected="selected">选项4</option>
+		<option value="e">选项5</option>
+		<option value="f">选项6</option>
+		<option value="g">选项7</option>
+	</select>
+	<p>HTML代码：</p>
+	<pre class="brush:xml">
+		&lt;select id="test_combobox1" style="width:150px">
+			&lt;option value="a">选项1&lt;/option>
+			&lt;option value="b">选项2&lt;/option>
+			&lt;option value="c">选项3&lt;/option>
+			&lt;option value="d">选项4&lt;/option>
+			&lt;option value="e">选项5&lt;/option>
+			&lt;option value="f">选项6&lt;/option>
+			&lt;option value="g">选项7&lt;/option>
+		&lt;/select>
+	</pre>
+	<p>JS代码：</p>
+	<pre class="brush:js">
+		$(document).ready(function(e){
+			$('#test_combobox1').ITCUI_ComboBox();	
+		});
+	</pre>
+	<p>用该方法创建的下拉框取值方法和源生下拉框一样，可以直接嵌入表单POST，也可以使用val方法。为option的某一项设置了参数selected可以将该项初始化选中。</p>
+	<a href="javascript:void(0);" onclick="alert($('#test_combobox1').val())">点击显示选择了什么</a>
+
+	<h4>将下拉框变更为复选</h4>
+	<select id="test_combobox2" style="width:150px" multiselect=true maxlength=18>
+		<option value="a">选项A</option>
+		<option value="b">选项B</option>
+		<option value="c">选项C</option>
+		<option value="d" multichecked=true>选项D</option>
+		<option value="e" multichecked=true>选项E</option>
+		<option value="f">选项F</option>
+		<option value="g">选项G</option>
+	</select>	
+	<pre class="brush:xml">
+		&lt;select id="test_combobox2" style="width:150px" multiselect=true maxlength=18>
+			&lt;option value="a">选项A&lt;/option>
+			&lt;option value="b">选项B&lt;/option>
+			&lt;option value="c">选项C&lt;/option>
+			&lt;option value="d" multichecked=true>选项D&lt;/option>
+			&lt;option value="e" multichecked=true>选项E&lt;/option>
+			&lt;option value="f">选项F&lt;/option>
+			&lt;option value="g">选项G&lt;/option>
+		&lt;/select>
+	</pre>
+	<p>只需为select添加属性multiselect=true即可以使combobox变为复选，注意此时默认选择的属性需要设置multichecked=true，默认情况下，当文字超过12个英文字符/6个中文汉字时会自动添加省略号，可以通过maxlength属性显示更多文字。</p>
+	<a href="javascript:void(0);" onclick="alert($('#test_combobox2').ITCUI_ComboBox('getSelected'))">点击显示选择了什么</a>
+	
+	<h4>从JSON数据初始化</h4>
+	<p>Combobox支持从JSON方式初始化数据，方法是在下面“选项”一节中介绍的opts中添加data参数</p>
+	<ul>
+		<li>从Map初始化，格式为{value:显示文字}，这种数据构造简单，但是不支持设置多选，也无法设置默认选择，初始化后将默认选择第一项（但是在Datagrid行编辑中使用的该方法初始化，因为行编辑会有额外的赋值映射）。</li>
+		<li>从Array初始化，每一项仍然为Array，内容为[value,显示文字,&lt;是否选择>]，其中是否选择可以没有，也可以为null，设置为selected表示默认单选，设为multichecked表示默认多选。</li>
+	</ul>
+	<select id="test_combobox5" style="width:150px"></select><br/>
+	<select id="test_combobox6" style="width:150px"></select>
+	<pre class="brush:js">
+		function initJsonCombo(){
+			var data1 = {
+				"bju":"北京大学",
+				"tsu":"清华大学",
+				"nju":"南京大学"
+			};
+
+			var data2 = [
+				["bju","北京大学"],
+				["tsu","清华大学","selected"],
+				["bju","北京大学"]
+			];
+
+			$("#test_combobox3").ITCUI_ComboBox(null,{data:data1});
+			$("#test_combobox4").ITCUI_ComboBox(null,{data:data2});
+		}
+	</pre>
+	<h4>选项</h4>
+	<p>除了从Html和attr初始化之外，下拉框支持额外的选项，此时初始化要使用ITCUI_ComboBox(null,opts)，目前支持的参数有：</p>
+	<ul>
+		<li>wrapWidth - 设置下拉框的宽度，默认情况下，下拉框的宽度和Combo一致，但是有时下拉框中文字过长，可以通过设置该选项调整。</li>
+	</ul>
+
+	<h4>事件</h4>
+	<p>onChange事件：当选项改变（多选时不一定选择框关闭）时触发：</p>
+	<select id="test_onchange" style="width:150px">
+		<option value="a">选项1</option>
+		<option value="b">选项2</option>
+		<option value="c">选项3</option>
+		<option value="d" selected="selected">选项4</option>
+		<option value="e">选项5</option>
+		<option value="f">选项6</option>
+		<option value="g">选项7</option>
+	</select>
+	<pre class="brush:js">
+		$('#test_onchange').ITCUI_ComboBox(null,{"onChange":function(val){
+			alert("你选择了" + val);
+		}});
+	</pre>
+
+	<h4>方法</h4>
+	<table class="table table-bordered table-striped" style="width:650px">
+		<thead>
+			<tr>
+				<th width="30%">方法名</th>
+				<th width="70%">说明</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>ITCUI_ComboBox("getSelected")</td>
+				<td>获取选择的值</td>
+			</tr>
+			<tr>
+				<td>ITCUI_ComboBox("select",val)</td>
+				<td>
+					选择某（几）项<br />
+					选择单项时传入String，复选时传入Object，形如{"a":true,"b":false}<br />
+					<div class="row">
+						<select id="test_combobox3" style="width:150px">
+							<option value="a" selected="selected">选项1</option>
+							<option value="b">选项2</option>
+							<option value="c">选项3</option>
+							<option value="d">选项4</option>
+							<option value="e">选项5</option>
+							<option value="f">选项6</option>
+							<option value="g">选项7</option>
+						</select>
+					</div>
+					<div class="row">
+						<a href="javascript:void(0);" onclick="$('#test_combobox3').ITCUI_ComboBox('select','d')">设置为第四项</a>
+					</div>
+					<div class="row">
+						<a href="javascript:void(0);" onclick="alert($('#test_combobox3').val())">显示选择了什么</a>
+					</div>
+					<div class="row">
+						<select id="test_combobox4" style="width:150px" multiselect=true>
+							<option value="a">选项A</option>
+							<option value="b">选项B</option>
+							<option value="c">选项C</option>
+							<option value="d" multichecked=true>选项D</option>
+							<option value="e" multichecked=true>选项E</option>
+							<option value="f">选项F</option>
+							<option value="g">选项G</option>
+						</select>
+					</div>
+					<div class="row">
+						<a href="javascript:void(0);" onclick="$('#test_combobox4').ITCUI_ComboBox('select',{'a':true,'b':true,'c':false,'d':false})">选择12项，不选34项</a>
+						<div class="row">
+						<a href="javascript:void(0);" onclick="alert($('#test_combobox4').ITCUI_ComboBox('getSelected'))">显示选择了什么</a>
+					</div>
+					</div>
+				</td>
+
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

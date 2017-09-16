@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/bs_doc_ext.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>	
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>
+	
+	<title>Datagrid</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			datagrid = $('#test_grid1').datagrid({"fitColumns":true,"scrollbarSize":0});
+			datagrid = $('#test_grid2').datagrid({"fitColumns":true,"scrollbarSize":0});
+			datagrid = $('#test_grid3').datagrid({"fitColumns":true,"scrollbarSize":0});
+			var test_grid4_frozen_columns = [
+				{
+					"field":"col1",
+					"width":100,
+					"title":"编号"
+				},
+				{
+					"field":"col2",
+					"width":100,
+					"title":"姓名"
+				}
+			];
+			var test_grid4_columns = [
+				{
+					"field":"col3",
+					"width":100,
+					"title":"性别"
+				},
+				{
+					"field":"col4",
+					"width":100,
+					"title":"年龄"
+				},
+				{
+					"field":"col5",
+					"width":300,
+					"title":"家庭住址"
+				},
+				{
+					"field":"col6",
+					"width":300,
+					"title":"备注"
+				}
+			];
+			var test_grid4_data = {"rows":[
+					{"col1":1,"col2":"路人1","col3":"男","col4":21,"col5":"广东省广州市天河区XXXXX","col6":"备注信息................"}
+				],
+				"total":1
+			}	;
+			$('#test_grid4').datagrid({
+				"frozenColumns":[test_grid4_frozen_columns],
+				"columns" : [test_grid4_columns],
+				"data" : test_grid4_data
+			});
+			ITCUI_FixTableChkBox();
+		});
+
+		
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<div class="alert alert-warning">
+		将th中data-options中的参数写在columns的Array中同样有效。
+    </div>
+
+    <h4>列宽</h4>
+    <p>在生成Datagrid时指定fitColumns为true时，EasyUI会将width参数视为比例而非具体的px值。</p>
+    <table class="easyui-datagrid" id="test_grid1" style="width:650px;height:300px">
+		<thead>
+			<tr>
+				<th data-options="field:'id',width:1">编号</th>
+				<th data-options="field:'name',width:1">姓名</th>
+				<th data-options="field:'phone',width:1">电话</th>
+				<th data-options="field:'remark',width:3">备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>路人1</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>路人2</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+		</tbody>
+	</table>
+	HTML代码：
+	<pre class="brush:xml">
+		&lt;thead>
+			&lt;tr>
+				&lt;th data-options="field:'id',width:1">编号&lt;/th>
+				&lt;th data-options="field:'name',width:1">姓名&lt;/th>
+				&lt;th data-options="field:'phone',width:1">电话&lt;/th>
+				&lt;th data-options="field:'remark',width:3">备注&lt;/th>
+			&lt;/tr>
+		&lt;/thead>
+	</pre>
+	JS代码：
+	<pre class="brush:js">
+		datagrid = $('#test_grid1').datagrid({"fitColumns":true,"scrollbarSize":0});
+	</pre>
+	<p>需要注意的是，在可以保证表格数据可以一页显示的情况下，应该设置<code>scrollbarSize</code>为0，以去除滚动条的预留空间。但是特别注意的是，设置纵向滚动条的宽度，也同样影响横向滚动条的高度，因而在任意一个方向需要滚动条时都应该谨慎设置此值。</p>
+
+	<p>在columns设定中配合<code>fixed</code>参数，可以使列宽设定更加灵活，如使表格中编号和姓名栏均为100px，电话和备注按1:3占据剩余空间</p>
+	
+	<table class="easyui-datagrid" id="test_grid2" style="width:650px;height:300px">
+		<thead>
+			<tr>
+				<th data-options="field:'id',width:100,fixed:true">编号</th>
+				<th data-options="field:'name',width:100,fixed:true">姓名</th>
+				<th data-options="field:'phone',width:1">电话</th>
+				<th data-options="field:'remark',width:3">备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>路人1</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>路人2</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>HTML代码：</p>
+	<pre class="brush:js">
+		&lt;thead>
+			&lt;tr>
+				&lt;th data-options="field:'id',width:100,fixed:true">编号&lt;/th>
+				&lt;th data-options="field:'name',width:100,fixed:true">姓名&lt;/th>
+				&lt;th data-options="field:'phone',width:1">电话&lt;/th>
+				&lt;th data-options="field:'remark',width:3">备注&lt;/th>
+			&lt;/tr>
+		&lt;/thead>
+	</pre>
+	<div class="alert alert-warning">
+		请不要移除easyui-datagrid的样式，即使用JS生成表格，否则会使scrollbarSize参数失效！
+    </div>
+
+    <h4>允许更改列宽</h4>
+    <p>在columns中，如果某列设置<code>resizable</code>为true，则用户可以拖动以改变列宽。对于自动列宽，表格宽度会重新调整，而固定列宽时整个表格会缩窄或展宽。<strong>注意，fixed参数只是告诉表格要使用固定值计算列宽，这跟手动调整并不矛盾。</strong></p>
+    <table class="easyui-datagrid" id="test_grid3" style="width:650px;height:300px">
+		<thead>
+			<tr>
+				<th data-options="field:'id',width:100,fixed:true,resizable:true">编号</th>
+				<th data-options="field:'name',width:100,fixed:true,resizable:true">姓名</th>
+				<th data-options="field:'phone',width:1">电话</th>
+				<th data-options="field:'remark',width:3">备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>路人1</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>路人2</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4>列锁定</h4>
+	<table class="easyui-datagrid" id="test_grid4" style="width:650px;height:300px">
+		
+	</table>
+	<p>这段JS代码演示了如何使用JS代码创建固定了前两列的表格，再次强调<code>columns</code>和<code>frozenColumns</code>的定义都是二维数组。同时，需要注意固定列时设置fitColumns无意义。</p>
+	<pre class="brush:js">
+		var test_grid4_frozen_columns = [
+				{
+					"field":"col1",
+					"width":100,
+					"title":"编号"
+				},
+				{
+					"field":"col2",
+					"width":100,
+					"title":"姓名"
+				}
+			];
+			var test_grid4_columns = [
+				{
+					"field":"col3",
+					"width":100,
+					"title":"性别"
+				},
+				{
+					"field":"col4",
+					"width":100,
+					"title":"年龄"
+				},
+				{
+					"field":"col5",
+					"width":300,
+					"title":"家庭住址"
+				},
+				{
+					"field":"col6",
+					"width":300,
+					"title":"备注"
+				}
+			];
+			var test_grid4_data = {"rows":[
+					{"col1":1,"col2":"路人1","col3":"男","col4":21,"col5":"广东省广州市天河区XXXXX","col6":"备注信息................"}
+				],
+				"total":1
+			};
+			$('#test_grid4').datagrid({
+				"frozenColumns":[test_grid4_frozen_columns],
+				"columns" : [test_grid4_columns],
+				"data" : test_grid4_data
+			});
+	</pre>
+	<p>当从源生表格创建 Datagrid时，需要将固定的表头部分单独写为一段thead代码，并设置其frozen为true</p>
+	<pre class="brush:xml">
+		&lt;table id="fp_table" class="easyui-datagrid" style="width:800px;height:600px" cellspacing="0" cellpadding="0">
+			&lt;thead data-options="frozen:true">
+				&lt;tr>
+					&lt;th data-options="field:'r1',width:75,align:'center'" rowspan="2">电厂名称&lt;/th>
+					&lt;th data-options="field:'r2',width:75,align:'center'" rowspan="2">机组编号&lt;/th>				
+				&lt;/tr>
+			&lt;/thead>			
+			&lt;thead>
+				&lt;tr>
+		.......
+	</pre>
+</body>
+</html>

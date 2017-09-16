@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>API - 输入框和输入框扩展</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bs_doc_ext.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+		$(document).ready(function(){
+			$("#test_icon").iInput("init");
+		}); 
+
+	</script>
+
+</head>
+<body style="font-size:14px" class="bbox">
+	<h4>输入框和输入框扩展</h4>
+	<p>本页介绍Bootstrap源生方法和ITC框架提供的扩展函数。</p>
+
+	<h4>创建一个输入框</h4>
+	<p>原生的输入框只能使用html方式创建：</p>
+	<pre class="brush:xml">
+		&lt;div class="input-group-sm">
+		    &lt;input type="text" class="form-control" style="width:200px">
+		&lt;/div>
+	</pre>
+	<p>需要注意，为了让输入框拥有正确尺寸，<strong style="color:#f00">input和input-group-sm必须在border-box样式下</strong>，如果输入框大小不对，可以在input-group-sm上添加bbox样式。</p>
+	<p>如果你喜欢，可以这样：</p>
+	<pre class="brush:xml">
+		&lt;body class="bbox">
+	</pre>
+
+	<h4>输入框常规扩展$.iInput</h4>
+	<p>可以通过在input标签上添加以下两个参数扩展输入框：</p>
+	<ul>
+		<li>placeholder - 当没有输入时显示的提示性文字，这是一个HTML5特性，但是通过ITC框架可以使IE8支持该功能。</li>
+		<li>icon - 附加的图标class，目前组件提供了两个可用的图标，itcui_btn_calander（日期时间）和itcui_btn_mag（搜索放大镜）。</li>
+	</ul>
+	<div class="input-group input-group-sm" style="width:200px">
+        <input type="text" id="test_icon" icon="itcui_btn_calander" placeholder="请选择时间"/>     
+    </div>
+    <pre class="brush:xml">
+	    &lt;div class="input-group input-group-sm" style="width:200px">
+	        &lt;input type="text" id="test_icon" icon="itcui_btn_calander" placeholder="请选择时间"/>     
+	    &lt;/div>
+    </pre>
+    <p>还需要使用$.iInput("init")处理一下：</p>
+    <pre class="brush:js">
+    	$("#test_icon").iInput("init");
+    </pre>
+    <p>使用$.iInput("init")时，input上不需要form-control样式，但是加上也无妨。</p>
+    <p>iInput可以有第二个可选参数，options，类型为object，包含以下字段：</p>
+    <table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">参数</td>
+				<td width="150px">参数类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>icon</td>
+				<td>string</td>
+				<td>向输入框附加一个图标，等同于在input上的icon属性</td>
+			</tr>
+			<tr>
+				<td>placeholder</td>
+				<td>string</td>
+				<td>默认提示文字，等同于input上的placeholder属性</td>
+			</tr>
+			<tr>
+				<td>onPressEnter</td>
+				<td>function(val)</td>
+				<td>当输入框敲回车键时触发的函数，函数将自动传入输入框的值</td>
+			</tr>
+			<tr>
+				<td>onClickIcon</td>
+				<td>function(val)</td>
+				<td>当单击输入框附加图标时触发的函数，函数将自动传入输入框的值</td>
+			</tr>
+			<tr>
+				<td>onSearch</td>
+				<td>function(val)</td>
+				<td>设置该参数等同于将onPressEnter和onClickIcon同时设为onSearch的值，在创建搜索框时非常便利。</td>
+			</tr>
+		</tbody>
+	</table>
+
+
+	<h4>输入下拉提示$.iHint</h4>
+	<p>$.iHint("init",options)可以为任何一个输入框添加一个输入下拉提示，建议使用bootstrap风格的输入框初始化。$.iHint会自动为输入框添加放大镜标志，不需要再次执行$.iInput。</p>
+
+	<p>options参数为一object，包含以下字段：</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">参数</td>
+				<td width="150px">参数类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>onGetPosition</td>
+				<td>function(target)</td>
+				<td>该参数定义如何确定下拉框的位置，返回格式为{top:xxx,left:xxx}，默认情况下不需要手动定义，但是需要注意的是，<strong style="color:#f00">输入框的外层（input-group）必须指定postion，至少为默认值relative</strong>。</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>datasource</td>
+				<td>url</td>
+				<td>远程数据源，该数据源接受输入的关键字，参数名为kw，返回搜索的结果，格式为[{id:xxx,name:xxx}]的json字符串，如：<pre class="brush:js">
+					[{"id":"C-000861","name":"输电课程乙(4课时)"},
+					 {"id":"C-000851","name":"输电课程甲(6课时)"},
+					 {"id":"C-000841","name":"变电课程乙(1课时)"},
+					 {"id":"C-000831","name":"变电课程甲(3课时)"},
+					 {"id":"C-000761","name":"已删除变电课程(1课时)"},
+					 {"id":"C-000391","name":"测试课程(2课时)"},
+					 {"id":"C-000291","name":"我是测试课程2(5课时)"}]
+				</pre>
+				超过10条的数据会自动隐藏，并给出提示信息。
+				</td>
+			</tr>
+			<tr>
+				<td>datafunc</td>
+				<td>function(kw)</td>
+				<td>本地数据源，该函数接受搜索的关键字，返回和远程数据源一样的格式。该参数和datasource参数必须指定一个。</td>
+			</tr>
+			<tr>
+				<td>getDataOnKeyPress</td>
+				<td>boolean</td>
+				<td>是否在每次输入时都去远程请求数据，默认为true。</td>
+			</tr>
+			<tr>
+				<td>extArgName</td>
+				<td>string</td>
+				<td>附加在远程数据源datasource后的参数，可选。如果在查询时需要动态添加数据（如数据跟用户选择有关），则可以设置该参数。</td>
+			</tr>
+			<tr>
+				<td>extArgFunc</td>
+				<td>function()</td>
+				<td>附加数据时执行的函数，该函数在每次输入时都会执行，可选。</td>
+			</tr>
+			<tr>
+				<td>clickEvent </td>
+				<td>function(id,name)</td>
+				<td>单击下拉框中内容时执行的动作，必须指定。</td>
+			</tr>
+			<tr>
+				<td>highlight</td>
+				<td>boolean</td>
+				<td>是否需要对关键字高亮，默认为false。</td>
+			</tr>
+			<tr>
+				<td>showOn</td>
+				<td>string</td>
+				<td>下拉框显示的时机，默认为"click"，即在无关键字的时候显示10条结果出来，可以修改为"input"，即只有用户开始输入时才显示下拉框。</td>
+			</tr>
+		</tbody>
+	</table>
+	
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+	</script>
+	<title>兼容性</title>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>盒模型</h4>
+	<p>Bootstrap的某些组件对外层容器设置了box-sizing: border-box，并且应用于*，* before，* after，这意味着整个容器中所有的元素都将被设置为ie6的盒模型。</p>
+	<p>IE6和CSS3的标准盒模型相比，其区别是IE6的padding不会扩展元素的大小，比如一个长度为100的容器，设置了左右各10的padding，那么在ie6下，这个容器依然是100px，而在IE8下就是120px，显然IE6的盒模型更易于开发，你不需要在每次调整padding后再次计算object的大小，因此Bootstrap选择了border-box。</p>
+	<p>组件库的自主开发组件均遵守border-box模型，如果需要切换到content-box模型，可以在外层类加上cbox的class。<strong>border-box模型属于CSS官方标准，因而不会影响兼容性，唯一只是对padding的理解不同。</strong>目前，border-box不是强制要求，也不需要开发者手动添加。</p>
+
+	<h4>设置正确的HTML头部</h4>
+	<p>但是在某些情况下，由于整个站点（比如老EIP的要求）被加入兼容模式，如果调试模式出现如下情况：</p>
+	<img src="images/comp3.jpg" />
+	<p>请加入meta头部（只要加到框架或者导航页就可以了），使得IE强制使用最高版本引擎渲染。</p>
+	<pre class="brush:xml;">
+		&lt;meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	</pre>
+	<p>更糟糕的情况，你在调试模式下看到这个样子：</p>
+	<img src="images/comp4.jpg" />
+	<p>这种情况下，请检查HTML头部是否正确。</p>
+	<pre class="brush:xml;">
+		&lt;!DOCTYPE html>
+	</pre>
+
+	<h4>在IE8下使用响应式布局</h4>
+	<p>响应式布局是bootstrap框架的重要组成之一，UI规范中绝大多数布局效果都是使用响应式布局完成的。在bootstrap中，使用@media，也就是媒体查询特性，以达到在不同分辨率屏幕下显示不同内容的效果，但是该CSS并不为IE8支持，因此在IE8中需要额外的库以做到该效果。</p>
+	<p>这里推荐的是respond.js库，压缩后只有几kb，但是该库提供的也只是媒体查询的支持，但是速度绝对是最快的。在IE9+/chrome下，该库会自动失效，因而不需要为IE8设置单独的条件编译。</p>
+	<pre class="brush:xml;">
+		&lt;script type="text/javascript" src="js/respond.min.js">&lt;/script>
+	</pre>
+	<p>如果还不行的话，加入</p>
+	<pre class="brush:js;">
+		$(document).ready(function(e){
+			respond.update();
+		});
+	</pre>
+	<p>如果出现了如下的错误，<strong>不要在本地浏览该页面，将它部署到tomcat上</strong>，respond因为使用了源生的XMLHttpRequest特性，因此不支持本地，也不支持跨域（<strong>所以也不要在CDN上部署该文件</strong>）。</p>
+	<img src="images/comp5.jpg" />
+	<p>如果还不行，请尝试在浏览器的控制台下输入respond，应该看到如下内容：</p>
+	<img src="images/comp6.jpg" />
+	<p>如果无法看到该信息，相当大可能是respond.js根本没有加载进来，或者出现损坏，请下载最新版本覆盖。</p>	
+			
+	<h4>不要在每个触发动作的元素都加上href="#"</h4>
+	<pre class="brush:xml">
+		&lta href="#" onclick="alert('111')">动作链接&lt/a>
+	</pre>
+	<p>该链接点击后会使浏览器滚动到最顶端，对于很长的页面请避免这种写法。</p>
+	<pre class="brush:xml">
+		&lta href="" onclick="alert('111')">动作链接&lt/a>
+	</pre>
+	<p>该链接点击后，某些浏览器（Chrome已知）会刷新页面，所以也不要留空。</p>
+	<pre class="brush:xml">
+		&lta href="javascript:void(0)" onclick="alert('111')">动作链接&lt/a>
+	</pre>
+	<p>这是正确的写法，但是如果不介意在浏览器中显示onclick的内容，可以直接把后面的函数写到href中。</p>
+</body>
+</html>

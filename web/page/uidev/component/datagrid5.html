@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bs_doc_ext.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>	
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<title>Datagrid</title>
+	<script type="text/javascript">
+		var sort;
+		var localSortData = [];
+		var TOTAL_COUNT = 100;
+		var cssMapping = {
+			bigTheme : "../package/css/itc_dg_big.css",
+			midTheme : "../package/css/itc_dg_mid.css",
+			smallTheme : "../package/css/itc_dg_small.css",
+		}
+		var styleOpt = {
+			styles : [
+				{
+					"id":"bigTheme",
+					"title":"宽松显示"
+				},{
+				
+					"id":"midTheme",
+					"title":"适中显示"
+				},{
+
+					"id":"smallTheme",
+					"title":"紧凑显示"
+				}
+			],
+			defStyle : "midTheme",
+			onChangeStyle : function(id){
+				ITC_LoadCSS(cssMapping[id]);
+				$("#test_grid1").datagrid("reload");
+			}
+		};
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			var pageData = getData(1,5);
+			$("#test_grid1").datagrid({
+				"pagination":true,
+				"pageSize":5,
+				"pageList":[5,10,15,20,30],
+				"fitColumns":true,
+				"_data":getData(1,100),
+				"data":getData(1,5)
+			});	
+			$("#test_grid1").ITCUI_Pagination("create","#pagination_1",styleOpt);
+			
+			//---------------------------------------------------------------------//
+			genLocalSortData();
+			$("#test_grid2").datagrid({
+				"pagination":true,
+				"pageSize":5,
+				"pageList":[5,10,15,20,30],				
+				"fitColumns":true,
+				"remoteSort":false
+			});			
+			$("#test_grid2").datagrid("loadData",getData2(1, 30));
+
+			$("#test_grid3").datagrid({
+				"pagination":true,
+				"pageSize":5,
+				"pageList":[5,10,15,20,30],				
+				"fitColumns":true,
+				"remoteSort":false,
+				"_data":{"rows":localSortData,"total":localSortData.length},
+				"data":{"rows":localSortData.slice(0,5),"total":localSortData.length},
+			});	
+			$("#test_grid3").ITCUI_Pagination("create","#pagination_3");
+		});	
+		
+		function getData(pageNumber, pageSize){
+			var rtn = [];
+			for(var i=0;i<pageSize;i++){
+				var data = {};
+				data["id"] = (pageNumber-1)*pageSize + i + 1;
+				data["name"] = "路人" + data["id"];
+				data["phone"] = "13800138000";
+				data["remark"] = "xxxxxxxxx";
+				rtn.push(data);
+			}
+			return {"total":TOTAL_COUNT,"rows":rtn};
+		}
+
+		function genLocalSortData(){
+			for(var i=0;i<TOTAL_COUNT;i++){
+				var data = {};
+				data["id"] = i + 1;
+				data["attr1"] = Math.round(Math.random()*100);
+				data["attr2"] = Math.round(Math.random()*100);
+				data["attr3"] = Math.round(Math.random()*100);
+				data["attr4"] = Math.round(Math.random()*100);
+				data["attr5"] = Math.round(Math.random()*100);
+				data["attr6"] = Math.round(Math.random()*100);
+				localSortData.push(data);
+			}
+		}
+
+		function getData2(pageNumber, pageSize){
+			var rtn = [];
+			pageSize = parseInt(pageSize);
+			var st = (pageNumber-1)*pageSize;
+			for(var i=st;i<st+pageSize;i++){
+				rtn.push(localSortData[i]);
+			}
+			return {"total":TOTAL_COUNT,"rows":rtn};
+		}		
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<div id="pagination_1" style="width:650px" bottompager="#bottomPager">
+	</div>
+	<table class="easyui-datagrid" id="test_grid1" style="width:650px;height:300px;">
+		<thead>
+			<tr>
+				<th data-options="field:'id',width:80">编号</th>
+				<th data-options="field:'name',width:80,sortable:true">姓名</th>
+				<th data-options="field:'phone',width:100">电话</th>
+				<th data-options="field:'remark',width:200">备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			
+		</tbody>
+	</table>
+	<div id="bottomPager" style="width:650px;margin-top:6px">
+	</div>
+
+</body>
+</html>

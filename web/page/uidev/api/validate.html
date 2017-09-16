@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>API - 表单验证</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bs_doc_ext.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+	</script>
+
+</head>
+<body style="font-size:14px">
+	<h4>关于表单验证</h4>
+	<p>组件库使用的表单验证组件为jQuery Validation，包括自动表单中的封装，同时在样式和验证类型上加以扩展。</p>
+
+	<h4>为任何表单开启表单验证</h4>
+	<p>下列代码为任意一个表单开启表单验证：</p>
+	<pre class="brush:js">
+		$("#testform").validate({
+			rules: {
+				f_email2: {
+					required: true,
+					email: true
+				}
+			},
+			messages: {
+				f_email2: {
+					required: "请输入电子邮箱地址",
+					email: "您的邮箱地址不合法，请重新输入"
+				}
+			},
+			"errorPlacement":ITC_ValidStyle1,
+			"success":ITC_ValidSucc1,
+		});
+	</pre>	
+
+	<p>其中，rules为验证的规则，格式为字段name:验证规则子项，其中子项可以为多种规则，也可以带参数，例子中要求f_email2字段必须填写，且为一个符合电子邮件地址的字符串。</p>
+	<p>当设置了验证规则后，在表单内点击post按钮就会触发验证规则。</p>
+
+	<h4>手动开启验证规则</h4>
+	<p>使用$.valid()方法可以手动验证一个表单，请特别注意单词拼写。返回值为false表示验证失败。</p>
+
+	<h4>在自动表单里使用表单验证</h4>	
+	<p>对于自动表单，每个字段同样有rules和messages两个参数，写法和一般表单一致，不同的是字段表单封装了常用的错误信息，一般只需要指定rules字段</p>
+	<p>例子：</p>
+	<pre class="brush:js">
+		var fields = [{id:"startDate",title:"开始日期",type:"date"},
+			{id:"endDate",title:"结束日期",type:"date",rules:{greaterThan:"#f_startDate"}},
+			{id:"startDate1",title:"开始日期",type:"label",value:"2014-07-25"},
+			{id:"endDate2",title:"结束日期",type:"date",rules:{greaterThan:"2014-07-25"}},
+			{id:"start",title:"上界"},
+			{id:"end",title:"下界",rules:{greaterThan:"#f_start"},messages:{greaterThan:"上界不能小于下界"}}];
+		$("#form1").iForm("init",{options:{validate:true},fields:fields});
+	</pre>
+
+	<h4>验证规则</h4>
+	<p>下面是常用的验证规则，包括组件库的扩展：</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">规则</td>
+				<td width="150px">参数</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>minlength</td>
+				<td>int</td>
+				<td>最小长度（英文/数字）</td>
+			</tr>
+			<tr>
+				<td>maxlength</td>
+				<td>int</td>
+				<td>最大长度（英文/数字）</td>
+			</tr>
+			<tr>
+				<td>email</td>
+				<td>true</td>
+				<td>电子邮件</td>
+			</tr>
+			<tr>
+				<td>alphanumeric</td>
+				<td>true</td>
+				<td>数字和字母混合的字符串</td>
+			</tr>
+			<tr>
+				<td>regex</td>
+				<td>正则表达式对象</td>
+				<td>验证是否符合一个正则表达式</td>
+			</tr>
+			<tr>
+				<td>required</td>
+				<td>true</td>
+				<td>非空验证</td>
+			</tr>
+			<tr>
+				<td>greaterThan</td>
+				<td>id选择器/日期/时间/数字</td>
+				<td>验证一个字段是否大于（晚于）第二个字段。需要注意的是，表单封装中greaterThan和greaterEqualThan的默认错误提示都是时间比较，如果需要显示数值比较的错误信息，需要自己定义messages字段。</td>
+			</tr>
+			<tr>
+				<td>greaterEqualThan</td>
+				<td>id选择器/日期/时间/数字</td>
+				<td>验证一个字段是否大于（晚于）等于第二个字段。</td>
+			</tr>
+			<tr>
+				<td>equalTo</td>
+				<td>id选择器，如"#f_password2"</td>
+				<td>验证2个字段是否相等，默认用于密码的输入，数值的等值比较无实际意义。</td>
+			</tr>
+			<tr>
+				<td>digits</td>
+				<td>true</td>
+				<td>纯数字（0-9）验证</td>
+			</tr>
+			<tr>
+				<td>number</td>
+				<td>true</td>
+				<td>数字验证，支持正负号和小数点</td>
+			</tr>
+			<tr>
+				<td>remote</td>
+				<td>object</td>
+				<td>远程验证，常用的格式形如：
+				<pre class="brush:js">
+					url: basePath + "role?method=exist",
+		            type: "post",
+		            data: {
+		            	rid: function() {
+		            		return $("#f_rid").val();
+		            	}
+		            }
+				</pre>
+				其中url为远程验证的地址，type可选post或者get，data为发送的参数，需要注意的是这里字段的传值必须使用function</td>
+			</tr>
+			<tr>
+				<td>range</td>
+				<td>[min,max]</td>
+				<td>数字范围</td>
+			</tr>
+			<tr>
+				<td>rangelength</td>
+				<td>[min,max]</td>
+				<td>字符长度范围（英文）</td>
+			</tr>
+			<tr>
+				<td>enLength</td>
+				<td>int</td>
+				<td>等值长度验证（英文）</td>
+			</tr>
+			<tr>
+				<td>chLength</td>
+				<td>int</td>
+				<td>等值长度验证（中文按2个字符计算）</td>
+			</tr>
+			<tr>
+				<td>maxEnLength</td>
+				<td>int</td>
+				<td>最大长度验证（英文）</td>
+			</tr>
+			<tr>
+				<td>maxChLength</td>
+				<td>int</td>
+				<td>最大长度验证（中文按2个字符计算）</td>
+			</tr>
+		</tbody>
+	</table>
+	
+</body>
+</html>

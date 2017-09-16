@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<script type="text/javascript" src="../nightly/js/jquery.validate.js"></script>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+
+	<title>Datagrid</title>
+	<script type="text/javascript">
+		var cb_data1 = {"highschool":"高中","college":"大专","bachelor":"本科","master":"研究生","doctor":"博士"};
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			var test_datagrid3_columns = [];
+			test_datagrid3_columns.push({"field":"id","title":"编号","width":60});
+			test_datagrid3_columns.push({
+				"field":"name",
+				"title":"姓名",
+				"width":120,
+				"editor":{
+					"type":"text",
+					"rules" : {
+						"maxChLength" : 6
+					}
+				}
+			});
+			test_datagrid3_columns.push({
+				"field":"mobile",
+				"title":"移动电话",
+				"width":150,
+				"editor":{
+					"type":"text",
+					"rules" : {
+						"digits" : true
+					}
+				}
+			});
+			test_datagrid3_columns.push({
+				"field":"scholar",
+				"title":"学历",
+				"width":100,
+				"type":"text",
+				"formatter": function(value,row,index){
+					return cb_data1[value];
+				},
+				"editor" : {
+					"type":"combobox",
+					"options" : {
+						"data" : cb_data1
+					}
+				}
+			});
+			test_datagrid3_columns.push({
+				"field":"worktime",
+				"title":"工作时间<br />（年）",
+				"width":100
+			});
+			test_datagrid3_columns.push({
+				"field":"beginworktime",
+				"title":"何时参加工作",
+				"width":150,
+				"editor":{
+					"type":"datebox",
+					"options" : {
+						minView: 2,
+						maxView:2,
+						format:"yyyy-mm-dd"
+					}
+				}
+			});
+			test_datagrid3_columns.push({
+				"field":"isgraduate",
+				"title":"是否应届生",
+				"width":150,
+				"edit":true,
+				"editor":{
+					"type":"checkbox"
+				},
+				"formatter": function(value,row,index){
+					return value?"是":"否";
+				}
+			});
+			test_datagrid3_data = {"total":3,"rows":[]};
+			test_datagrid3_data["rows"].push({"id":1,"name":"路人甲","mobile":"13800138000","scholar":"bachelor","worktime":"3","beginworktime":"2010-09-01","isgraduate":true});
+			test_datagrid3_data["rows"].push({"id":2,"name":"路人乙","mobile":"13400134000","scholar":"master","worktime":"1","beginworktime":"2013-07-01","isgraduate":true});
+			test_datagrid3_data["rows"].push({"id":3,"name":"路人丙","mobile":"13400134000","scholar":"doctor","worktime":"1","beginworktime":"2013-07-01","isgraduate":false});
+			test_datagrid3_data["rows"].push({"id":4,"name":"路人丁","mobile":"13400134000","scholar":"college","worktime":"1","beginworktime":"2013-07-01","isgraduate":false});
+			test_datagrid3_data["rows"].push({"id":11,"name":"路人甲","mobile":"13800138000","scholar":"bachelor","worktime":"3","beginworktime":"2010-09-01","isgraduate":true});
+			test_datagrid3_data["rows"].push({"id":22,"name":"路人乙","mobile":"13400134000","scholar":"master","worktime":"1","beginworktime":"2013-07-01","isgraduate":true});
+			test_datagrid3_data["rows"].push({"id":33,"name":"路人丙","mobile":"13400134000","scholar":"doctor","worktime":"1","beginworktime":"2013-07-01","isgraduate":false});
+			test_datagrid3_data["rows"].push({"id":44,"name":"路人丁","mobile":"13400134000","scholar":"college","worktime":"1","beginworktime":"2013-07-01","isgraduate":false});
+			$("#test_datagrid3").datagrid({"columns":[test_datagrid3_columns],"data":test_datagrid3_data});
+		});	
+
+		function endEditAll(){
+			var rows = $('#test_datagrid3').datagrid('getRows');
+			for(var i=0;i<rows.length;i++){
+				$('#test_datagrid3').datagrid('endEdit',i);
+			}
+		}
+
+		function startEditAll(){
+			var rows = $('#test_datagrid3').datagrid('getRows');
+			for(var i=0;i<rows.length;i++){
+				$('#test_datagrid3').datagrid('beginEdit',i);
+			}
+		}
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">	
+	<h4>获得选择的行</h4>
+		<p>执行$.datagrid("getSelected")可以获得当前选择的行，如果多行将返回第一条，如果使用行复选的方式要使用getChecked方法，返回值为Row Array，每条记录为{field:value}样式</p>
+		
+    <h4>编辑行</h4>
+    <p style="color:#F00">警告！大量数据（200单元格以上）的行编辑在IE8上有明显的性能瓶颈（很大一部分来自EasyUI datagrid，ITC combo的渲染速度在5-8ms/个，而且下拉框都是Lazy Load），必要时请在双击或者单击行时启用行编辑，并给与用户提示。</p>
+    <p>使用$.datagrid()的beginEdit和endEdit方法可以开始/结束行编辑，如果需要编辑整个表格请自行遍历所有rows</p>
+    <form id="testform">
+    <table id="test_datagrid3" style="width:650px;height:300px">
+    </table>
+    </form>
+    <div class="row">
+    	<a href="javascript:void(0)" onclick="startEditAll();">开始编辑所有行</a>
+    </div>
+    <div class="row">
+    	<a href="javascript:void(0)" onclick="$('#test_datagrid3').datagrid('beginEdit','0');">编辑第一行</a>
+    </div>
+    <div class="row">
+    	<a href="javascript:void(0)" onclick="endEditAll();">结束编辑</a>
+    </div>
+    <div class="row">
+    	<a href="javascript:void(0)" onclick="$('#test_datagrid3').iValidDatagrid();">验证表单</a>
+    </div>
+
+    <p>JS代码：</p>
+    <pre class="brush:js">
+    	var test_datagrid3_columns = [];
+		test_datagrid3_columns.push({"field":"id","title":"编号","width":60});
+		test_datagrid3_columns.push({
+			"field":"name",
+			"title":"姓名",
+			"width":120,
+			"editor":{
+				"type":"text"
+			}
+		});
+		test_datagrid3_columns.push({
+			"field":"mobile",
+			"title":"移动电话",
+			"width":150,
+			"editor":{
+				"type":"text"
+			}
+		});
+		test_datagrid3_columns.push({
+			"field":"scholar",
+			"title":"学历",
+			"width":100,
+			"type":"text",
+			"formatter": function(value,row,index){
+				return cb_data1[value];
+			},
+			"editor" : {
+				"type":"combobox",
+				"options" : {
+					"data" : cb_data1
+				}
+			}
+		});
+		test_datagrid3_columns.push({
+			"field":"worktime",
+			"title":"工作时间&lt;br />（年）",
+			"width":100
+		});
+		test_datagrid3_columns.push({
+			"field":"beginworktime",
+			"title":"何时参加工作",
+			"width":150,
+			"editor":{
+				"type":"datebox",
+				"options" : {
+					minView: 2,
+					maxView:2,
+					format:"yyyy-mm-dd"
+				}
+			}
+		});
+		test_datagrid3_columns.push({
+			"field":"isgraduate",
+			"title":"是否应届生",
+			"width":150,
+			"edit":true,
+			"editor":{
+				"type":"checkbox"
+			},
+			"formatter": function(value,row,index){
+				return value?"是":"否";
+			}
+		});
+		test_datagrid3_data = {"total":3,"rows":[]};
+		test_datagrid3_data["rows"].push({"id":1,"name":"路人甲","mobile":"13800138000","scholar":"bachelor","worktime":"3","beginworktime":"2010-09-01","isgraduate":true});
+		test_datagrid3_data["rows"].push({"id":2,"name":"路人乙","mobile":"13400134000","scholar":"master","worktime":"1","beginworktime":"2013-07-01","isgraduate":true});
+		test_datagrid3_data["rows"].push({"id":3,"name":"路人丙","mobile":"13400134000","scholar":"doctor","worktime":"1","beginworktime":"2013-07-01","isgraduate":false});
+		test_datagrid3_data["rows"].push({"id":4,"name":"路人丁","mobile":"13400134000","scholar":"college","worktime":"1","beginworktime":"2013-07-01","isgraduate":false});
+		$("#test_datagrid3").datagrid({"columns":[test_datagrid3_columns],"data":test_datagrid3_data});
+    </pre>
+    <p>注：</p>
+    <ul>
+    	<li>没有指定editor的列不会被编辑</li>
+    	<li>编辑结束后，你可以使用onEndEdit(rowIndex, rowData, changes)事件获取哪些字段被编辑，也可以使用getRows方法获取修改后的数据比较，需要注意的是，EasyUi无法判断用户是否修改完一个字段后二次使用编辑功能又改回去，对于比较严格的编辑判定，需要自行比较原始和新数据</li>
+    	<li>由于datagrid的翻页会重新加载数据，因此如果使用组件库提供的翻页器，请注意绑定事件，在翻页之前检查数据是否被更改，并询问用户是保存数据还是放弃编辑。</li>
+    	<li>目前支持四种字段的修改，即文本text，下拉框combobox，日期/时间datebox，单选框checkbox，其中datebox和combobox除了要设置type字段外，还要指定options字段，options字段的写法与组件库中对应组件的写法一致。</li>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushJava.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script src="js/icheck.js"></script>
+	<link href="js/skins/flat/blue.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="../css/itcui.css">
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" media="all"/>
+	<title>下载</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>最新版</h4>
+	<p>目前最新的稳定版是r4版，<a href="../release/r4.zip">点击这里下载</a></p>
+	<p>更新日志</p>
+	<ul>
+		<li>修正form对date/datetime处理不完全的bug</li>
+		<li>form允许开发者自行渲染组件，增加用于开发者自行扩展的接口</li>
+		<li>修正导航选项卡默认不带bbox样式的bug</li>
+		<li>修正combo/combotree/itcui_input在resize时不能自动调整本身大小的bug</li>
+		<li>修正datagrid的表头搜索在有表头checkbox下不能正确计算搜索框的宽度和位置的bug</li>
+		<li>非封装组件的权限绑定和处理方法（参考如何使用一节）</li>
+		<li>增加带树打开选项卡的方法（参考163风格框架一节），以及获取当前选项卡ID的函数</li>
+		<li>其他细微的样式调整，以TIMSS1为准，这里不在一一列出</li>
+	</ul>
+
+	<h4>测试版</h4>
+	<p>目前最新的测试版为b6版，<a href="../release/b6.zip">点击这里下载</a>。如果一周到两周内测试版没有过多bug反馈，则测试版将转为正式版。</p>
+	<ul>
+		<li>表头搜索现在支持combobox类型了（对于复杂高级搜索，请参考新版例子）</li>
+		<li>修正了EasyUI datagrid显示loading信息为英文的问题</li>
+		<li>文件上传封装现在新增了一个参数，允许用户为文件名指定一个用于打开而不是下载的链接</li>
+		<li>修正了主框架的结构和初始化方式，现在折叠按钮更加明显了（nightly）</li>
+		<li>表单的date/datetime现在可以识别时间戳了</li>
+		<li>表单的label现在可以正确的取值和赋值了</li>
+		<li>表单的label添加了dataType属性，可以用于将时间戳自动转换为字符串</li>
+		<li>iHint现在可以支持标准的bootstrap input，并且能自动添加放大镜了</li>
+		<li>iCombo现在支持加载远程数据源了</li>
+		<li>现在iDatagrid无数据时不会初始化分页器了</li>
+		<li>整合了drag&drop功能(easy ui)</li>
+		<li>combobox数据源不再要求第三项必须为selected/multichecked(json初始化)</li>
+		<li>comobox支持loadData方法</li>
+		<li>适配器的一些API修正</li>
+		<li>自动表单现在和源生表单一样，getVal/getdata时使用name作为json的key（但是setVal/loaddata时还必须用id）。默认情况下，name的前缀由f_改为空白，即name等同于未加前缀的id，可以通过以前提供的参数namePrefix控制name的命名规则，具体参考新版API的演示例子。</li>
+		<li>自动表单新增hidden类型字段</li>
+		<li>表头搜索修正了当存在hidden列时依然显示搜索框的bug</li>
+		<li>表头搜索新增了noSearchColumns参数，可以控制不对哪些列进行搜索，但是需要注意，有时候该方法会让布局显示的很丑，为了美观或者有特殊搜索需求还是需要自己构建搜索框和相关函数。</li>
+	</ul>
+
+	<h4>每日更新</h4>
+	<p>开发版（任意页面）：</p>
+	<pre class="brush:xml">
+		&lt;script type="text/javascript" src="http://10.0.250.52/uidev/nightly/js/itcui.dev.js">&lt;/script>
+		&lt;link rel="stylesheet" type="text/css" href="http://10.0.250.52/uidev/nightly/css/itcui.dev.css" media="all"/>
+	</pre>
+	<p>开发版（主框架）：</p>
+	<pre class="brush:xml">
+		&lt;script type="text/javascript" src="http://10.0.250.52/uidev/nightly/js/itcui_frame.dev.js">&lt;/script>
+		&lt;link rel="stylesheet" type="text/css" href="http://10.0.250.52/uidev/nightly/css/itcui_frame.dev.css" media="all"/>
+	</pre>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../component/css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bootstrap-theme.css" media="all"/>
+	<title>嵌入式资产树</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>嵌入式资产树</h4>
+	<p>这是一个针对TIMSS2的独立需求，和通用组件库无关，因而使用该功能需要额外引入itcui_timssutil.js（timss_include.jsp里已经加入，不需要再额外引用）。</p>
+	<p>通过该函数，你可以在页面中创建一个资产树（这个资产树只属于当前页面，不具备编辑功能），并可以用该资产树向特定位置赋值。</p>
+
+	<h4>如何使用</h4>
+	<p>下面代码演示了如何在页面中嵌入一个资产树，并将名称和ID传入不同字段中。</p>
+	<pre class="brush:js">
+		$(document).ready(function(){
+			var form = [{id:"assets",type:"hidden"},
+			            {id:"assetText","title":"相关资产"}];
+			$("#form_baseinfo").iForm("init",{fields:form});
+			FW.createAssetTree({multiSelect:true});
+		});
+		
+		function onAssetSelect(id,name){
+			$("#form_baseinfo").iForm("setVal",{
+				assets : id,
+				assetText : name
+			});
+		}
+	</pre>
+	<p>其中form_baseinfo为一个表单，onAssetSelect是定义在页面中的函数，当点击或者勾选资产树上的节点时，会触发该函数，一般用该函数对表单进行赋值。参数id和name都是半角逗号分隔的字符串。</p>
+
+	<h4>注意事项</h4>
+	<p>资产树和资产管理是同一套页面，使用该对话框必须登录而且至少拥有浏览权限。</p>
+	<p>对于TIMSS2开发者，你需要访问到asset模块的页面和代码，否则无法打开对话框。</p>
+
+	<h4>特别强调</h4>
+	<p>由于样式要求，当使用该函数时，整个页面会被强制设置为border-box模式（border-box模式下，padding不影响元素整体大小，但是一般模式下要影响）。ITC组件库下的所有组件均兼容该模式，但是开发者自行计算大小的代码可能会受到影响。</p>
+
+	<h4>参数说明</h4>
+	<p>createAssetTree可以传入一个object类型的参数，其中的字段如下：</p> 
+
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">属性</td>
+				<td width="150px">类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>multiSelect</td>
+				<td>boolean</td>
+				<td>是否允许多选，默认为false，当指定为true时，返回值均为逗号分隔的字符串</td>				
+			</tr>
+			<tr>
+				<td>basePath</td>
+				<td>string</td>
+				<td>网站的根，默认将读取全局变量var basePath，如果读取失败将使用空字符串</td>				
+			</tr>
+		</tbody>
+	</table>
+
+	
+</body>
+</html>

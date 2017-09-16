@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<link rel="stylesheet" type="text/css" href="../package/css/itcui.dev.css" media="all"/>
+	<script type="text/javascript" src="../package/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/bs_doc_ext.css" media="all"/>
+	<title>关于组件库</title>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>基础组件</h4>
+	<p>本组件库基于以下组件开发</p>
+	<ul>
+		<li>基础框架：BootstrapV3，修改了一些代码以保留BootstrapV2的功能。</li>
+		<li>EasyUI V1.3.5，使用了其中的Datagrid和Tree删减了不必要的功能。</li>
+		<li>NeterUI（仿163邮箱风格UI），使用其导航选项卡，但是选项菜单变更为Bootstrap的组件。</li>
+		<li>iCheck（BS插件）提供了单选框和复选框的支持。</li>
+		<li>Font Awesome提供了图标字体</li>
+	</ul>
+
+	<h4>快速复制代码</h4>
+	<p>从SyntaxHighlighter3开始，复制代码的方式由工具条变成双击代码框后按Ctrl+C手动复制，也可以直接在双击后的文本框中修改。</p>
+
+	<h4>命名空间</h4>
+	<p>对于自行开发的组件，其css或函数以itc命名，而通过hack或者修改样式的第三方组件，基本保留了原始组件的命名风格，以保证升级和插件兼容性，但是：</p>
+	<ul>
+		<li>Bootstrap的pannel样式被修改为bs_pannel，以保证和EasyUI的兼容。</li>
+	</ul>
+	
+	
+	<h4>组件兼容性</h4>
+	<p>目前已知以下第三方组件无法和本组件库兼容</p>
+	<ul>
+		<li>SyntaxHighlighter，用于代码高亮，会使得部分JQuery动画失效。</li>
+	</ul>
+
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../package/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../package/css/itcui.dev.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bs_doc_ext.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			respond.update();
+		});
+		$(window).resize(function(e){
+			var o = $("#testdiv_1");
+			var w = o.css("width");
+			o.html("我的宽度为：" + w);
+		});
+	</script>
+	<title>栅格系统</title>
+</head>
+<body style="margin:16px;font-size:14px">
+	<div class="alert alert-info">
+		本节所述内容在IE8下需要respond.js方能实现，具体参考“兼容性”一节。
+    </div>
+    <div class="alert alert-warning">
+		本节所述内容仅供更多细节参考，UI组件已提供支持响应布局的表单封装。
+    </div>
+    <div class="alert alert-warning">
+		本节所提供的示例代码和b0版相比有较大改动，请以新版代码为主，否则在使用自动表单的某些功能时将失效。
+    </div>
+    <div class="alert alert-danger">
+		特别强调，在b1版组件之后，border-box不是默认要求，因而涉及响应布局的元素必须手动添加bbox以保证列宽计算正常
+    </div>
+    <div class="panel panel-default" style="width:300px">    
+	    <div class="panel-heading">本节内容</div>
+	    <div class="panel-body">
+	    	<ul class="nav nav-pills nav-stacked">
+  				<li><a href="#section1">关于容器</a></li>
+			    <li><a href="#section2">行</a></li>
+			    <li><a href="#section3">什么是栅格系统</a></li>
+			    <li><a href="#section4">利用栅格系统创建自适应的表单</a></li>
+			    <li><a href="#section5">列偏移</a></li>
+			    <li><a href="#section6">响应式布局</a></li>
+			</ul>
+		    
+		</div>
+	</div>
+	<a name="section1"> </a>
+	<h4>关于容器</h4>
+	<p>容器（container）是bootstrap框架定义的一个布局类，一般与栅格系统配套使用。该类有以下特点</p>
+	<p>
+		（1）默认带有居中以及padding样式，因此无法嵌套使用。<br />
+		（2）根据屏幕大小，会自动调整其宽度，这个大小为：<br />
+	</p>
+	<table class="table table-bordered table-striped" style="width:640px">
+		<thead>
+          <tr>
+            <th>
+              超小屏幕设备
+              <small>手机 (&lt;768px)</small>
+            </th>
+            <th>
+              小屏幕设备
+              <small>平板 (≥768px)</small>
+            </th>
+            <th>
+              中等屏幕设备
+              <small>桌面 (≥992px)</small>
+            </th>
+            <th>
+              大屏幕设备
+              <small>桌面 (≥1200px)</small>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+			<tr>
+				<td>自适应</td>
+				<td>750px</td>
+				<td>970px</td>
+				<td>1170px</td>
+			</tr>
+        </tbody>
+	</table>
+	<p>使用以下代码，并调整窗口宽度可以看到这个效果：</p>
+	<pre class="brush: js;">
+		$(window).resize(function(e){
+			var o = $("#testdiv_1");
+			var w = o.css("width");
+			o.html("我的宽度为：" + w);
+		});
+	</pre>
+	<div class="container" id="testdiv_1" style="background-color:#EEEEEE">
+		此处改变窗口大小后会显示容器大小
+	</div>
+	<p>但是在有些时候，不需要容器具有居中效果，这时就要去掉容器的margin-left样式。</p>
+	<pre class="brush: xml;">
+		&ltdiv class="container" id="testdiv_2" style="margin-left:8px;background-color:#EEEEEE">
+			设置固定margin-left的容器
+		&lt/div>
+	</pre>
+	<div class="container" id="testdiv_2" style="margin-left:8px;background-color:#EEEEEE">
+		设置固定margin-left的容器
+	</div>
+	<a name="section2"> </a>
+	<h4>行</h4>
+	行（row）也是基础布局样式之一，设置了固定的行高和行距，可以和container配合使用，也可以单独使用，默认不带有居中效果。
+	<div class="row" style="background-color:#EEEEEE;margin-top:8px">
+		这是一行
+	</div>
+	<div class="row" style="background-color:#EEEEEE">
+		这是第二行
+	</div>
+	<div class="container">
+		<div class="row" style="background-color:#EEEEEE">
+		第三行放到了容器中
+		</div>
+	</div>
+	<div class="row" style="background-color:#EEEEEE;margin-bottom:8px">
+		新华网北京12月30日电　中共中央政治局12月30日召开会议，决定成立中央全面深化改革领导小组；听取中央纪律检查委员会2013年工作汇报，研究部署2014年党风廉政建设和反腐败工作；审议通过《党政领导干部选拔任用工作条例（修订稿）》。中共中央总书记习近平主持会议。
+	</div>
+	<p>需要注意的是，行自带clear:both的样式，因而用在流式布局（float:left/right）后无需添加额外样式。</p>
+	
+	<a name="section3"> </a>
+	<h4>什么是栅格系统</h4>
+	<p>栅格系统是一系列CSS组成的响应式布局，该布局会根据屏幕大小的改变，而表现出不同的样式。栅格系统有以下特点：</p>
+	<p>
+		（1）栅格系统通过行和列划分区域，一般来说，行需要放置在容器中，但是这个容器也可以是表单域（form）。<br />
+		（2）列应该放置在行中，用户创建的元素放置在列中，列与列之间有默认的间距。<br />
+		（3）栅格系统将一行划分为12列，每个元素可以通过CSS占据连续的多个等宽列，也可以通过设置margin来产生位移，或者弥补padding。<br />
+		（4）栅格系统定义大量形如.col-xs-4的样式，其中xs表示非常小的屏幕，如移动设备，4表示占据连续4列。
+	</p>
+	<p>栅格系统的特点以及CSS前缀如下：</p>
+	<table class="table table-bordered table-striped" style="width:800px">
+        <thead>
+          <tr>
+            <th></th>
+            <th>
+              超小屏幕设备
+              <small>手机 (&lt;768px)</small>
+            </th>
+            <th>
+              小屏幕设备
+              <small>平板 (≥768px)</small>
+            </th>
+            <th>
+              中等屏幕设备
+              <small>桌面 (≥992px)</small>
+            </th>
+            <th>
+              大屏幕设备
+              <small>桌面 (≥1200px)</small>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>栅格系统行为</th>
+            <td>总是水平排列</td>
+            <td colspan="3">开始是堆叠在一起的，超过这些阈值将变为水平排列</td>
+          </tr>
+          <tr>
+            <th>最大容器宽度</th>
+            <td>None (自动)</td>
+            <td>750px</td>
+            <td>970px</td>
+            <td>1170px</td>
+          </tr>
+          <tr>
+            <th>class前缀</th>
+            <td><code>.col-xs-</code></td>
+            <td><code>.col-sm-</code></td>
+            <td><code>.col-md-</code></td>
+            <td><code>.col-lg-</code></td>
+          </tr>
+          <tr>
+            <th>列数</th>
+            <td colspan="4">12</td>
+          </tr>
+          <tr>
+            <th>最大列宽</th>
+            <td class="text-muted">自动</td>
+            <td>60px</td>
+            <td>78px</td>
+            <td>95px</td>
+          </tr>
+          <tr>
+            <th>槽宽</th>
+            <td colspan="4">30px (每列左右均有15px)</td>
+          </tr>
+          <tr>
+            <th>可嵌套</th>
+            <td colspan="4">Yes</td>
+          </tr>
+          <tr>
+            <th>偏移（Offsets）</th>
+            <td colspan="4">Yes</td>
+          </tr>
+          <tr>
+            <th>列排序</th>
+            <td colspan="4">Yes</td>
+          </tr>
+        </tbody>
+      </table>
+    <p>这里特别强调的是，从代码的角度来看，列宽的真正定义是<strong>百分比</strong>，而不是绝对宽度，比如以下代码定义了在小屏幕下可以并排显示的三个红色区域，但是因为没有容器的包裹，这三个红色区域连起来占据了整个屏幕看度，但是又可以根据表中的阈值调整其布局。</p>
+    <pre class="brush: xml;">
+    	&ltdiv class="row bbox">
+			&ltdiv class="col-sm-4" style="background-color:#FF0000">
+				1
+			&lt/div>
+			&ltdiv class="col-sm-4" style="background-color:#FF0000">
+				2
+			&lt/div>
+			&ltdiv class="col-sm-4" style="background-color:#FF0000">
+				3
+			&lt/div>
+		&lt/div>
+    </pre>
+    <div class="row bbox">
+		<div class="col-sm-4" style="background-color:#FF0000">
+			1
+		</div>
+		<div class="col-sm-4" style="background-color:#FF0000">
+			2
+		</div>
+		<div class="col-sm-4" style="background-color:#FF0000">
+			3
+		</div>
+	</div>
+
+	<a name="section3"> </a>
+	<h4>利用栅格系统创建自适应的表单</h4>
+	<p>在栅格系统中，假如设置了md屏幕大小的样式，那么对于lg大小的屏幕，该样式一样适用，但是反过来，如果屏幕小于md时，根据栅格系统的设定，这些元素就会变为堆叠布局。因此，为了制作自适应的表单，需要为一个元素设置至少2个样式。</p>
+	<p>下面的代码使用栅格系统创建了一个在大屏幕上显示3列，而小屏幕下显示2列的表单（在“输入框”一节中同样是该代码）：</p>
+	<pre class="brush:xml;">
+		&ltform class="form-horizontal bbox" role="form">
+			&ltdiv class="row">
+				<!--col-md-4样式保证了可以在大屏幕以上自动变为3列，但是为了保证小屏幕下至少有2列，因此在小屏幕下的样式为col-xs-6，需要注意小屏幕的样式不会因为屏幕变化而变为堆叠-->
+				&ltdiv class="form-group col-xs-6 col-md-4">
+					<!--列样式的定义是百分比，因此这里的4和8实际上是相对于3列或者2列而言划分出一列的大小，无论是大屏幕小屏幕，标签和输入框的宽度比都是1:2，所以这里的列宽都是4和8-->
+					&ltlabel class="col-xs-4 control-label">姓名</label>
+					&ltdiv class="col-xs-8">
+						&ltinput type="text" class="form-control">
+					&lt/div>
+				&lt/div>
+				<!-- 下面2个文本框代码和上面一致 -->
+			&lt/div>
+		&lt/form>
+	</pre>
+	<form class="form-horizontal bbox" role="form">
+		<div class="row">
+			<div class="form-group col-xs-6 col-md-4">
+				<label for="input1" class="col-xs-4 control-label">姓名：</label>
+				<div class="col-xs-8 input-group-sm">
+					<input type="text" class="form-control" id="input1">
+				</div>
+			</div>
+			<div class="form-group col-xs-6 col-md-4">
+				<label for="input2" class="col-xs-4 control-label">家庭住址：</label>
+				<div class="col-xs-8 input-group-sm">
+					<input type="text" class="form-control" id="input2">
+				</div>
+			</div>
+			<div class="form-group col-xs-6 col-md-4">
+				<label for="input3" class="col-xs-4 control-label">移动电话：</label>
+				<div class="col-xs-8 input-group-sm">
+					<input type="text" class="form-control" id="input3">
+				</div>
+			</div>
+		</div>
+	</form>
+	<p><span style="color:#ff0000">如果需要自动布局的列多余3，请都写在一个row中</span>，因为row有换行的效果。对于某些系统而言，这个代码还有问题，首先我们需要标签大小尽可能固定，否则在大屏幕下左侧会有较大空隙，此时，列大小就不能使用列样式控制，而需要设定为固定值：</p>
+	<pre class="brush:xml;">
+		&lt;form class="form-horizontal bbox" role="form">
+			&lt;div class="row">
+				&lt;div class="form-group col-xs-6 col-md-4">
+					&lt;table width="100%">
+						&lt;tr>
+							&lt;td width="120px" class="ctrl-label">
+								姓名：
+							&lt;/td>
+							&lt;td>
+								&lt;div class="input-group-sm">
+									&lt;input type="text" class="form-control">
+								&lt;/div>
+							&lt;/td>
+						&lt;/tr>
+					&lt;/table>
+				&lt;/div>
+				&lt;!--剩下的写法一致-->
+			&lt;/div>
+		&lt;/form>
+	</pre>
+	<form class="form-horizontal bbox" role="form">
+		<div class="row">
+			<div class="form-group col-xs-6 col-md-4">
+				<table width="100%">
+					<tr>
+						<td width="120px" class="ctrl-label">
+							姓名：
+						</td>
+						<td>
+							<div class="input-group-sm">
+								<input type="text" class="form-control">
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="form-group col-xs-6 col-md-4">
+				<table width="100%">
+					<tr>
+						<td width="120px" class="ctrl-label">
+							家庭住址：
+						</td>
+						<td>
+							<div class="input-group-sm">
+								<input type="text" class="form-control">
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="form-group col-xs-6 col-md-4">
+				<table width="100%">
+					<tr>
+						<td width="120px" class="ctrl-label">
+							移动电话：
+						</td>
+						<td>
+							<div class="input-group-sm">
+								<input type="text" class="form-control">
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</form>
+	<p>和上面的代码不同，该代码做了以下修改：</p>
+	<p>
+		（1）虽然列和列之间有默认的间距，但是此段代码的“label”和输入框是在一起的，因而需要调整好label的宽度；<br />
+		（2）在不使用JS的情况下，无法设置“百分比-定宽”样式的CSS，但是表格支持；<br />
+		（3）label在表格中，失去其原有样式，所以这里直接设置右对齐反而更简单一些；<br />
+	</p>
+	<p>该代码依然实现了3列/2列的布局，而且文本框的长度会自动填满列宽。</p>
+	
+	<a name="section5"> </a>
+	<h4>列偏移</h4>
+	<p>为元素添加col-XX-offset-X形式的样式可以做到列偏移（左边距）的效果。</p>
+	<pre class="brush:xml;">
+		&ltrow>
+			&ltdiv class="col-xs-6 col-xs-offset-1">
+				offset=1/12
+			&lt/div>
+			&ltdiv class="col-xs-6 col-xs-offset-2">
+				offset=2/12
+			&lt/div>
+			&ltdiv class="col-xs-6 col-xs-offset-3">
+				offset=3/12
+			&lt/div>
+			&ltdiv class="col-xs-6 col-xs-offset-4">
+				offset=4/12
+			&lt/div>
+		&lt/row>
+	</pre>
+	<row>
+		<div class="col-xs-6 col-xs-offset-1">
+			offset=1/12
+		</div>
+		<div class="col-xs-6 col-xs-offset-2">
+			offset=2/12
+		</div>
+		<div class="col-xs-6 col-xs-offset-3">
+			offset=3/12
+		</div>
+		<div class="col-xs-6 col-xs-offset-4">
+			offset=4/12
+		</div>
+	</row>
+
+	<a name="section6"> </a>
+	<h4 style="clear:both">响应式布局</h4>
+	<p>bootstrap定义了以下样式，可以用于在特定屏幕下显示/隐藏某些内容。</p>
+	<table class="table table-bordered table-striped responsive-utilities" style="width:650px">
+        <thead>
+          <tr>
+            <th></th>
+            <th>
+              超小屏幕
+              <small>手机 (&lt;768px)</small>
+            </th>
+            <th>
+              小屏幕
+              <small>平板 (≥768px)</small>
+            </th>
+            <th>
+              中等屏幕
+              <small>桌面 (≥992px)</small>
+            </th>
+            <th>
+              大屏幕
+              <small>桌面 (≥1200px)</small>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><code>.visible-xs</code></th>
+            <td>可见</td>
+            <td>隐藏</td>
+            <td>隐藏</td>
+            <td>隐藏</td>
+          </tr>
+          <tr>
+            <th><code>.visible-sm</code></th>
+            <td>隐藏</td>
+            <td>可见</td>
+            <td>隐藏</td>
+            <td>隐藏</td>
+          </tr>
+          <tr>
+            <th><code>.visible-md</code></th>
+            <td>隐藏</td>
+            <td>隐藏</td>
+            <td>可见</td>
+            <td>隐藏</td>
+          </tr>
+          <tr>
+            <th><code>.visible-lg</code></th>
+            <td>隐藏</td>
+            <td>隐藏</td>
+            <td>隐藏</td>
+            <td>可见</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th><code>.hidden-xs</code></th>
+            <td>隐藏</td>
+            <td>可见</td>
+            <td>可见</td>
+            <td>可见</td>
+          </tr>
+          <tr>
+            <th><code>.hidden-sm</code></th>
+            <td>可见</td>
+            <td>隐藏</td>
+            <td>可见</td>
+            <td>可见</td>
+          </tr>
+          <tr>
+            <th><code>.hidden-md</code></th>
+            <td>可见</td>
+            <td>可见</td>
+            <td>隐藏</td>
+            <td>可见</td>
+          </tr>
+          <tr>
+            <th><code>.hidden-lg</code></th>
+            <td>可见</td>
+            <td>可见</td>
+            <td>可见</td>
+            <td>隐藏</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>需要注意的是，这里的visible和hideden不具有叠加效果，如下面的代码：</p>
+      <pre class="brush:xml;">
+		  &ltdiv class="visible-xs visible-sm visible-md visible-lg row">这个DIV会在超小屏幕或者以上显示&lt/div>
+	      &ltdiv class="visible-sm visible-md visible-lg row">这个DIV会在小屏幕或者以上显示&lt/div>
+	      &ltdiv class="visible-md visible-lg  row">这个DIV会在中等屏幕或者以上显示&lt/div>
+	      &ltdiv class="visible-lg row">这个DIV会在大屏幕或者以上显示&lt/div>
+      </pre>
+      <div class="visible-xs visible-sm visible-md visible-lg row">这个DIV会在超小屏幕或者以上显示</div>
+      <div class="visible-sm visible-md visible-lg row">这个DIV会在小屏幕或者以上显示</div>
+      <div class="visible-md visible-lg  row">这个DIV会在中等屏幕或者以上显示</div>
+      <div class="visible-lg row">这个DIV会在大屏幕或者以上显示</div>
+      <div class="alert alert-info">
+		响应式布局可以用于动态显示/隐藏导航栏，但是设置字体大小等效果通过JS脚本更容易。
+      </div>
+</body>
+</html>

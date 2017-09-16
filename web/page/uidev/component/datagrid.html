@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/itcui_ext.js"></script>
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script type="text/javascript" src="itceasyui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="itceasyui/easyui-lang-zh_CN.js"></script>
+	<link rel="stylesheet" type="text/css" href="itceasyui/themes/icon.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="itceasyui/themes/metro/easyui.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="itceasyui/themes/extend.css" media="all" />
+	<script src="js/icheck.js"></script>
+	<link href="js/skins/flat/blue.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../css/itcui.css" media="all"/>
+	<title>Datagrid</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			$('#multiline_check_table').datagrid({});
+			$('#multiline_check_table').ITCUI_FixTableChkBox();
+		});
+
+		
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>向普通表格应用样式</h4>
+	<p>对于不需要交互纯表格：</p>
+	<table class="itcui_table" style="clear:both" width="600" cellspacing="0">
+		<tr style="height:24px">
+			<th width="40">序号</th>
+			<th width="80">姓名</th>
+			<th width="80">出生日期</th>
+			<th width="80" style="text-align:right">月薪</th>
+			<th>备注</th>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>路人A</td>
+			<td>1970-01-01</td>
+			<td style="text-align:right">￥4000.00</td>
+			<td>备注11111111111111111</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>路人B</td>
+			<td>1970-01-01</td>
+			<td style="text-align:right">￥4000.00</td>
+			<td>备注22222222222222222</td>
+		</tr>
+	</table>
+	<p>此时，只需要应用itcui_table样式，并设置cellspacing为0即可。</p>
+	<pre class="brush:xml">
+		&lt;table class="itcui_table" style="clear:both" width="600" cellspacing="0">
+			&lt;tr style="height:24px">
+				&lt;th width="40">序号&lt;/th>
+				&lt;th width="80">姓名&lt;/th>
+				&lt;th width="80">出生日期&lt;/th>
+				&lt;th width="80" style="text-align:right">月薪&lt;/th>
+				&lt;th>备注&lt;/th>
+			&lt;/tr>
+			&lt;tr>
+				&lt;td>1&lt;/td>
+				&lt;td>路人A&lt;/td>
+				&lt;td>1970-01-01&lt;/td>
+				&lt;td style="text-align:right">￥4000.00&lt;/td>
+				&lt;td>备注11111111111111111&lt;/td>
+			&lt;/tr>
+			&lt;tr>
+				&lt;td>2&lt;/td>
+				&lt;td>路人B&lt;/td>
+				&lt;td>1970-01-01&lt;/td>
+				&lt;td style="text-align:right">￥4000.00&lt;/td>
+				&lt;td>备注22222222222222222&lt;/td>
+			&lt;/tr>
+		&lt;/table>
+	</pre>
+	
+	<p>对于列数较多需要翻页，或后期需要交互的表格：</p>
+	<table class="easyui-datagrid" style="width:650px;height:300px">
+		<thead>
+			<tr>
+				<th data-options="field:'id',width:100">编号</th>
+				<th data-options="field:'name',width:100">姓名</th>
+				<th data-options="field:'phone',width:100">电话</th>
+				<th data-options="field:'remark',width:300">备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>路人1</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>路人2</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>路人3</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>路人4</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td>路人5</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td>路人6</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td>路人7</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>8</td>
+				<td>路人8</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>9</td>
+				<td>路人9</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>10</td>
+				<td>路人10</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+		</tbody>	
+	</table>
+	<pre class="brush:xml">
+		&lt;table class="easyui-datagrid" style="width:650px;height:300px">
+			&lt;thead>
+				&lt;tr>
+					&lt;th data-options="field:'id',width:100">编号&lt;/th>
+					&lt;th data-options="field:'name',width:100">姓名&lt;/th>
+					&lt;th data-options="field:'phone',width:100">电话&lt;/th>
+					&lt;th data-options="field:'remark',width:300">备注&lt;/th>
+				&lt;/tr>
+			&lt;/thead>
+			&lt;tbody>
+				&lt;tr>
+					&lt;td>1&lt;/td>
+					&lt;td>路人1&lt;/td>
+					&lt;td>13400134000&lt;/td>
+					&lt;td>备注XXXXXXXXXXXXXXXXX&lt;/td>
+				&lt;/tr>
+				<!--此处省略了剩下的行数-->
+			&lt;/tbody>	
+		&lt;/table>
+	</pre>
+	<p>此时，默认表格行数较多，因此会出现灰色边框，以及右侧预留的滚动条位置。</p>
+	<p>和普通表格不同：</p>	
+	<ul>
+		<li>EasyUI的表格需要规范写法，包括thead、tbody、th标签。</li>
+		<li>列宽不通过CSS定义，而是写到data-options中，单位默认为px。</li>
+		<li>每一列必须有field属性，未定义field的列不会在表格中显示。</li>
+		<li>默认情况下，datagrid会根据行数无限延长，设置了height后表格会定高并且出现滚动条（<span style="color:#ff0000">但是即便是没有滚动条也会预留滚动条位，可以设置scrollbarSize为0来去掉预留的空间</span>，此时应该保证不会出现滚动条）</li>
+		<li><span style="color:#ff0000">更改表格大小需要手动调用datagrid的resize方法（在做自适应时要注意）</span></li>	
+	</ul>
+	<h4>通过JS创建一个Datagrid</h4>
+	<p>通过JS创建Datagrid时，首先需要定义一个设置列信息的Array，需要特别注意的是，无论是否进行表头合并，这个Array都是二维的。</p>
+	<pre class="brush:js">
+		var dutyColumns = new Array();
+		dutyColumns[0] = new Array();
+		for(var i = 0 ;i < e.shiftNames.length; i++){
+			dutyColumns[0][i]={
+				field : e.shiftCodes[i],
+				title : e.shiftNames[i],
+				width : 50,
+				align : 'center',
+				styler : function(value,row,index){
+					if(!value){
+						return "background-color:#EEEEEE";
+					}
+				}
+			};
+		}
+		datagrid = $('#dutylist_tbl').datagrid({		
+					singleSelect:true,
+					fitColumns:true,
+					border:false,
+					rownumbers:true,
+					columns:dutyColumns
+				});
+	</pre>
+	<p>关于Columns的详细说明，将在“样式”一节给出。</p>
+
+	<h4>向Datagrid加载数据</h4>
+	通过loadData方法可以加载外部JSON数据：
+	<pre class="brush:js">
+		$(selector).datagrid('loadData',result);
+	</pre>
+	result为要加载的JSON数据，形如：
+	<pre class="brush:js">
+		{"total":5,"rows":[{"profit":1.49,"coalCspEle":0.0,"runHours":"00:19",.....}]}
+	</pre>
+	<p>其中total为总数据数（每页显示的记录数在构造函数中控制），必须包含该字段，而rows为具体的数据Array，每一列为一个JSON对象，无内容时对应列可以省略或者设为null。</p>
+
+	<h4>允许多选行</h4>
+	<table id="multiline_check_table" style="width:650px;height:300px">
+		<thead>
+			<tr>
+				<th data-options="field:'ck',checkbox:true"></th>
+				<th data-options="field:'id',width:80">编号</th>
+				<th data-options="field:'name',width:100">姓名</th>
+				<th data-options="field:'phone',width:100">电话</th>
+				<th data-options="field:'remark',width:300">备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td></td>
+				<td>1</td>
+				<td>路人1</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>2</td>
+				<td>路人2</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>3</td>
+				<td>路人3</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>4</td>
+				<td>路人4</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>5</td>
+				<td>路人5</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>6</td>
+				<td>路人6</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>7</td>
+				<td>路人7</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>8</td>
+				<td>路人8</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>9</td>
+				<td>路人9</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>10</td>
+				<td>路人10</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+		</tbody>	
+	</table>
+	<p>通过增加一列，其field为ck，类别为checkbox，就可以使表格支持多行选择。同时，为了更改复选框的样式，还要执行代码：</p>
+	<pre class="brush:js">
+		ITCUI_FixTableChkBox();
+	</pre>
+	<p>此函数有一个参数，可以传入表格的DIV，当不传入任何参数时，该函数会尝试更改页面中所有表格复选框的样式，在页面较为复杂时，不推荐这样做。同时，该函数的执行应该在Datagrid渲染完成后。</p>
+	<p>还需要注意的是：</p>
+	<ul>
+		<li>如果Datagrid是从普通表格生成，应该在每一行中增加一列来和复选框对应，其中新增加列的值会自动应用到复选框的value字段上。</li>
+		<li>对于固定列宽的表格，需要为复选框预留宽度，防止出现横向滚动条</li>
+	</ul>
+</body>
+</html>

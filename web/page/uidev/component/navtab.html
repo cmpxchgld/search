@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/itcui_ext.js"></script>
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			$(".toggler").click(function(e){
+				var id = $(this).attr("id");
+				if($(this).html()=="显示代码"){
+					$(this).html("隐藏代码");
+					$("#" + id + "_div").show();
+				}
+				else{
+					$(this).html("显示代码");
+					$("#" + id + "_div").hide();
+				}
+			});
+		});
+
+		function addTab(position){
+			var tab = {"name":"测试选项卡","title":"这是测试选项卡","id":"tab_test_" + Math.round(Math.random()*1000),"closeable":true};
+			_parent()._ITC.navTab.insert(tab,{"position":position});
+		}
+
+		function add10Tab(){
+			var tab;
+			for(var i=1;i<=10;i++){
+				tab = {"name":"测试" + i,"title":"这是测试选项卡","id":"tab_testmulti" + i,"closeable":true};
+				_parent()._ITC.navTab.insert(tab,{"position":"last"});
+			}
+		}
+		
+		function remove10Tab(){
+			for(var i=1;i<=10;i++){
+				_parent()._ITC.navTab.removeById("tab_testmulti" + i);
+			}
+		}
+
+		function updateName(){
+			_parent()._ITC.navTab.updateById({"id":"nav1","name":"规范总则"});
+		}
+
+		function addEventTab(){
+			tab = {
+				"name":"事件测试",
+				"title":"这是测试选项卡",
+				"id":"tab_testEvent",
+				"closeable":true,
+				"click" : function(id){
+					alert("您单击了ID为" + id + "的选项卡");
+				},
+				"beforeClick" : function(id){
+					return confirm("是否切换到ID为" + id + "的选项卡");
+				},
+				"beforeClose" : function(id){
+					return confirm("是否关闭ID为" + id + "的选项卡");
+				},
+				"afterClose" : function(id){
+					alert("您关闭了ID为" + id + "的选项卡");
+				},
+			};
+			_parent()._ITC.navTab.insert(tab,{"position":"last"});
+		}
+	</script>
+	<style type="text/css">
+		.row{margin-top:4px;margin-bottom:4px;}
+		p{text-indent:2em;}
+		h4{margin-top:18px;}
+		.toggler{font-size:12px}
+	</style>
+	<title>导航选项卡</title>
+</head>
+<body style="margin:16px;font-size:14px">
+	<div class="alert alert-warning">
+		该说明页为组件的最原始形式，一般情况下，你可以使用163邮箱风格框架中提供的更完善封装完成常用操作。除非你对组件足够熟悉，否则不应该直接使用这里的源生函数。
+	</div>
+	
+	<h4>什么是导航选项卡</h4>
+	<p>导航选项卡是OA风格框架中用于切换的主选项卡组件，新选项卡放在老选项卡的右侧，当选项卡数量超过某一值（可以配置）时，左侧的选项卡会自动收入选项卡管理菜单中（当前激活的选项卡不会被收起）。</p>
+	<p>导航选项卡中的元素大量使用ID标识，因而一个页面中<strong>只能有一个</strong>导航选项卡。</p>
+	
+	<h4>功能演示</h4>
+	<p>所有的功能演示均使用当前页面的选项卡。</p>
+	<ul>
+		<li><a onclick="_parent()._ITC.navTab.activeById('nav1')">切换到“总则”页面</a></li>
+		<li><a onclick="add10Tab()">添加10个选项卡</a></li>
+		<li><a onclick="remove10Tab()">删除添加的10个选项卡</a></li>
+		<li><a onclick="updateName()">将“总则”页面的选项卡标题修改为“规范总则”</a></li>
+	</ul>
+
+	<h4>创建导航选项卡</h4>
+	<p>导航选项卡创建使用new创建ITCUI_Navigation对象。需要特别强调的是，<strong style="color:#ff0000">必须为每个选项卡指定一个ID</strong>(选项卡的实际id被指定为itcui_nav_tab_参数中的ID)，否则大量功能将无法正常使用。</p>
+	<pre class="brush:js">
+		var tabs = [];
+		tabs.push({"name":"总则","id":"tab1"});
+		tabs.push({"name":"组件演示","id":"tab2"});
+		tabs.push({"name":"资源库","id":"tab3"});
+		var nav = new ITCUI_Navigation("#itcui_nav_tab_container",tabs,{});
+		nav.init();	
+	</pre>
+
+	<h4>追加选项卡</h4>
+	<ul>
+		<li><a onclick="addTab('first')">在所有选项卡之前添加</a></li>
+		<li><a onclick="addTab('last')">在所有选项卡之后添加</a></li>
+		<li><a onclick="addTab('before:nav2')">在“组件演示”之前添加</a></li>
+		<li><a onclick="addTab('after:nav2')">在“组件演示”之后添加</a></li>
+	</ul>
+	<p>HTML代码</p>
+	<pre class="brush:xml">
+		&lt;li>&lt;a onclick="addTab('first')">在所有选项卡之前添加&lt;/a>&lt;/li>
+		&lt;li>&lt;a onclick="addTab('last')">在所有选项卡之后添加&lt;/a>&lt;/li>
+		&lt;li>&lt;a onclick="addTab('before:tab2')">在“组件演示”之前添加&lt;/a>&lt;/li>
+		&lt;li>&lt;a onclick="addTab('after:tab2')">在“组件演示”之后添加&lt;/a>&lt;/li>
+	</pre>
+	<p>JS代码</p>
+	<pre class="brush:js">
+		function addTab(position){
+			var tab = {"name":"测试选项卡","title":"这是测试选项卡","id":"tab_test"};
+			_parent().nav.insert(tab,{"position":position});
+		}
+	</pre>
+	<p>注：在添加、删除、触发事件时，都需要选项卡的ID，因此在创建选项卡时为要每个选项卡<strong>设置独立的ID</strong></p>
+	
+	<h4>移除选项卡</h4>
+	<p>使用removeById函数可以根据ID移除指定选项卡。</p>
+	<pre class="brush:js">
+		for(var i=1;i<=10;i++){
+			_parent().nav.removeById("tab_testmulti" + i);
+		}
+	</pre>
+
+	<h4>更改选项卡的标题</h4>
+	<p>使用updateById(newItem)函数可以修改已有的选项卡。</p>
+	<pre class="brush:js">
+		_parent().nav.updateById({"id":"tab1","name":"规范总则"});
+	</pre>
+
+	<h4>事件绑定</h4>
+	<p>在item中，可以设置单选项卡的事件，其类型可以为能够执行的string，也可以是function，当传入string时，eval的结果将恒为true。</p>
+	<p>目前，对于每个选项卡可以独立绑定如下事件：</p>
+	<ul>
+		<li>click：单击后触发；</li>
+		<li>beforeClick：单击时触发，返回false的函数会阻止切换到当前选项卡；</li>
+		<li>beforeClose：在选项卡被关闭之前触发，返回false的函数会阻止选项卡被关闭；</li>
+		<li>afterClose：选项卡关闭后触发。</li>
+	</ul>
+	<p><a onclick="addEventTab()">单击这里添加带有事件的选项卡</a></p>
+	<pre class="brush:js">
+		function addEventTab(){
+			tab = {
+				"name":"事件测试",
+				"title":"这是测试选项卡",
+				"id":"tab_testEvent",
+				"closeable":true,
+				"click" : function(id){
+					alert("您单击了ID为" + id + "的选项卡");
+				},
+				"beforeClick" : function(id){
+					return confirm("是否切换到ID为" + id + "的选项卡");
+				},
+				"beforeClose" : function(id){
+					return confirm("是否关闭ID为" + id + "的选项卡");
+				},
+				"afterClose" : function(id){
+					alert("您关闭了ID为" + id + "的选项卡");
+				},
+			};
+			_parent().nav.insert(tab,{"position":"last"});
+		}
+	</pre>
+</body>
+</html>

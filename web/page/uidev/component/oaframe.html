@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushJava.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<link rel="stylesheet" type="text/css" href="../package/css/itcui.dev.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../package/css/bs_extend.css" media="all"/>	
+	<script type="text/javascript" src="../package/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<title>OA风格框架</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+		function addTabTree(){
+			var opts = {
+				id : "163mail",
+				name : "网易邮箱",
+				url : "http://mail.163.com",
+				tabOpt : {
+					closeable : true
+				}
+			}
+			_parent()._ITC.addTabWithTree(opts);
+		}
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<div class="alert alert-warning">
+		在使用例子的代码时，请注意，_ITC对象位于主框架的itcui_frame.js中，但是经后期测试发现，在子页面中引用该JS可能会带来兼容问题，因此不要在子页面中引用该js，而是在子页面中通过_parent()._ITC进行调用。
+    </div>
+	<h4>什么是163邮箱风格框架</h4>
+	<p>163邮箱风格框是以网易邮箱的风格为基础，适用于OA系统或者普通系统后台的一种布局风格，包括：</p>
+	<ul>
+		<li>Header部分，由Logo、登陆的用户名、选项链接、搜索框等组成；</li>
+		<li>用于切换页面的导航选项卡</li>
+		<li>底部内容部分</li>
+		<li>可选的导航树（最多两级）</li>
+		<li>事件交互等其他功能，包括导航树的关闭，自动调整页面大小等</li>
+	</ul>
+	<p>一般情况下，使用封装后的接口只需要进行少量配置，即可完成主框架的搭建，如果用户需要，可以自行定义期中的部分，包括各种事件处理函数。</p>
+
+	<h4>演示</h4>
+	<p>本UI组件演示页面按照OA风格框架开发，除了基础操作之外，更多特性的演示请参考对话框、事件、选项卡等章节。</p>
+	
+	<h4>所需文件</h4>
+	<p>框架的搭建需要jQuery 1.10以上版本，同时需要itcui.js、itcui_frame.js、itcui_frame.css、itcui.css，无论是min版还是dev版。为了初始化框架，你需要定义一个Object对象opts，下面所说的所有配置都需要这个变量。</p>
+
+	<h4>搭建空白页面</h4>
+	<p>除了必备的引用之外，你需要向body部分添加如下代码，如果直接使用代码中的命名，可以省略下面步骤中关于ID的配置。</p>
+	<pre class="brush:xml">
+		&lt;div style="width: 100%;height:90px;position:absolute">
+			&lt;span class="system_logo">&lt;/span>
+			&lt;span class="title_username">admin/开发部&lt;/span>
+			&lt;ul class="head_link">
+				&lt;li class="li_username">&lt;a class="itcui_link" href="#">退出&lt;/a>&lt;/li>
+				&lt;li>|&lt;/li>
+				&lt;li>&lt;a class="itcui_link" id="link_setting">设置&lt;/a>&lt;/li>
+				&lt;li>|&lt;/li>
+				&lt;li>&lt;a class="itcui_link" href="#">帮助&lt;/a>&lt;/li>
+			&lt;/ul>
+			&lt;div class="itcui_nav_tab_container" id="itcui_nav_tab_container" style="clear:both;height: 36px;width: 100%">
+				
+			&lt;/div>
+		&lt;/div>
+		&lt;div class="mainframe_bottom" id="mainframe_bottom" style="width:100%;height:100%;position:absolute;top:90px">		
+			&lt;div id="mainframe_navtree" style="width:200px;height:400px;float:left;overflow:hidden;background-color:#F5F5F5" class="cbox">
+				
+			&lt;/div>
+			&lt;div id="mainframe_content" style="float:left">
+				
+			&lt;/div>
+		&lt;/div>
+	</pre>
+	<p>所需样式：</p>
+	<pre class="brush:xml">
+		.title_username{
+			font-weight: bold;font-size: 12px;float: left;height: 50px;line-height: 50px;vertical-align: middle;margin-top: 3px;color: rgb(180, 180, 180);
+		}
+		.head_link{
+			line-height: 26px;
+			height: 20px;
+			display: inline-block;
+			margin-top:12px;
+			float:right;
+			margin-right:12px
+		}
+
+		.head_link li{
+			float: right;
+			list-style: none;
+			font-size: 12px;
+			padding-left: 6px;
+			color:rgb(102, 102, 102);
+		}
+		
+		.system_logo{
+			background-image:url('images/system_logo.png');
+			margin-top: 3px;
+			float: left;
+			width:255px;
+			height:50px;
+		}
+	</pre>
+	<p>另外，你还需要对上面代码进行加工，完成设置菜单、登陆登出、系统LOGO、用户名和组织显示等内容。</p>
+
+	<h4>内容模型与盒模型</h4>
+	<p>和原有bootstrap相比，整合后的组件库去掉了对box-model的强制要求，而是以样式bbox的形式附加在所需组件上，部分组件因为历史原因沿用content-model。如果你发现哪些组件大小位置异常，不妨试试在外层class中加入bbox这个样式，更多内容请参考“兼容性”一节。</p>
+
+	<h4>配置选项卡</h4>
+	<p>选项卡的定义在opts.tabs中，例如</p>
+	<pre class="brush:js">
+		opts.tabs = [
+			{"name":"总则","id":"nav1"},
+			{"name":"组件演示","id":"nav2"},
+			{"name":"资源库","id":"nav3"}
+		];
+	</pre>
+	<p>你可以根据对应章节的说明，设定更多的参数，比如选项卡是否可以关闭，关闭前后的回调函数等。同时，你可以手动定义opts.tabSwitchFunc，该函数传入选项卡的id，执行选项卡点击后的切换动作（注意，这个过程通过事件回调完成，即点击选项卡之后，先完成动画上的切换，然后触发tabSwitch事件执行该回调函数），默认情况下，无需再次定义这个函数。</p>
+	<p>为了使用默认的回调函数，需要再定义opt.tabMapping，该变量定义了每个选项卡点击后的动作，格式为{选项卡id:{选项}}：</p>
+	<ul>
+		<li>url - 点击后跳转的链接，默认情况下，执行跳转会显示对应的树，并且根据权限展开树的第一个节点，如果不需要树，则需要指定该项，否则选项卡切换后下面是一片空白</li>
+		<li>cache - 该选项卡下的页面是否需要缓存，默认为false，一般情况下请手动设置为true</li>
+		<li>tree - 该选项卡下的导航树，可以为false</li>
+		<li>privilege - 选项卡所需的权限，如果指定该项，需要在页面中全局指定privMapping这个变量，并且变量的加载在选项卡初始化之前，格式为{权限：1}</li>
+		<li>id - 页面容器使用的真实id，默认情况下容器没有id属性（以特定class区分），但是为了兼容老页面（这些页面需要特定iframe的id以进行交互），可以在此设置容器的真实ID</li>
+	</ul>
+	<p>所以，一般情况下，你只需要这样配置：</p>
+	<pre class="brush:js">
+		opts.tabMapping = {
+			"nav1":{
+				"cache":true,
+				"tree":treeData
+			},
+			"nav1":{
+				"cache":true,
+				"tree":treeData2
+			}
+		};
+	</pre>
+
+	<h4>配置导航树</h4>
+	<p>导航树的配置如下（即上面的treeData）：</p>
+	<pre class="brush:js">
+		var treeData = [
+			{
+				"grouptitle" : "总则",
+				"items" : [
+					{"title":"关于本规范", "id":"nav1_11"},
+					{"title":"设计理念","id":"nav1_12"},
+					{"title":"整体设计原则","id":"nav1_13"},
+					{"title":"布局与排版","id":"nav1_14"},
+					{"title":"色彩搭配","id":"nav1_15"}
+				]
+			},
+			{
+				"grouptitle" : "组件演示",
+				"initexpand" : true,
+				"items" : [
+					{"title":"列表（弹窗修改）","id":"nav1_21"},
+					{"title":"列表（可编辑）","id":"nav1_22"},
+					{"title":"表单（固定列）","id":"nav1_23"},
+					{"title":"表单（自动列）","id":"nav1_24"},
+					{"title":"表单提交结果-成功","id":"nav1_25"},
+					{"title":"表单提交结果-失败","id":"nav1_26"}
+				]
+			},
+			{
+				"grouptitle" : "测试：无下级",
+				"id" : "nav_nochildren"
+			}
+		];
+	</pre>
+	<p>需要注意的是，<strong style="color:#ff0000">树节点的id遵循“选项卡id_xxx”这样的方式</strong>，否则使用默认函数将无法完成正确跳转。树的主项、子项都可以通过privilege字段绑定权限，如：</p>
+	<pre class="brush:js">
+		trees["sys"] = [{
+			"grouptitle" : "用户管理",
+		    "initexpand" : true,
+		    "privilege":"F-USER-T",
+		    "items":[
+				{
+				    "title" : "平台用户",
+				    "id":"sys_1",
+				    "privilege":"F-USR-VIEW"
+				},{
+				    "title" : "乐学网用户",
+				    "id":"sys_2",
+				    "privilege":"F-LXUSER-VIEW"
+				}
+		    ]
+		}
+	</pre>
+	<p>接下来，定义opts.treeMapping，指定每一个节点对应的页面。</p>
+	<pre class="brush:js">
+		opts.treeMapping = {
+			"nav1_21":"content_table.html",
+			"nav1_22":"content_table_editable.html",
+			"nav1_23":"content_form.html",
+			"nav1_24":"content_form_auto.html",
+			"nav1_25":"content_success.html",
+			"nav1_26":"content_fail.html",
+
+			"nav2_11":"component/about.html",
+			"nav2_12":"component/howtouse.html",
+			"nav2_13":"component/compatibility.html",
+			"nav2_15":"component/grid.html",
+			"nav2_16":"component/validation.html",
+			"nav2_17":"component/updatelog.html"
+		};
+	</pre>
+	<p>如果使用配置文件存储opts变量，请注意编码要和页面编码一致。</p>
+	<p>最后，在document.ready中执行：</p>
+	<pre class="brush:js">
+		_ITC.init(opts);
+		_ITC.switchDefaultTab();
+	</pre>
+	<p>整个配置过程结束。</p>
+
+	<h4>封装的对象</h4>
+	<p>_ITC中提供了以下对象：</p>
+	<ul>
+		<li>_ITC.navTab - 导航选项卡</li>
+		<li>_ITC.navTree - 导航树</li>
+		<li>_ITC.container - 页面容器</li>
+	</ul>
+	<p>在有特殊需要时，可以直接操作这3个对象。如下面代码可以动态创建一个可以关闭的选项卡：</p>
+	<pre class="brush:js">
+		var tabOpt = {
+			id : "editSched",
+			name : "编辑课程师资",
+			closeable : true,
+			afterClose : function(id){
+				_ITC.deleteTab(id);
+				_ITC.navTab.activeById("proj");
+	        }
+		};
+		var mappingOpt = {
+			url : "project/editProjectCourseTable.jsp?id="+id	
+		};
+		_ITC.addTab(tabOpt,mappingOpt);
+		//这里要注意，_ITC提供的只是回调函数，手动触发选项卡切换还是要调用navTab的activeById
+		_ITC.navTab.activeById("editSched");
+	</pre>
+
+	<h4>页面跳转</h4>
+	<p>使用上面提供的代码，可以自动完成选项卡切换和页面跳转的动作。我们假定：</p>
+	<ul>
+		<li>每一个选项卡对应一个container，container切换时缓存当前页面。</li>
+		<li>每一个选项卡下的导航树共用一个container，切换时不缓存页面。</li>
+	</ul>
+	<p>如果需要在其他选项卡显示页面，在执行_ITC.container.navigate函数前，应该调用navtab的activeById函数，这样默认的处理函数同时会切换container。</p>
+	<p>当然，选项卡和导航树本身都提供了动画意义上的切换函数，你可以根据需要执行container的navigate函数来进行页面跳转（如果跳转请求在当前页面发起直接使用window.location.href更好）</p>
+	<p>关于如何与iframe内的对象交互，请参考<strong>实用工具 - 通知</strong>一节的代码，关于导航选项卡、导航树、页面容器的切换方式请参考相关对象的说明页面。</p>
+
+	<h4>在子页面调用</h4>
+	<p>如果需要在子页面调用_ITC中的函数，可以：</p>
+	<ul>
+		<li>使用itcui.min(dev).js封装的_parent()函数，直接访问_parent()._ITC（推荐）</li>
+		<li>引用itcui_frame.js，_ITC对象在初始化之前会检测父页面的_ITC对象是否存在，如果有则直接把自己指向该对象，该方法会引入不必要的JS，不推荐这样使用</li>
+	</ul>
+
+	<h4>函数与引用陷阱</h4>
+	<p>虽然你可以跨页面调用_event_handler绑定事件，但是由于绑定的实际上只是一个指向函数的指针，如果在子页面中对主页面绑定函数，那么子页面一旦切换或者关闭，该函数将被释放，_event_handler在调用时就会触发一个空指针。如以下场景：</p>
+	<ul>
+		<li>某选项卡下有一个导航树</li>
+		<li>导航树下某个节点指向的页面对选项卡绑定了afterClose事件</li>
+		<li>选项卡下的页面由于某种原因发生了跳转</li>
+		<li>关闭选项卡，此时由于页面不存在，处理函数也不再存在，如果在IE下，会报空指针异常</li>
+	</ul>
+	<p>而在上面的例子中，那样写并没有问题，因为新建的选项卡是独立页面，不会发生跳转后，关闭事件触发后，选项卡和处理函数都不再存在，因而也无需关心空指针问题。</p>
+
+	<h4>更多配置</h4>
+	<p>你可以在opts中指定以下参数，一般情况下请不要更改这些参数：</p>
+	<ul>
+		<li>tabId - 导航选项卡的ID</li>	
+		<li>bottomId - 底部Wrap的ID（resize时使用）</li>	
+		<li>contentId - 存储内容区域的ID（container对象会自动创建）</li>
+		<li>treeId - 导航树的ID</li>
+		<li>tabSwitchFunc - 选项卡切换后的回调函数</li>
+		<li>treeSwitchFunc - 导航树切换后的回调函数</li>
+	</ul>
+		
+	<h4>使用某选项卡的树打开新选项卡</h4>
+	<p>_ITC.addTabWithTree(opts)函数可以创建并打开一个具有树联动的选项卡，具体而言，就是从A选项卡中打开B选项卡，B选项卡会带有A选项卡的树，同时AB选项卡树状态一致（但是页面不同），而且B选项卡中树上的点击会跳转会A选项卡执行。</p>
+	<p><a onclick="addTabTree()">演示：在新选项卡中带树打开网页邮箱</a></p>
+	<p>代码：</p>
+	<pre class="brush:js">
+		function addTabTree(){
+			var opts = {
+				id : "163mail",
+				name : "网易邮箱",
+				url : "http://mail.163.com"
+			}
+			_parent()._ITC.addTabWithTree(opts);
+		}
+	</pre>
+	<p>选项：</p>
+	<ul>
+		<li>id,name：新选项卡的ID和名称</li>
+		<li>url：目标页面地址</li>
+		<li>tab：用哪个选项卡的树，默认为空表示当前选项卡</li>
+		<li>tabOpt ：Object，其余添加选项卡时的选项，包括可否关闭，事件，都写在这个参数里</li>
+	</ul>
+</body>
+</html>

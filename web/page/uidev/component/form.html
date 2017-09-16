@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/area.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>
+	<style>
+		.col-xs-125 {
+ 		    width: 12.5%;
+ 		    float:left;
+		}
+		.col-xs-875 {
+ 		    width: 87.5%;
+ 		    float:left;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>	
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/bs_doc_ext.css" media="all"/>
+	<script type="text/javascript" src="../package/js/jquery.validate.js"></script>
+	<title>表单</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			respond.update();		
+		});	
+		function test_autohide(){
+			$("#test_autohide").find("input").each(function(){
+				$(this).attr('onlylabel',true).ITCUI_Input();
+			});
+			$("#test_autohide").ITC_AutoHide();
+		}
+
+		function testRender(){
+			var fields = [
+				{title : "姓名", id : "name"},
+				{title : "年龄", id : "age"},
+				{title : "身份证号", id : "idnum"},
+				{title : "手机", id : "mobile"},
+				{title : "电子邮箱", id : "mail"},
+				{title : "生日", id:"dob",type:"date"},
+				{title : "出生地", id : "hometown"},
+				{
+					title : "性别", 
+					id : "gender",
+					type : "radio",
+					data : [
+						['male','男',true],
+						['female','女']
+					]
+				}
+			];
+			fields[3].render = function(id){
+				//放大镜图标属于基础资源，可以直接引用
+				//注意这里要去掉form-control这个样式，否则你会看到。。两个框框
+				$("#" + id).attr("icon","itcui_btn_mag").removeClass("form-control").ITCUI_Input();
+				$("#" + id).next(".itcui_input_icon").on("click",function(){
+					var src = "component/fake_phonebook.html";					
+					var dlgOpts = {
+					    width : 400,
+					    height:350,
+					    closed : false,
+					    title:"集团通讯录",
+					    modal:true
+					};
+					Notice.dialog(src,dlgOpts,null);
+				});
+			}
+			fields[2].render = function(id){
+				$("#" + id).on("blur",function(){
+					var val = $(this).val();
+					//例子只演示18位身份证号
+					if(val && val.length==18){
+						var gender = (val.substring(16,17)%2==1)?"male":"female";
+						var year = val.substring(6,10);
+						var month = val.substring(10,12);
+						var day = val.substring(12,14);
+						//areaCode在引用的area.js中
+						var area = areaCode[val.slice(0,6)] || areaCode[val.slice(0,4)] || areaCode[val.slice(0,2)] || "未知地区";
+						var data = {
+							"gender" : gender,
+							"dob" : year + "-" + month + "-" + day,
+							"hometown" : area
+						};
+						$("#testRenderForm").ITC_Form('loaddata',data);
+					}
+				});
+			};
+			$("#testRenderForm").ITC_Form({validate:true,fixLabelWidth:true},fields);
+		}
+
+		function getBirthDayField(id,title){
+			var field = {};
+			field.getHtml = function(id){
+				var s = '<select id="' + id + '_year" style="width:64px;float:left">';
+				var sep = '<span class="ctrl-label" style="width:20px;float:left;margin-right:6px;">$</span>';
+				for(var i=1960;i<2014;i++){
+					var chkStr = i=="1980"?"selected":""
+					s += '<option value="' + i + '" ' + chkStr + '>' + i + '</option>';
+				}
+				s += '</select>';
+				s += sep.replace("$","年");
+				s += '<select id="' + id + '_month" style="width:48px;float:left">';
+				for(var i=1;i<=12;i++){
+					var chkStr = i=="1"?"selected":""
+					s += '<option value="' + i + '" ' + chkStr + '>' + i + '</option>';
+				}
+				s += '</select>';
+				s += sep.replace("$","月");
+				s += '<select id="' + id + '_day" style="width:48px;float:left">';
+				for(var i=1;i<=31;i++){
+					var chkStr = i=="1"?"selected":""
+					s += '<option value="' + i + '" ' + chkStr + '>' + i + '</option>';
+				}
+				s += '</select>';
+				s += sep.replace("$","日");
+				return s;
+			};
+
+			field.render = function(id){
+				$("#" + id + "_year").ITCUI_ComboBox();
+				$("#" + id + "_month").ITCUI_ComboBox(null,{
+					"onChange" : function(val,jqObj){
+						//为了简单起见这里就不考虑2月有没有29天了
+						var md = [31,28,31,30,31,30,31,31,30,31,30,31];
+						var s = "";
+						for(var i=1;i<=md[val-1];i++){
+							var chkStr = i=="1"?"selected":""
+							s += '<option value="' + i + '" ' + chkStr + '>' + i + '</option>';
+						}
+						var _id = jqObj.attr("id").replace("_month","") + "_day";
+						$("#" + _id).html(s);
+					}
+				});
+				$("#" + id + "_day").ITCUI_ComboBox();
+			};
+
+			field.getValue = function(id){
+				var year = $("#" + id + "_year").ITCUI_ComboBox("getSelected");
+				var month = $("#" + id + "_month").ITCUI_ComboBox("getSelected");
+				var day = $("#" + id + "_day").ITCUI_ComboBox("getSelected");
+				return year + "-" + month + "-" + day;
+			};
+
+			field.setValue = function(val,id){
+				var arr = val.split("-");
+				$("#" + id + "_year").ITCUI_ComboBox("select",arr[0]);
+				$("#" + id + "_month").ITCUI_ComboBox("select",arr[1]);
+				$("#" + id + "_day").ITCUI_ComboBox("select",arr[2]);
+			};
+
+			field.getTarget = function(id){
+				return $("#" + id + "_year");
+			};
+
+			field.type="userdefine";
+			field.id = id;
+			field.title = title;
+			return field;
+		}
+		function testUserDefineFields(){
+			var fields = [];
+			fields.push(getBirthDayField("dob","生日"));
+			fields.push(getBirthDayField("graduate","毕业日期"));
+			fields.push(getBirthDayField("workDate","何时工作"));
+			$("#testDefineForm").ITC_Form({validate:true,fixLabelWidth:true},fields);
+		}
+
+		function loadData(){
+			var data = {
+				"name" : "路人甲",
+				"age" : "28",
+				"school" : "sjd",
+				"cert":"law,doctor",
+				"workexp":"c",
+				"dob":"1978-06-22"
+			}
+			$("#autoform").ITC_Form("loaddata",data);
+		}
+
+		function loadDob(){
+			var data = {"dob":"1988-6-17"};
+			$("#testDefineForm").ITC_Form("loaddata",data);
+		}
+
+		var fields = [
+			{title : "姓名", id : "name", rules : {required:true}},
+			{title : "年龄", id : "age", rules : {required:true,digits:true}},
+			{
+				title : "毕业学校", 
+				id : "school",
+				type : "combobox",
+				data : [
+					["bju","北京大学"],
+					["tsu","清华大学"],
+					["sjd","上海交通大学"],
+					["fd","复旦大学"],
+					["whu","武汉大学"]
+				]
+			},
+			{title : "身份证号", id : "idnum"},
+			{title : "手机", id : "mobile",value:"13636xxxxxx"},
+			{title : "电子邮箱", id : "mail"},
+			{title : "学历", id : "scholar"},
+			{title : "职称", id : "title"},
+			{title : "生日", id:"dob",type:"date",options:{"startDate":"1980-01-01"},value:new Date().getTime(),dataType:"date"},
+			{
+				title : "家庭住址", 
+				id : "addr",
+				linebreak:true,
+				wrapXsWidth:12,
+				wrapMdWidth:8,
+				labelMdWidth:125,
+				inputMdWidth:875,
+				labelXsWidth:125,
+				inputXsWidth:875
+			},
+			{title : "祖籍", id : "hometown"},
+			{
+				title : "个人简介", 
+				id : "resume",
+				type : "textarea",
+				linebreak:true,
+				wrapXsWidth:12,
+				wrapMdWidth:12,
+				labelMdWidth:1,
+				labelXsWidth:125,
+				inputXsWidth:875
+			},
+			{
+				title : "资格证书", 
+				id : "cert",
+				type : "checkbox",
+				data : [
+					['law','律师'],
+					['teacher','教师'],
+					['doctor','医生']
+				]
+			},
+			{
+				title : "工作经验", 
+				id : "workexp",
+				type : "radio",
+				data : [
+					['a','应届',true],
+					['b','1-3年'],
+					['c','3年以上']
+				]
+			}
+		];
+
+		function autoform1(){			
+			$("#autoform").ITC_Form({validate:true,initAsReadonly:true},fields);
+		}
+
+		function autoform2(){			
+			$("#autoform").ITC_Form({validate:true},fields);
+		}
+
+		function autoformf(){
+			$("#autoform").ITC_Form({validate:true,fixLabelWidth:true},fields);
+		}
+
+		function fullload(){
+			$("#autoform").iForm("setFullVal",{"name":"testname"});
+		}
+
+		function getform(id){
+			var result = $("#" + id).ITC_Form("getdata");
+			var s = "";
+			for(var k in result){
+				s += k + " = " + result[k] + "\n";
+			}
+			alert(s);
+		}
+
+		function setReadonly(id){
+			$("#" + id).ITC_Form("readonly");
+		}
+
+		function beginEdit(id){
+			$("#" + id).iForm("beginEdit");	
+		}
+	</script>
+	<style>
+		@media (min-width: 992px){
+			.col-md-125 {
+				width: 12.5%;
+			}
+			.col-md-875 {
+				width: 87.5%;
+			}
+		}
+	</style>
+</head>
+<body style="margin:16px;font-size:14px">
+	<div class="alert alert-warning">
+		由于自动表单封装已经日渐成熟，从r4版开始，将移除普通表单（BS风格）的空白字段隐藏功能。
+    </div>
+    <div class="alert alert-warning">
+		推荐使用标签定宽模式，因为浮动标签在列合并时会遇到恼人的数学计算问题。
+    </div>
+    <div class="alert alert-info">
+		IE8以上的浏览器提供native方法JSON.stringfiy，可以把JSON转换为字符串，不需要自行编写相关函数。
+    </div>
+	<h4>自动表单</h4>
+	<p><a onclick="autoform()">生成一个表单(浮动标签宽度)</a></p>
+	<p><a onclick="autoform1()">生成一个表单(标签宽度100px，只读模式)</a></p>
+	<p><a onclick="autoform2()">生成一个表单(标签宽度100px，编辑模式)</a></p>
+	<p><a onclick="getform('autoform')">获取表单内容</a></p>
+	<p><a onclick="loadData()">加载数据</a></p>
+	<p><a onclick="fullload()">加载数据（未指定的字段将被清空）</a></p>
+	<p><a onclick="setReadonly('autoform')">设置为只读</a></p>
+	<p><a onclick="beginEdit('autoform')">进入编辑模式</a></p>
+	
+	<form id="autoform">
+	</form>
+
+	<h4>参数</h4>
+	<p>ITC_Form的第一个函数为表单选项，默认可以为null，其中支持的参数有：</p>
+	<ul>
+		<li>xsWidth - 每一个表单项在小屏幕下的宽度，默认为6即1/2</li>
+		<li>mdWidth - 每一个表单项在中等屏幕下的宽度，默认为4即1/3</li>
+		<li>labelWidth - 标签宽度，默认为3即1/4，则表单输入框占3/4</li>
+		<li>labelFixWidth - 固定标签宽度时标签的宽度，默认为100px</li>
+		<li>container - 是否在表单外增加一个容器，设置此项为true时表单将有最大宽度</li>
+		<li>validate - 是否开启表单验证，默认为false</li>
+		<li>fieldPrefix - input框id的前缀，默认为f_，即设定id为name，则真实id为f_name，需要注意的是如果是checkbox或者radio，则为f_id属性_每一个子项的id，如f_gender_male</li>
+		<li>namePrefix - input框name的前缀，默认为f_</li>
+		<li>fixLabelWidth - 是否固定标签宽度，默认为false，即标签和输入框同时调整大小</li>
+		<li>labelColon - 是否自动为标签添加冒号，默认为true</li>
+		<li>validMsg - 验证错误的信息，此项可以在opts中全局设置，也可以在表单项中设置，支持以下变量：%f字段名%l内容长度%f2两个字段相比时第二个字段</li>
+		<li>noPrivAct - 没有权限时的动作，默认为hide即隐藏，也可以设置为readonly即变为只读模式，权限不需要选项开启，只要在对应项设置而已</li>
+	</ul>
+
+	<h4>字段</h4>
+	<p>最简单的字段只有id和title两项，系统会自动生成name，默认这段代码将生成一个输入框</p>
+	<pre class="brush:js">
+		{title : "姓名", id : "title"}
+	</pre>
+	<p>字段支持更多属性：</p>
+	<ul>
+		<li>type - 字段类别，默认为text即单行输入框，可以选择label、textarea、combobox、checkbox、radio、date、datetime、hidden（只用于存储数据，不显示在表单中），也可以是userdefine，即用户自定义</li>
+		<li>data - 初始化时所用的数据，text不需要该项，combobox/checkbox/radio的数据格式均为[id,显示文字,默认选中]的id，对于combobox支持的数据格式请参考相关章节或者上面提供的代码</li>
+		<li>linebreak - 设置为true此项强制换行，默认情况下所有表项均写到一个row中，使用响应式布局调整每行显示个数。</li>
+		<li>wrapXsWidth - 小屏幕下占的宽度，默认使用xsWidth即6</li>
+		<li>wrapMdWidth - 中等屏幕下占的宽度，默认使用mdWidth即4</li>
+		<li>labelXsWidth - 标签在小屏幕下的宽度，默认使用labelWidth即3</li>
+		<li>labelMdWidth - 标签在中等屏幕下的宽度，默认使用labelWidth即3</li>
+		<li>inputXsWidth - 输入框在小屏幕下的宽度，默认使用12-labelXsWidth</li>
+		<li>inputMdWidth - 输入框在中等屏幕下的宽度，默认使用12-labelMdWidth</li>
+		<li>privilege - 关联的权限</li>
+		<li>options - 组件的其他选项，对于combobox，其data参数可以在此设置，也可以直接在field.data中指定</li>
+		<li>height - 字段高度，默认为combobox或者input的高度26px</li>
+	</ul>
+	<p>注：date支持的数据格式为yyyy-mm-dd，datetime支持的格式为yyyy-mm-dd hh:ii:ss，均为string类型。</p>
+	<p><span style="color:#ff0000">由于float自动换行需要等高，建议对于高度不是26px的元素进行强制换行处理，否则会导致布局混乱。</span></p>
+
+	<p>演示表单中整个字段数据如下：</p>
+	<pre class="brush:js">
+		var fields = [
+			{title : "姓名", id : "name", rules : {required:true}},
+			{title : "年龄", id : "age", rules : {required:true,digits:true}},
+			{
+				title : "毕业学校", 
+				id : "school",
+				type : "combobox",
+				data : [
+					["bju","北京大学"],
+					["tsu","清华大学"],
+					["sjd","上海交通大学"],
+					["fd","复旦大学"],
+					["whu","武汉大学"]
+				]
+			},
+			{title : "身份证号", id : "idnum"},
+			{title : "手机", id : "mobile"},
+			{title : "电子邮箱", id : "mail"},
+			{title : "学历", id : "scholar"},
+			{title : "职称", id : "title"},
+			{title : "生日", id:"dob",type:"date"},
+			{
+				title : "家庭住址", 
+				id : "addr",
+				linebreak:true,
+				wrapXsWidth:12,
+				wrapMdWidth:8,
+				labelMdWidth:125,
+				inputMdWidth:875,
+				labelXsWidth:125,
+				inputXsWidth:875
+			},
+			{title : "祖籍", id : "hometown"},
+			{
+				title : "个人简介", 
+				id : "resume",
+				type : "textarea",
+				linebreak:true,
+				wrapXsWidth:12,
+				wrapMdWidth:12,
+				labelMdWidth:1,
+				labelXsWidth:125,
+				inputXsWidth:875
+			},
+			{
+				title : "资格证书", 
+				id : "cert",
+				type : "checkbox",
+				data : [
+					['law','律师'],
+					['teacher','教师'],
+					['doctor','医生']
+				]
+			},
+			{
+				title : "工作经验", 
+				id : "workexp",
+				type : "radio",
+				data : [
+					['a','应届',true],
+					['b','1-3年'],
+					['c','3年以上']
+				]
+			}
+		];
+	</pre>
+
+	<h4>表单验证</h4>
+	<p>验证功能需要至少为字段设定rules，具体写法参考表单验证一节，messages作为可选可以不写，系统会使用内置文本生成验证信息。</p>
+	<pre class="brush:js">
+		{title : "年龄", id : "age", rules : {required:true,digits:true}}
+	</pre>
+	<p>同时，需要设定opts.validate=true，之后就可以用$(form).valid()进行表单验证了。默认的验证信息如下：</p>
+	<pre class='brush:js'>
+		var defValidMsg = {
+			"minlength" : "%f至少需要%l个字符",
+			"maxlength" : "%f不能超过%l个字符",
+			"email" : "请输入合法的邮件地址",
+			"alphanumeric" : "%f只能由字母和数字组成",
+			"regex" : "%f已经被注册",
+			"required" : "%f不能为空",
+			"greaterThan" : "%f不能晚于%f2",
+			"equalTo" : "两次密码输入必须一致",
+			"digits" : "%f只能由0-9组成",
+			"number" : "%f不是合法的数字",
+			"remote" : "%f已经存在",
+			"range" : "%f应该介于%l1和%l2之间",
+			"rangelength" : "%f的长度应该介于%l1和%l2之间"
+		};
+	</pre>
+	<p>你可以通过覆盖字段的messages来替换这些验证失败的文字。<p>
+	<p>模块内置了验证的样式，你也可以自定义函数来覆盖这个样式，分别为opts.errorPlacement和opts.validSuccess(对应jq validation的success方法)。</p>
+	<p>需要注意的是，由于组件经过封装，目前只支持文本框的验证，对于combo、radio等取值为选择型的组件，建议设定默认值。</p>
+
+	<h4>取值与赋值</h4>
+	<p>使用$(form).ITC_Form("getdata")方法可以获得表单的值，格式为{name:value}</p>
+	<p>赋值的例子如下：</p>
+	<pre class="brush:js">
+		function loadData(){
+			var data = {
+				"name" : "路人甲",
+				"age" : "28",
+				"school" : "sjd",
+				"cert":"law,doctor",
+				"workexp":"c",
+				"dob":"1978-06-22"
+			}
+			$("#autoform").ITC_Form("loaddata",data);
+		}
+	</pre>
+
+	<h4>如何计算宽度</h4>
+	<p>如果使用定宽标签，那么无论屏幕宽度多少都是100px和W-100px，但是浮动宽度采用的是百分比，这样就有一些问题。</p>
+	<p>默认情况下，3列显示时一个字段占1/3，其中标签部分占1/4，那么对于整行来说，标签部分占了1/12，但是，当切换到2列显示时，一个字段占1/2，相对于整行，标签的宽度从1/12就变到了1/8，显然BS的宽度都是1/12的整数倍，如何自定义1/8的CSS？</p>
+	<p>首先，css的定义原则是按屏幕顺序从小到大，对于最小屏幕，显然要比itcui.dev.css还要在前，因此首先要：</p>
+	<pre class="brush:xml">
+		&lt;style>
+		.col-xs-125 {
+ 		    width: 12.5%;
+ 		    float:left;
+		}
+		.col-xs-875 {
+ 		    width: 87.5%;
+ 		    float:left;
+		}
+		&lt;/style>
+		&lt;link rel="stylesheet" type="text/css" href="../package/css/itcui.dev.css" media="all"/>	
+		&lt;script type="text/javascript" src="../package/js/itcui.dev.js">&lt;/script>
+	</pre>
+	<p>同时，如果需要在大屏幕下，也要应用1/8 - 7/8这一布局，需要使用@media标签，而这一定义应该在itcui.dev.css引用后</p>
+	<pre class="brush:xml">
+		@media (min-width: 992px){
+			.col-md-125 {
+				width: 12.5%;
+			}
+			.col-md-875 {
+				width: 87.5%;
+			}
+		}	</pre>
+	<p>这样，你就可以在设置宽度时用125和875这两个定义了。但是，你会发现标签的对齐总是差了那么几个px，这是因为在border-box时，虽然字段是严格按照百分比计算宽度，不过字段设置了padding，字段内的输入框和标签不能占据完整空间，而是1/3-padding，因此对于占2列或者3列的元素，要多设置一些padding才能补齐这个差。</p>
+
+	<h4>自定义字段</h4>
+	<p>当自动表单提供的标准组件无法满足需要时，而且自定义部分又不时，可以对部分字段使用自定义组件。此时组件的type字段取值为"userdefine"，并且增加参数control（原定的id和title不能省略），这个参数为一个Object，需要实现以下接口：</p>
+	<ul>
+		<li>getHtml(id)：用于生成字段的html代码，id和name为经过前缀拼接的值。</li>
+		<li>render(id)：用于对生成后的Html进行渲染</li>
+		<li>getValue(id)：用于获取字段当前的值。</li>
+		<li>setValue(id)：用于设定字段的值。</li>
+		<li>getTarget(id)：获取当前组件中的一个元素，要求这个元素外层没有任何wrap，用于设置只读是隐藏元素。</li>
+	</ul>
+	<p>下面这个例子演示了如何将3个combo封装为一个年月日选择器，用于选择出生日期，其中月-日有简单的联动。</p>
+	<p><a onclick="testUserDefineFields()">单击这里创建表单</a></p>
+	<p><a onclick="loadDob()">将生日一栏设定为1988年6月17日</a></p>
+	<p><a onclick="getform('testDefineForm')">获取表单取值</a></p>
+	<p><a onclick="setReadonly('testDefineForm')">将表单设置为只读模式</a></p>
+	<form id="testDefineForm" style="width:100%">
+	</form>
+	<p>实现代码如下：</p>
+	<pre class="brush:js">
+		function getBirthDayField(id,title){
+			var field = {};
+			field.getHtml = function(id){
+				var s = '&lt;select id="' + id + '_year" style="width:64px;float:left">';
+				var sep = '&lt;span class="ctrl-label" style="width:20px;float:left;margin-right:6px;">$&lt;/span>';
+				for(var i=1960;i&lt;2014;i++){
+					var chkStr = i=="1980"?"selected":""
+					s += '&lt;option value="' + i + '" ' + chkStr + '>' + i + '&lt;/option>';
+				}
+				s += '&lt;/select>';
+				s += sep.replace("$","年");
+				s += '&lt;select id="' + id + '_month" style="width:48px;float:left">';
+				for(var i=1;i&lt;=12;i++){
+					var chkStr = i=="1"?"selected":""
+					s += '&lt;option value="' + i + '" ' + chkStr + '>' + i + '&lt;/option>';
+				}
+				s += '&lt;/select>';
+				s += sep.replace("$","月");
+				s += '&lt;select id="' + id + '_day" style="width:48px;float:left">';
+				for(var i=1;i&lt;=31;i++){
+					var chkStr = i=="1"?"selected":""
+					s += '&lt;option value="' + i + '" ' + chkStr + '>' + i + '&lt;/option>';
+				}
+				s += '&lt;/select>';
+				s += sep.replace("$","日");
+				return s;
+			};
+
+			field.render = function(id){
+				$("#" + id + "_year").ITCUI_ComboBox();
+				$("#" + id + "_month").ITCUI_ComboBox(null,{
+					"onChange" : function(val,jqObj){
+						//为了简单起见这里就不考虑2月有没有29天了
+						var md = [31,28,31,30,31,30,31,31,30,31,30,31];
+						var s = "";
+						for(var i=1;i&lt;=md[val-1];i++){
+							var chkStr = i=="1"?"selected":""
+							s += '&lt;option value="' + i + '" ' + chkStr + '>' + i + '&lt;/option>';
+						}
+						var _id = jqObj.attr("id").replace("_month","") + "_day";
+						$("#" + _id).html(s);
+					}
+				});
+				$("#" + id + "_day").ITCUI_ComboBox();
+			};
+
+			field.getValue = function(id){
+				var year = $("#" + id + "_year").ITCUI_ComboBox("getSelected");
+				var month = $("#" + id + "_month").ITCUI_ComboBox("getSelected");
+				var day = $("#" + id + "_day").ITCUI_ComboBox("getSelected");
+				return year + "-" + month + "-" + day;
+			};
+
+			field.setValue = function(val,id){
+				var arr = val.split("-");
+				$("#" + id + "_year").ITCUI_ComboBox("select",arr[0]);
+				$("#" + id + "_month").ITCUI_ComboBox("select",arr[1]);
+				$("#" + id + "_day").ITCUI_ComboBox("select",arr[2]);
+			};
+
+			field.getTarget = function(id){
+				return $("#" + id + "_year");
+			};
+
+			field.type="userdefine";
+			field.id = id;
+			field.title = title;
+			return field;
+		}
+		function testUserDefineFields(){
+			var fields = [];
+			fields.push(getBirthDayField("dob","生日"));
+			fields.push(getBirthDayField("graduate","毕业日期"));
+			fields.push(getBirthDayField("workDate","何时工作"));
+			$("#testDefineForm").ITC_Form({validate:true,fixLabelWidth:true},fields);
+		}
+	</pre>
+
+	<h4>自定义渲染</h4>
+	<p><a onclick="testRender()">单击这里创建表单</a></p>
+	<p>为了满足自定义组件的需求，可以通过定义字段的render函数，来为默认组件添加各种附加功能。下面的表单演示了2个功能，第一个功能是在电话号码一栏的输入框中添加一个放大镜，点击弹出电话本对话框。第二个功能是输入身份证号码（18位）后，自动填写性别、籍贯、出生日期。</p>
+	<p>自定义的渲染不会影响默认的渲染方法，而且在默认方法执行完后进行。</p>
+	<form id="testRenderForm" style="width:100%">
+	</form>
+	<p>弹出框内JS代码：</p>
+	<pre class="brush:js">
+		function go(num){
+			//iframeComponents是iframe的id，如果用权限组件提供的接口会生成id，否则要自己设一个
+			var p = _parent().window.document.getElementById("iframeComponents").contentWindow;
+			var data = {
+				"mobile" : num
+			};
+			p.$("#testRenderForm").ITC_Form('loaddata',data);
+			_parent().$("#itcDlg").dialog("close");
+		}
+	</pre>
+	<p>表单渲染代码</p>
+	<pre class="brush:js">
+		function testRender(){
+			var fields = [
+				{title : "姓名", id : "name"},
+				{title : "年龄", id : "age"},
+				{title : "身份证号", id : "idnum"},
+				{title : "手机", id : "mobile"},
+				{title : "电子邮箱", id : "mail"},
+				{title : "生日", id:"dob",type:"date"},
+				{title : "出生地", id : "hometown"},
+				{
+					title : "性别", 
+					id : "gender",
+					type : "radio",
+					data : [
+						['male','男',true],
+						['female','女']
+					]
+				}
+			];
+			fields[3].render = function(id){
+				//放大镜图标属于基础资源，可以直接引用
+				//注意这里要去掉form-control这个样式，否则你会看到。。两个框框
+				$("#" + id).attr("icon","itcui_btn_mag").removeClass("form-control").ITCUI_Input();
+				$("#" + id).next(".itcui_input_icon").on("click",function(){
+					var src = "component/fake_phonebook.html";					
+					var dlgOpts = {
+					    width : 400,
+					    height:350,
+					    closed : false,
+					    title:"集团通讯录",
+					    modal:true
+					};
+					Notice.dialog(src,dlgOpts,null);
+				});
+			}
+			fields[2].render = function(id){
+				$("#" + id).on("blur",function(){
+					var val = $(this).val();
+					//例子只演示18位身份证号
+					if(val && val.length==18){
+						var gender = (val.substring(16,17)%2==1)?"male":"female";
+						var year = val.substring(6,10);
+						var month = val.substring(10,12);
+						var day = val.substring(12,14);
+						//areaCode在引用的area.js中
+						var area = areaCode[val.slice(0,6)] || areaCode[val.slice(0,4)] || areaCode[val.slice(0,2)] || "未知地区";
+						var data = {
+							"gender" : gender,
+							"dob" : year + "-" + month + "-" + day,
+							"hometown" : area
+						};
+						$("#testRenderForm").ITC_Form('loaddata',data);
+					}
+				});
+			};
+			$("#testRenderForm").ITC_Form({validate:true,fixLabelWidth:true},fields);
+		}
+	</pre>
+</body>
+</html>

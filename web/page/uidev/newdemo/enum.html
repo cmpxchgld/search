@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJava.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../component/css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bootstrap-theme.css" media="all"/>
+	<title>枚举使用</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>准备工作</h4>
+	<p>请确保你能在后端使用@ReturnEnumsBind，如果你不知道这东西是什么，或者提示这个东西没定义，请去找葵大帝。</p>
+
+	<h4>在表单中使用枚举</h4>
+	<p>假设枚举的类型为SCHOOL，并且初值是bju，你可以这样写（建议用此方法赋初值，不这么写不保证没bug）：</p>
+	<pre class="brush:js">
+		var fields = [
+		    {id:"id",type:"hidden"},
+		    {title : "姓名", id : "name"},
+		    {title : "年龄", id : "age"},
+		    {
+		        title : "毕业学校", 
+		        id : "school",
+		        type : "combobox",
+		        dataType : "enum",
+		        enumCat : "SCHOOL",
+		        value : "bju"
+		    }];
+		 //...下面的初始化代码自己写
+	</pre>
+
+	<h4>为任意一个iCombo加载枚举</h4>
+	<p>可以使用函数：</p>
+	<pre class="brush:js">
+		FW.loadComboEnum(comboId,enumCat,defaultVal)
+	</pre>
+	<p>其中</p>
+	<ul>
+		<li>comboId为iCombo的id</li>
+		<li>enumCat为枚举类的code</li>
+		<li>defaultVal为默认值（code）</li>
+	</ul>
+	<p>该函数是对TimssService.getEnumParams的封装，是一个异步方法（当使用注解时会变成同步方法），所以不使用此方法赋初值需要注意请求先后的问题。</p>
+
+	<h4>将枚举转换为datagrid等可以使用的formatter</h4>
+	<pre class="brush:js">
+		var opts = {
+			formatter : function(val){
+				return FW.getEnumMap("YOUR_ENUM_CAT")[val];
+			}
+		};
+	</pre>
+	<p>上面代码定义了一个枚举的格式化设置，要求必须在后端使用注解获得枚举数据。</p>
+
+	<h4>将枚举转换为表单中combo、radio、checkbox可以获得的数据</h4>
+	<pre class="brush:js">
+		var opts = {
+			data : FW.parseEnumData("YOUR_ENUM_CAT",_enum,defaultVal)
+		};
+	</pre>
+	<p>其中_enum为全局系统变量，不能更改，defaultVal为默认值（枚举code），可以为空。</p>
+</body>
+</html>

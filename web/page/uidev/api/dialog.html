@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>API - 通知与对话框</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bs_doc_ext.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+		$(document).ready(function(){
+			
+		}); 
+
+	</script>
+
+</head>
+<body style="font-size:14px">
+	<h4>屏幕上方消息</h4>
+	<p>FW.success(msg)和FW.error(msg)函数分别用于在屏幕上方弹出成功和失败信息（5秒后消失，弹出在整个页面最上方中间）。</p>
+
+	<h4>输入请求对话框</h4>
+	<p>FW.input函数用于请求用户输入一个文本，一般来说很少用到该API，该输入没有任何验证和要求。</p>
+	<pre class="brush:js">
+		FW.input("请输入一个值",function(val){
+			alert(val);
+		});
+	</pre>
+
+	<h4>确认对话框</h4>
+	<p>FW.confirm函数用于询问用户是否要进行某项操作。</p>
+	<pre class="brush:js">
+		//第一个参数中|表示双行文字
+		FW.confirm("确定操作么|确定了就无法取消了",function(){
+			alert("你点击了确定按钮");
+		});
+	</pre>
+	
+	<h4>弹出式对话框</h4>
+	<p>FW.dialog是EasyUI中$.dialog的封装，提供符合UI规范的弹出式对话框。为了保证JS的兼容性，FW.dialog只支持iframe形式弹出网页。</p>
+
+	<h4>例子</h4>
+	<p>FW.dialog最简单只需要src和dlgOpts中的title参数：</p>
+	<pre class="brush:js">
+		FW.dialog("init",{
+			src : "http://news.163.com",
+			dlgOpts : {title:"网易新闻"}
+		});
+	</pre>
+
+	<h4>参数</h4>
+	<p>对话框初始化完整参数为：</p>
+	<pre class="brush:js">
+		FW.dialog("init",{src:"网页url",btnOpts:[{按钮1},{按钮2},....],dlgOpts:{对话框选项})
+	</pre>
+	<p>可以使用以下方法使用EasyUI源生方法（没有设置后缀时）</p>
+	<pre class="brush:js">
+		$("#itcDlg").dialog("要执行EasyUI方法");
+	</pre>
+	<p>iframe的id默认为itcDlgContent，加入设置了idSuffix="Popup"，则iframe的id变为itcDlgPopupContent。可以使用如下方法获取到iframe中的页面。</p>
+	<pre class="brush:js">
+		var p = _parent().window.document.getElementById("itcDlgContent").contentWindow;
+		p.go();//go参数定义在弹出的页面中。
+	</pre>
+	<p>dlgOpts支持的参数为（除了表中提到禁用的参数，EasyUI中$.dialog的所有源生参数都可以使用）：</p>
+	<p style="color:#f00">注：从b6版以后，dlgOpts中的width和height参数可以支持百分比大小（相对于全页面）</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">属性</td>
+				<td width="150px">类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>idSuffix</td>
+				<td>string</td>
+				<td>扩展参数，id的扩展后缀，默认对话框的id（用于进行$.dialog的源生EasyUI操作）为itcDlg，比如设置该参数为Popup，则对话框id变为itcDlgPopup</td>
+			</tr>
+			<tr>
+				<td>noButtons</td>
+				<td>boolean</td>
+				<td>扩展参数，当设置该参数为true时，对话框将没有按钮栏。请注意，如果一个对话框设置了按钮栏，后续使用该id初始化的对话框均无ID，因而对于无对话框的id，务必设定其idSuffix参数。</td>
+			</tr>
+			<tr>
+				<td>toolbar</td>
+				<td>-</td>
+				<td><strong style="color:#f00">禁用参数！该参数会破坏对话框布局，如果需要按钮栏请在弹出页面中添加。</strong></td>
+			</tr>
+			<tr>
+				<td>buttons</td>
+				<td>-</td>
+				<td><strong style="color:#f00">禁用参数！设置该参数会导致封装失效</strong></td>
+			</tr>
+			<tr>
+				<td>href</td>
+				<td>-</td>
+				<td>不支持（该参数继承自$.panel）</td>
+			</tr>
+			<tr>
+				<td>cache</td>
+				<td>-</td>
+				<td>不支持（该参数继承自$.panel）</td>
+			</tr>
+			<tr>
+				<td>loader</td>
+				<td>-</td>
+				<td>不支持（该参数继承自$.panel）</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>btnOpts中每个按钮的参数为：</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">属性</td>
+				<td width="150px">类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>name</td>
+				<td>string</td>
+				<td>按钮名称</td>
+			</tr>
+			<tr>
+				<td>float</td>
+				<td>string</td>
+				<td>按钮位置，默认为right，取值可以为left、right、middle（居中）。</td>
+			</tr>
+			<tr>
+				<td>style</td>
+				<td>string</td>
+				<td>按钮样式，默认为btn-default（灰色），各种颜色取值参考“按钮”一节。</td>
+			</tr>
+			<tr>
+				<td>width</td>
+				<td>int</td>
+				<td>按钮长度，可以不设置，按钮长度默认会跟着文字一起变化。</td>
+			</tr>
+			<tr>
+				<td>onclick</td>
+				<td>function</td>
+				<td>按钮点击时触发的事件，当函数返回true时，单击按钮会关闭对话框。异步方法需要手动使用$.dialog("close")方法关闭。</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>如果不指定btnOpts，封装会自动为对话框添加确定和取消按钮，其中确定按钮点击时会尝试访问页面中的onOkBtnClick的函数，该函数返回true会关闭对话框。</p>
+	
+
+</body>
+</html>

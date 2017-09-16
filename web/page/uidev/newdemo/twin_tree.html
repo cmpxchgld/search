@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../component/css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bootstrap-theme.css" media="all"/>
+	<title>带资产树操作</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>带资产树打开选项卡</h4>
+	<p>在TIMSS2中，很多模块将以资产树为核心，在树和树相关做大量操作，因而这需要在保持原有导航树的同时，再附加一颗资产树。</p>
+	<p>本需求难点如下</p>
+	<ul>
+		<li>在新开选项卡时，主框架实际是为新选项卡复制了原选项卡的数据和状态，但是资产树数据量很大，而且是动态加载，该方法行不通。</li>
+		<li>如何在原有的空间里在划分出230px，以放置资产树，还不影响布局。</li>
+		<li>资产树上的操作要在原选项卡上执行。</li>
+		<li>子选项卡下的导航树操作依然在原选项卡下的导航树执行。</li>
+		<li>这一系列操作下的树显示/隐藏，以及联动操作等问题。</li>
+	</ul>
+	<p>由于该需求有些复杂，而且已经破坏了原框架的某些设定机制，因而无法做成封装函数，只能以例子代码的形式提供。</p>
+
+	<h4>准备工作</h4>
+	<p>本例子使用border-box和padding-left的方式提供树所需空间，在TIMSS1中，这一宽度为230px，在例子中沿用这一数据（考虑到后期可能的冲突，最好大家都用这个宽度）。这要求在主框架页面中有如下CSS：</p>
+	<pre class="brush:xml">
+		&lt;style>
+			.pleft230{
+				padding-left:230px;
+			}
+		&lt;/style>
+	</pre>
+	<p>另外，你需要准备一个资产树页面，因为资产树包含大量操作，不能简单使用DIV打开，所以必须写成独立页面，使用iframe加载。这里只给出页面的body部分：</p>
+	<pre class="brush:xml">
+		&lt;body class="bbox" style="height:100%;width:100%">
+			&lt;div style="padding-top:28px;width:100%;height:100%">
+				&lt;div class="input-group input-group-sm bbox" style="width:210px;position:absolute;top:0px">
+					&lt;input type="text" placeholder="按名称或位置搜索" id="search" icon="itcui_btn_mag"/>     
+				&lt;/div>
+				&lt;div style="width:100%;height:100%;overflow:auto">
+					&lt;ul id="asset_tree" style="width:100%">
+						
+					&lt;/ul>
+				&lt;/div>
+				&lt;div class="dropdown" id="menu_tree" style="position:absolute">
+					&lt;a data-toggle="dropdown" id="menu_tree_toggle">&lt;/a>
+					&lt;ul class="dropdown-menu" role="menu">
+						&lt;li>&lt;a class="menuitem" id="newNodeAtCurrLevel">新建同级节点&lt;/a>&lt;/li>
+						&lt;li>&lt;a class="menuitem">新建下级节点&lt;/a>&lt;/li>
+						&lt;li>&lt;a class="menuitem" onclick="">删除&lt;/a>&lt;/li>
+						&lt;li>&lt;a class="menuitem" onclick="">重命名&lt;/a>&lt;/li>
+					&lt;/ul>
+				&lt;/div>
+			&lt;/div>
+		&lt;/body>
+	</pre>
+	<p>这个页面包含了一个搜索框，一棵树以及配套的右键菜单，同时调整好了布局。</p>
+	<p>最后，你需要一个初始页面，默认情况下，在没有选择节点的情况下，这是一个列表页。</p>
+
+	<h4>创建资产树</h4>
+	<p>你需要在列表页中添加如下函数，并在document.ready中执行这一函数。请注意各种ID的命名。</p>
+	<pre class="brush:js">
+		function initAssetTree(){
+			//这里需要注意自己要给自己的树改名字 否则几个人都做了这个功能会冲突 假设树的ID为wtAssetTree
+			var assetTree = _parent().$("#wtAssetTree");
+			if(assetTree.length>0){
+				return;
+			}
+			var mc = _parent().$("#mainframe_content");
+			//留出一个230px的宽度 用于放置资产树
+			mc.addClass("pleft230");
+			//创建树的容器
+			$("&lt;iframe id='wtAssetTree' frameborder='no' border='0'>&lt;/iframe>").prependTo(mc).css({
+				width : "230px",
+				height : "100%",
+				position : "absolute",
+				display : "block",
+				top : "0px",
+				left : "0px"
+			}).attr("src","demo/tree.html");
+		};
+	</pre>
+
+	<h4>事件绑定</h4>
+	<p>不能在列表页绑定事件，因为列表页切换时，所有函数的引用指针将不再存在，所以要在树页面中绑定事件。</p>
+	<p>你需要在树页面中添加如下函数，并在document.ready中执行。特别注意的是这里的pleft230每个树都不一样，如果是多个功能都要带不同的树，则每一次实现都要定义一个单独的class</p>
+	<pre class="brush:js">
+		function initTabEvent(){
+			//防止事件重复注册wtTreeEventId可以随便起 但是不要和别人的重复 如果改掉下面的set也要改
+			if(FW.get("wtTreeEventId")){
+				return;
+			}
+			//选项卡事件注册 onAfterTabSwitch为选项卡切换完成（包括树加载）的事件 由框架提供
+			var id1 = FW.registerEvent("onAfterTabSwitch", function(id){
+				var id = FW.getCurrentTabId();
+				var tid = FW.getCurrentNavTreeId();//当前激活的树节点ID
+				var mc = _parent().$("#mainframe_content");
+				//这里的id和tid按实际名称来取 不同封装对id的命名有不同
+				if((id=="treeDemo"&amp;&amp;tid=="nav6_1") || (id!="treeDemo"&amp;&amp;id.indexOf("treeDemo")==0)){
+					mc.addClass("pleft230");
+					_parent().$("#wtAssetTree").show();
+				}
+				else{
+					mc.removeClass("pleft230");
+					_parent().$("#wtAssetTree").hide();
+				}
+			});
+			FW.set("wtTreeEventId",id1);
+			//导航树事件注册 navTreeItemClick为导航树点击的事件
+			FW.registerEvent("navTreeItemClick",function(id){
+				var mc = _parent().$("#mainframe_content");
+				if(id=="nav6_1"){
+					mc.addClass("pleft230");
+					_parent().$("#wtAssetTree").show();
+				}
+				else{
+					mc.removeClass("pleft230");
+					_parent().$("#wtAssetTree").hide();
+				}
+			});
+		}
+	</pre>
+
+	<h4>将选项卡挂在主框架上</h4>
+	<p>只需要把导航树指向的url与列表页关联即可，代码中有相关部分防止重复初始化。</p>
+
+	<h4>新开选项卡</h4>
+	<p>带双树和单导航树打开的方法没有区别，只是注意ID必须以主选项卡的ID为前缀。</p>
+	<pre class="brush:js">
+		function addAssetTab(){
+			var prefix = new Date().getTime() + "" + Math.floor(Math.abs(Math.random()*100));
+		    FW.addTabWithTree({
+		        id : "treeDemo_" + prefix,
+		        url : "http://www.baidu.com",
+		        name : "添加资产",
+		        tabOpt : {
+		            closeable : true,
+		            afterClose : function(id){
+		                FW.deleteTab(id),
+		                FW.activeTabById("treeDemo");
+		            }
+		        }
+		    });
+		}
+	</pre>
+
+	<h4>选项卡ID</h4>
+	<p>默认情况下，如果使用数据库方式配置主框架，则选项卡、导航树ID与对应功能模块的权限名称一致。</p>
+
+	<h4>为树添加右键菜单</h4>
+	<p>因为树现在在iframe中，所以需要把树从iframe中拿到外面去才能正常显示。</p>
+	<pre class="brush:js">
+		function initTreeMenu(){
+			var p = _parent();
+			$("#wtTreeMenu").appendTo(p.$("body"));
+			//newNodeAtCurrLevel是菜单的某个ID 
+			p.$("#newNodeAtCurrLevel").click(function(){
+				alert("这里写树菜单的实际动作");
+			});		
+		}
+	</pre>
+	<p>initTreeMenu也只能执行一次，防止重复绑定，最简单的办法是把这个函数放在initTabEvent中执行。</p>
+	<p>之后，可以在树中调用这个菜单（给出的只是参数写法，请自行补成完整代码）：</p>
+	<pre class="brush:js">
+		onContextMenu : function(e, node){
+			e.preventDefault();
+			//200是导航树的宽度 89是标题栏的高度
+			_parent().$("#wtTreeMenu").css({
+				left:e.pageX + 200,
+				top:e.pageY + 89
+			});
+			_parent().$("#wtTreeMenuToggle").dropdown("toggle");
+		}	
+	</pre>
+
+	<h4>树跳转</h4>
+	<p>因为新选项卡的树选择要在老选项卡上执行，所以我们定义了这个函数：</p>
+	<pre class="brush:js">
+		function go(url){
+			//如果不是老选项卡被激活 就跳过去
+			if(FW.getCurrentTabId()!="treeDemo"){
+				FW.activeTabById("treeDemo");			
+			}
+			//navigate用于在当前容器打开一个页面 不需要知道iframe的id
+			FW.navigate(url);
+		}
+	</pre>
+	<p>之后可以在树的onSelect方法中使用go方法进行页面跳转。</p>
+</body>
+</html>

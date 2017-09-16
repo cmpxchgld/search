@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>API - 主体框架</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bs_doc_ext.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+	</script>
+
+</head>
+<body style="font-size:14px">
+	<h4>163风格主体框架</h4>
+	<p>命名空间FW下有一些静态方法，这些方法用于操作主框架，包括导航选项卡、导航树等。</p>
+
+	<h4>方法</h4>
+	<p>以下均为静态方法，使用方法为FW.method(arg1,args2...)：</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">方法</td>
+				<td width="150px">参数/类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>addTab</td>
+				<td>tabOpt,mappingOpt</td>
+				<td>
+					该方法用于新建一个选项卡（可以带新的导航树，也可以不带树），主要用于框架的初始化，一般情况下不需要在系统运行中调用该函数。
+					<br/>
+					tabOpt为选项卡参数，类型为object，包含参数为：
+					<ul>
+						<li>name - 选项卡标题，必须</li>
+						<id>id - 选项卡id，必须，该ID用于dom操作，每个选项卡ID必须唯一。</id>
+						<li>closeable - 选项卡是否可以关闭，默认为false</li>
+						<li>click - function(id)，选项卡单击时的触发事件，一般来说使用事件系统操作选项卡，不需要指定该参数。</li>
+						<li>beforeClick - function(id)，选项卡单击之前执行的函数，该函数返回false会阻止选项卡的切换。</li>
+						<li>beforeClose - function(id)选项卡关闭之前执行的函数，该函数返回false会阻止选项卡关闭。</li>
+						<li>afterClose - function(id)选项卡关闭后执行的函数。由于封装限制，选项卡的afterClose函数至少需要执行这2条代码：
+						<pre class="brush:js">
+							function(id){
+								//在选项卡列表中删除当前选项卡 否则无法再次打开该选项卡
+						        _ITC.deleteTab(id);
+						        //切换到某个选项卡 假设该选项卡从ID为proj的选项卡打开 则还应该在关闭后跳回去
+						        _ITC.navTab.activeById("proj");
+						    }
+						</pre>
+						</li>
+					</ul>
+					mappingOpt为选项卡跳转参数，类型为object，包含下面参数：
+					<ul>
+						<li>cache - 该选项卡的页面是否需要缓存，默认为true。</li>
+						<li>id - 选项卡对应的iframe的id，如果使用权限组件提供的函数初始化，会自动为每个iframe指定id。</li>
+						<li>tree - 选项卡下的导航树，可以为空，此时该选项卡下将不使用导航树，导航树的数据格式请参考对应章节。</li>
+						<li>url - 打开的页面URL，tree和url有且只有一个可以为空，如果不指定tree，必须指定该参数。</li>
+						<li></li>
+					</ul>
+				</td>
+			</tr>
+		
+			<tr>
+				<td>addTabWithTree</td>
+				<td>opts(object)</td>
+				<td>该参数用于创建符合TIMSS要求的选项卡（带导航树），假如在A页面打开B页面，则B页面的导航树操作会在A页面执行，同时AB页面的
+				导航树状态一致，但是B页面内容不变。opts类型为object，参数如下：
+					<ul>
+						<li>id - 新选项卡id，必须</li>
+						<li>name - 新选项卡标题，必须</li>
+						<li>tab - 要复制树的选项卡id，默认为空表示复制当前页的导航树</li>
+						<li>tabOpt - 其他选项卡的扩展参数，具体参考FW.addTab中的tabOpt参数，除了name
+						id、tree的所有参数均可以在这里设置。</li>
+					</ul>
+					下面代码演示如何在新选项卡中带树打开网易新闻，并且可以多次打开。
+					<pre class="brush:js">
+						function open163(){
+							var prefix = new Date().getTime() + "" + Math.floor(Math.abs(Math.random()*100));
+							FW.addTabWithTree({
+								id : "netease" + prefix,
+								url : "http://news.163.com",
+								name : "网易新闻",
+								tabOpt : {
+									closeable : true,
+									afterClose : function(id){
+										//至少要执行deleteTab这行，否则无法再次打开该选项卡
+										FW.deleteTab(id),
+										//nav3是API选项卡的标识符
+										FW.activeTabById("nav3");
+									}
+								}
+							})
+						}
+					</pre>
+					注：使用此API时，新打开选项卡中的iframe的id和参数中的id一致（可以用于dom操作）
+				</td>
+			</tr>
+			<tr>
+				<td>navigate</td>
+				<td>url(string)</td>
+				<td>该参数用于在当前选项卡下打开一个页面，实际上在当前页面进行跳转的最好方法是修改window.location.href，但是如果你是在一个对话框中控制选项卡跳转，又不想直接操作选项卡下的iframe，可以使用FW.navigate方法。</td>
+			</tr>
+			<tr>
+				<td>activeTabById</td>
+				<td>string</td>
+				<td>切换到某选项卡。</td>
+			</tr>
+			<tr>
+				<td>getCurrentTabId</td>
+				<td>-</td>
+				<td>获取当前被激活选项卡的id，需要注意的是这个id只是内部标识符，不能用于dom操作，但是可以用于activeTabById等方法。</td>
+			</tr>
+			<tr>
+				<td>getCurrentNavTreeId</td>
+				<td>-</td>
+				<td>获取当前被激活导航树节点id。</td>
+			</tr>
+			<tr>
+				<td>setTreeStat</td>
+				<td>string</td>
+				<td>设置导航树在当前选项卡下的状态，目前支持的状态有：<ul>
+					<li>fold - 折叠</li>
+					<li>expand - 展开</li>
+				</ul></td>
+			</tr>
+			<tr>
+				<td>deleteTab</td>
+				<td>string</td>
+				<td>在框架封装中删除某选项卡的数据，该函数某种意义上类似于析构函数，不能直接用于关闭选项卡，但是应该在选项卡关闭后的回调中执行。</td>
+			</tr>
+			<tr>
+				<td>deleteTabById</td>
+				<td>string</td>
+				<td>用于关闭一个选项卡，如果只需要关闭当前选项卡，可以执行：
+				<pre class="brush:js">
+					FW.deleteTabById(FW.getCurrentTabId());
+				</pre></td>
+			</tr>
+			<tr>
+				<td>activeTreeItem</td>
+				<td>string</td>
+				<td>控制导航树切换到某一节点</td>
+			</tr>
+			<tr>
+				<td>registerEvent</td>
+				<td>eventId,f,deepcopy</td>
+				<td>注册一个事件，一般情况下，跨选项卡触发事件可以使用该函数，其中eventId为事件名称，f为单参数回调函数，deepcopy表示是否需要深拷贝回调函数，默认为false。<br/>
+				该函数会返回一个事件的数字id，用于注销事件</td>
+			</tr>
+			<tr>
+				<td>unregisterEvent</td>
+				<td>string</td>
+				<td>注销某事件，需要传入事件的数字id</td>
+			</tr>
+			<tr>
+				<td>triggerEvent</td>
+				<td>eventId(string),args(object)</td>
+				<td>触发某事件，需要注意事件系统支持的回调函数为单参数，多参数请用object传入。该函数返回值为Array，其中每个元素为单个事件的返回值（可以多次注册同一名字的事件，此时Array的长度会大于1）</td>
+			</tr>
+			<tr>
+				<td>long2date</td>
+				<td>long</td>
+				<td>将一个时间戳转为yyyy-mm-dd的字符串</td>
+			</tr>
+			<tr>
+				<td>long2time</td>
+				<td>long</td>
+				<td>将一个时间戳转为yyyy-mm-dd hh:mi的字符串</td>
+			</tr>
+			<tr>
+				<td>date2long</td>
+				<td>string</td>
+				<td>将一个yyyy-mm-dd的字符串转为时间戳</td>
+			</tr>
+			<tr>
+				<td>time2long</td>
+				<td>string</td>
+				<td>将一个yyyy-mm-dd hh:mi的字符串转为时间戳</td>
+			</tr>
+			<tr>
+				<td>getFrame</td>
+				<td>string</td>
+				<td>获取一个<strong>选项卡</strong>对应的iframe，传入的为选项卡标识符（当前激活的选项卡用FW.getCurrentTabId获得），返回值为window对象。例子如下：
+				<pre class="brush:js">
+					var currFrame = FW.getFrame(FW.getCurrentTabId());
+					currFrame.doAction();//doAction为当前选项卡页面中定义的一个函数。
+				</pre></td>
+			</tr>
+			<tr>
+				<td>stringify</td>
+				<td>obj/array</td>
+				<td>JSON.stringify的替代方法，当数据源是来自另外iframe（如对话框内）时，而且数据中包含数组时，需要使用该方法。</td>
+			</tr>
+			<tr>
+				<td>parse</td>
+				<td>string</td>
+				<td>JSON.parse的替代方法，当数据源是来自另外iframe（如对话框内），且无法正常转换时，需要使用该方法。</td>
+			</tr>
+			<tr>
+				<td>showMask</td>
+				<td>-</td>
+				<td>手动显示一个遮罩层（loading），只支持在tab页中显示。</td>
+			</tr>
+			<tr>
+				<td>removeMask</td>
+				<td>-</td>
+				<td>手动删除一个遮罩层。</td>
+			</tr>
+			<tr>
+				<td>loadComboEnum</td>
+				<td>comboId(string),enumCat(string),defaultVal(string/number)</td>
+				<td>手动删除一个遮罩层。</td>
+			</tr>
+			FW. 
+		</tbody>
+	</table>
+
+</body>
+</html>

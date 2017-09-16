@@ -1,0 +1,353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/shBrushJava.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/bs_doc_ext.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>	
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			$(".toggler").click(function(e){
+				var id = $(this).attr("id");
+				if($(this).html()=="显示代码"){
+					$(this).html("隐藏代码");
+					$("#" + id + "_div").show();
+				}
+				else{
+					$(this).html("显示代码");
+					$("#" + id + "_div").hide();
+				}
+			});
+
+			var tree2_data = [{
+			    "id": "node1",
+			    "text": "父节点1",
+			    "state": "closed",
+			    "children": [{
+			        "id": 11,
+			        "text": "子节点1"
+			    },{
+			        "id": 12,
+			        "text": "子节点2"
+			    }]
+			},{
+			    "id": "node2",
+			    "text": "父节点2"
+			}];
+			$("#tree2").tree({"data":tree2_data});
+			$("#tree3").tree({"url":"../tree?method=getData"});
+			$("#tree4").tree({"url":"../tree?method=getData","loadFilter":function(data,parent){
+				if(data){
+					for(var i=0;i<data.length;i++){
+						var node = data[i];
+						node.text = node.text.replace("子节点","叶子节点");
+					}					
+				}
+				return data;
+			}});
+			var tree5_data = [{
+			    "id": 1,
+			    "text": "父节点1",
+			    "iconCls": "icon-home",
+			    "state": "closed",
+			    "children": [{
+			        "id": 11,
+			        "text": "子节点1"
+			    },{
+			        "id": 12,
+			        "text": "子节点2"
+			    }]
+			},{
+			    "id": 2,
+			    "text": "父节点2",
+			    "iconCls": "icon-book"
+			}];
+			$("#tree5").tree({"data":tree5_data});
+			$("#tree6").tree({"data":tree2_data,"checkbox":true,"cascadeCheck":true});
+			$("#tree7").tree({"data":tree2_data,"checkbox":true,"cascadeCheck":true});
+			
+		});
+
+		function treeFunc(n){
+			if(n==0){
+				var node = $("#tree7").tree("getSelected");
+				if(node){
+					alert("已选择：" + node.text);
+				}
+				else{
+					alert("没有选择任何节点");
+				}
+			}
+			else if(n==1){
+				var nodes = $("#tree7").tree("getChecked");
+				//实际上这里nodes不会为null即便没选择 但是未测试树本身为空的情况
+				if(nodes&&nodes.length>0){
+					var nodesName = [];
+					for(var i=0;i<nodes.length;i++){
+						var node = nodes[i];
+						nodesName.push(node.text);
+					}
+					alert("已勾选：" + nodesName.join(" "));
+				}
+				else{
+					alert("没有勾选任何节点");
+				}
+			}
+			else if(n==2){
+				var nodes = $("#tree7").tree("getChecked","indeterminate");
+				if(nodes&&nodes.length>0){
+					alert("有未决定的节点");
+				}
+				else{
+					alert("没有未决定的节点");
+				}
+			}
+			else if(n==3){
+				//这里注意根据ID查询要用find函数
+				var targetNode = $("#tree7").tree("find","node2");
+				//这里注意用的是目标节点的target
+				$("#tree7").tree("append",{"parent":targetNode.target,"data":{"id":"newnode","text":"被添加的节点"}});
+			}
+			else if(n==4){
+				var targetNode = $("#tree7").tree("find","newnode");
+				$("#tree7").tree("remove" ,targetNode.target);
+			}
+			else if(n==5){
+				var targetNode = $("#tree7").tree("find","node2");
+				$("#tree7").tree("check" ,targetNode.target);
+			}
+			else if(n==6){
+				var targetNode = $("#tree7").tree("find","node2");
+				$("#tree7").tree("uncheck" ,targetNode.target);
+			}
+		}
+
+	</script>
+	<style type="text/css">
+		.row{margin-top:4px;margin-bottom:4px;}
+		p{text-indent:2em;}
+		h4{margin-top:18px;}
+		.toggler{font-size:12px}
+		.icon-home,.icon-book{
+			background-image: none;
+		}
+	</style>
+	<title>树</title>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>从静态数据创建树</h4>
+	<p>通过向列表ul应用样式easyui-tree可以将一个列表变为一棵树，注意树的边框以及滚动条需要自行添加Wrap层实现</p>
+	<div style="width:200px;height:200px">
+		<ul id="tree1" class="easyui-tree">
+		    <li>
+		        <span>父节点1</span>
+		        <ul>
+		            <li>
+		                <span>子节点1</span>
+		                <ul>
+		                    <li><span><a href="javascript:alert('111')">带有动作的叶节点1</a></span></li>
+		                    <li><span>叶节点2</span></li>
+		                    <li><span>叶节点3</span></li>
+		                </ul>
+		            </li>
+		            <li><span>子节点2</span></li>
+		            <li><span>子节点3</span></li>
+		        </ul>
+		    </li>
+		    <li><span>父节点2</span></li>
+		</ul>
+	</div>
+	<p>也可以使用JS代码，通过JSON数据创建树。</p>
+	<div style="width:200px;height:200px">
+		<div id="tree2">
+		</div>
+	</div>
+	<p>字段说明如下：</p>
+	<ul>
+		<li>id：节点ID，在异步加载时必须设置</li>
+		<li>text：显示的文字</li>
+		<li>state：节点状态，可以为closed或者open，当设置该项时无论节点是否实际拥有子节点，都会被视为父节点</li>
+		<li>attributes：附加属性，可以自定义，Object类型</li>
+		<li>children：子节点</li>
+	</ul>
+	<h4>异步加载</h4>
+	<p>异步加载最简单的方法是在构造时指定url参数为远程服务器地址，注意只有父节点的状态设置为closed才会触发请求。</p>
+	<div style="width:200px;height:200px">
+		<div id="tree3">
+		</div>
+	</div>
+	<p>JS代码</p>
+	<pre class="brush:js">
+		$("#tree3").tree({"url":"../tree?method=getData"});
+	</pre>
+	<p>JAVA代码</p>
+	<pre class="brush:java">
+		private void getData(HttpServletRequest request,
+			HttpServletResponse response){
+			String id = trimStrToNull(request.getParameter("id"));
+			if(id==null){
+				outputMsg(response, "[{\"id\":\"node1\",\"text\":\"父节点_1\",\"state\":\"closed\"},{\"id\":\"node2\",\"text\":\"父节点_2\",\"state\":\"closed\"}]");
+				return;
+			}
+			String lastNum = id.substring(id.length()-1);
+			Integer lastNumInt = Integer.parseInt(lastNum);		
+			if(lastNumInt==1){
+				outputMsg(response, "[{\"id\":\"node11\",\"text\":\"子节点1_1\"},{\"id\":\"node11\",\"text\":\"子节点1_1\"}]");
+			}
+			else if(lastNumInt==2){
+				outputMsg(response, "[{\"id\":\"node21\",\"text\":\"子节点2_1\"},{\"id\":\"node22\",\"text\":\"子节点2_2\"}]");
+			}
+		}
+	</pre>
+	<p>当直接返回的数据无法达到显示要求时，可以自定义处理函数。下面的代码演示如何把树中节点名“子节点”改为“叶子节点”</p>
+	<div style="width:200px;height:200px">
+		<div id="tree4">
+		</div>
+	</div>
+	<p>JS代码</p>
+	<pre class="brush:js">
+		$("#tree4").tree({"url":"../tree?method=getData","loadFilter":function(data,parent){
+			if(data){
+				for(var i=0;i&lt;data.length;i++){
+					var node = data[i];
+					node.text = node.text.replace("子节点","叶子节点");
+				}					
+			}
+			return data;
+		}});
+	</pre>
+	<p>需要注意的是，对于根节点，parent为指向整棵树的JQuery对象，而并非为空。如果仅需要修改节点的文字，而不需要改变JSON数据的结构，也可以使用formatter完成。</p>
+	<h4>节点样式</h4>
+	<p>下面代码演示了如何通过在数据中指定iconCls来更改节点图标，这里的样式可以自定义，也可以使用fontAwsome提供的图标字体。</p>
+	<div style="width:200px;height:200px">
+		<div id="tree5">
+		</div>
+	</div>
+	<p>JS代码</p>
+	<pre class="brush:js">
+		var tree5_data = [{
+		    "id": 1,
+		    "text": "父节点1",
+		    "iconCls": "icon-home",
+		    "state": "closed",
+		    "children": [{
+		        "id": 11,
+		        "text": "子节点1"
+		    },{
+		        "id": 12,
+		        "text": "子节点2"
+		    }]
+		},{
+		    "id": 2,
+		    "text": "父节点2",
+		    "iconCls": "icon-book"
+		}];
+		$("#tree5").tree({"data":tree5_data});
+	</pre>
+	<p>CSS代码</p>
+	<pre class="brush:xml">
+		<style type="text/css">
+			.icon-home,.icon-book{
+				background-image: none;
+			}
+		</style>
+	</pre>
+	<p>特别强调，由于图标字体是使用“伪类”来做到覆盖的效果，因而必须在类中<strong>清除掉背景</strong>，否则会和原先的图标叠加显示。</p>
+	<h4>复选</h4>
+	在创建树时，通过设置下面三个选项可以控制树的复选：
+	<ul>
+		<li>checkbox：为true时每个节点将出现复选框。</li>
+		<li>cascadeCheck：为false时可以关闭级联功能，即选择一个节点时，其父/子节点不会变化状态。</li>
+		<li>onlyLeafCheck：为true时只能选择叶子节点。</li>
+	</ul>
+	<p>下面的树开启了复选，并且设置了级联选择。</p>
+	<div style="width:200px;height:200px">
+		<div id="tree6">
+		</div>
+	</div>
+	<h4>节点操作</h4>
+	<div style="width:200px;height:200px">
+		<div id="tree7">
+		</div>
+	</div>
+	<div class="row">
+	<ul>
+		<li><a href="javascript:void(0)" onclick="treeFunc(0)">获取当前选择的节点</a></li>
+		<li><a href="javascript:void(0)" onclick="treeFunc(1)">获取当前勾选的节点</a></li>
+		<li><a href="javascript:void(0)" onclick="treeFunc(2)">获取当前状态为“未决定”（没有选择全部子节点）状态的节点</a></li>
+		<li><a href="javascript:void(0)" onclick="treeFunc(3)">向“父节点2”添加新节点</a></li>
+		<li><a href="javascript:void(0)" onclick="treeFunc(4)">删除添加的节点</a></li>
+		<li><a href="javascript:void(0)" onclick="treeFunc(5)">勾选“父节点2”</a></li>
+		<li><a href="javascript:void(0)" onclick="treeFunc(6)">取消勾选“父节点2”</a></li>
+	</ul>
+	<p>JS代码</p>
+	<pre class="brush:js">
+		function treeFunc(n){
+			if(n==0){
+				var node = $("#tree7").tree("getSelected");
+				if(node){
+					alert("已选择：" + node.text);
+				}
+				else{
+					alert("没有选择任何节点");
+				}
+			}
+			else if(n==1){
+				var nodes = $("#tree7").tree("getChecked");
+				//实际上这里nodes不会为null即便没选择 但是未测试树本身为空的情况
+				if(nodes&&nodes.length>0){
+					var nodesName = [];
+					for(var i=0;i&lt;nodes.length;i++){
+						var node = nodes[i];
+						nodesName.push(node.text);
+					}
+					alert("已勾选：" + nodesName.join(" "));
+				}
+				else{
+					alert("没有勾选任何节点");
+				}
+			}
+			else if(n==2){
+				var nodes = $("#tree7").tree("getChecked","indeterminate");
+				if(nodes&&nodes.length>0){
+					alert("有未决定的节点");
+				}
+				else{
+					alert("没有未决定的节点");
+				}
+			}
+			else if(n==3){
+				//这里注意根据ID查询要用find函数
+				var targetNode = $("#tree7").tree("find","node2");
+				//这里注意用的是目标节点的target
+				$("#tree7").tree("append",{"parent":targetNode.target,"data":{"id":"newnode","text":"被添加的节点"}});
+			}
+			else if(n==4){
+				var targetNode = $("#tree7").tree("find","newnode");
+				$("#tree7").tree("remove" ,targetNode.target);
+			}
+			else if(n==5){
+				var targetNode = $("#tree7").tree("find","node2");
+				$("#tree7").tree("check" ,targetNode.target);
+			}
+			else if(n==6){
+				var targetNode = $("#tree7").tree("find","node2");
+				$("#tree7").tree("uncheck" ,targetNode.target);
+			}
+		}
+	</pre>
+	</div>
+	<h4>事件</h4>
+</body>
+</html>

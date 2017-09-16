@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../component/css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bootstrap-theme.css" media="all"/>
+	<title>资产选择对话框</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>资产选择对话框</h4>
+	<p>这是一个针对TIMSS2的独立需求，和通用组件库无关，因而使用该功能需要额外引入itcui_timssutil.js（timss_include.jsp里已经加入，不需要再额外引用）。</p>
+
+	<h4>如何使用</h4>
+	<p>下面代码演示了如何在表单中以放大镜的形式打开资产选择对话框，并将名称和ID传入不同字段中。</p>
+	<pre class="brush:js">
+		$(document).ready(function(){
+			var form = [{id:"assets",type:"hidden"},
+			            {id:"assetText","title":"相关资产",render:function(id){
+			            	$("#" + id).attr("icon","itcui_btn_mag").iInput("init",{onClickIcon:function(){
+			            		FW.showAssetDialog({
+			            			idContainer : "#f_assets",
+			            			nameContainer : "#f_assetText"
+			            		});
+			            	}});
+			            }}];
+			$("#form_baseinfo").iForm("init",{fields:form});
+		});
+	</pre>
+	<p>其中form_baseinfo为一个表单</p>
+
+	<h4>注意事项</h4>
+	<p>资产对话框和资产管理是同一套页面，使用该对话框必须登录而且至少拥有浏览权限，如果因为某些原因资产页面出现500错误，在某些浏览器中，会导致对话框无法显示，所以使用该功能时请确保当前用户具有对应权限。</p>
+	<p>对于TIMSS2开发者，你需要访问到asset模块的页面和代码，否则无法打开对话框。</p>
+
+	<h4>参数说明</h4>
+	<p>FW.showAssetDialog可以传入一个object类型的参数（无参数将无法启动，就算你只想打开这个对话框玩玩也要传一个{}进去），其中的字段如下：</p> 
+
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">属性</td>
+				<td width="150px">类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>multiSelect</td>
+				<td>boolean</td>
+				<td>是否允许多选，默认为false，当指定为true时，返回值均为逗号分隔的字符串</td>				
+			</tr>
+			<tr>
+				<td>allowEdit</td>
+				<td>boolean</td>
+				<td>是否允许编辑，默认为false，此时对话框中所有的编辑功能将不可用（待实现）</td>
+			</tr>
+			<tr>
+				<td>basePath</td>
+				<td>string</td>
+				<td>网站的根，默认将读取全局变量var basePath，如果读取失败将使用空字符串</td>				
+			</tr>
+			<tr>
+				<td>width</td>
+				<td>string/int</td>
+				<td>对话框宽度，默认为"75%"</td>				
+			</tr>
+			<tr>
+				<td>height</td>
+				<td>string/int</td>
+				<td>对话框高度，默认为"75%"</td>				
+			</tr>
+			<tr>
+				<td>title</td>
+				<td>string</td>
+				<td>对话框标题，默认为“选择设备”</td>				
+			</tr>
+			<tr>
+				<td>idContainer</td>
+				<td>string</td>
+				<td>确定选择后存储id的位置，需要传入一个jq选择器字符串，如#f_AssetId</td>				
+			</tr>
+			<tr>
+				<td>nameContainer</td>
+				<td>string</td>
+				<td>确定选择后显示文字的位置，需要传入一个jq选择器字符串，如#f_AssetName</td>				
+			</tr>
+		</tbody>
+	</table>
+
+	
+</body>
+</html>

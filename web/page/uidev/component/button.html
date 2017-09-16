@@ -1,0 +1,330 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<!--
+		最后修改日期 2014/4/18
+		TIMSS按钮的高度是28px 
+	-->
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bs_doc_ext.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+
+
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			$(".toggler").click(function(e){
+				var id = $(this).attr("id");
+				if($(this).html()=="显示代码"){
+					$(this).html("隐藏代码");
+					$("#" + id + "_div").show();
+				}
+				else{
+					$(this).html("显示代码");
+					$("#" + id + "_div").hide();
+				}
+			});
+		});
+
+		
+	</script>
+	<style type="text/css">
+		p{text-indent:2em;}
+		.toggler{font-size:12px}
+	</style>
+	<title>按钮和按钮组</title>
+</head>
+<body style="margin:16px;font-size:14px" class="bbox">
+	<div class="alert alert-warning">
+		根据TIMSS，本规范中的按钮高度为28px（包括边框），由于官方代码的部分问题，在个别地方需要手动指定该高度
+    </div>
+    <div class="alert alert-warning">
+		由于IE9的bug，无法同时使用filter实现渐变和圆角，因而在b3版后去掉了对ie9的渐变支持
+    </div>
+    <div class="alert alert-warning">
+		对于表单中的次级按钮，需要把控制大小的css，如btn-group-sm中的sm改为xs，此时按钮的高度变为24px
+    </div>
+    <div class="alert alert-info">
+		在IE10下，点击完按钮后会留下一个虚线框（表明此按钮具有焦点，此时可以用tab切换按钮），此时按钮保留focus时的样式，这不属于设计bug，如果不需要该功能可以在button中添加onmouseup="javascript:this.blur();"，这一句在使用按钮/按钮组封装创建的按钮中已自动加入。
+    </div>
+	<h4>单个按钮</h4>
+	<div class="row btn-group-sm">
+		<button type="button" class="btn btn-default">单个按钮</button>
+		<button type="button" class="btn btn-default" style="width:120px">定长120px</button>	
+		<button type="button" class="btn btn-default">这是一个文字描述很长的按钮</button>		
+	</div>
+	<div class="row btn-group-xs">
+		<button type="button" class="btn btn-success">用于表单中的小按钮</button>
+	</div>
+	<div class="row">	
+		<a id="single_button" class="toggler">显示代码</a>
+	</div>
+	<div id="single_button_div" style="display:none">
+		<p>使用button标签可以创建一个按钮，默认情况下，按钮会根据文字长度调整大小，但是根据实际需求可以使用style控制按钮长度。代码如下：</p>
+		<pre class="brush: xml;">
+			&lt;div class="row btn-group-sm">
+				<!-- 此处的所有按钮都是UI规范中规定的高度 -->
+			&lt;/div>
+		</pre>
+		<p>需要注意的是，当特殊情况需要调整按钮大小时，需要移除类btn-group-sm，并在Wrap上修改大小，而不是直接修改按钮本身。</p>
+		<pre class="brush: xml;">
+			&lt;div class="row btn-group-sm">
+				&lt;button type="button" class="btn btn-default">单个按钮&lt;/button>
+				&lt;button type="button" class="btn btn-default" style="width:120px">定长120px&lt;/button>
+				&lt;button type="button" class="btn btn-default">这是一个文字描述很长的按钮&lt;/button>	
+			&lt;/div>
+			&lt;div class="row btn-group-xs">
+				&lt;button type="button" class="btn btn-success">用于表单中的小按钮&lt;/button>
+			&lt;/div>
+		</pre>				
+	</div>
+
+	<h4>按钮组和按钮工具栏</h4>
+	
+	<div class="btn-group btn-group-sm">
+		<button type="button" class="btn btn-default">测试按钮1</button>
+		<button type="button" class="btn btn-default">测试按钮2</button>
+		<button type="button" class="btn btn-default">测试按钮3</button>
+		<button type="button" class="btn btn-default">测试按钮4</button>
+	</div>
+	<div class="row"></div>
+	<div class="row">
+		<a id="btn_group" class="toggler">显示代码</a>
+	</div>
+	<div id="btn_group_div" style="display:none">
+		<p>如果需要多个按钮，可以使用按钮组btn-group，按钮组中的按钮会自动根据位置改变左右侧的圆角效果。</p>
+		<pre class="brush: xml;">
+			&lt;div class="btn-group">
+				&lt;button type="button" class="btn btn-default">测试按钮1&lt;/button>
+				&lt;button type="button" class="btn btn-default">测试按钮2&lt;/button>
+				&lt;button type="button" class="btn btn-default">测试按钮3&lt;/button>
+				&lt;button type="button" class="btn btn-default">测试按钮4&lt;/button>		
+			&lt;/div>
+		</pre>	
+	</div>
+	
+	<div class="btn-toolbar" role="toolbar">
+		<div class="btn-group  btn-group-sm">
+			<button type="button" class="btn btn-default">按钮1</button>
+			<button type="button" class="btn btn-default">按钮2</button>
+			<button type="button" class="btn btn-default">按钮3</button>
+			<button type="button" class="btn btn-default">按钮4</button>
+		</div>
+		<div class="btn-group  btn-group-sm">
+			<button type="button" class="btn btn-default">按钮1</button>
+			<button type="button" class="btn btn-default">按钮2</button>
+			<button type="button" class="btn btn-default">按钮3</button>
+			<button type="button" class="btn btn-default">按钮4</button>
+		</div>
+	</div>
+	<div class="row">
+		<a id="btn_toolbar" class="toggler">显示代码</a>
+	</div>
+	<div id="btn_toolbar_div" style="display:none">
+		<p>将btn_group放在btn_toolbar中，可以实现按钮分组显示的效果。</p>
+		<pre class="brush: xml;">
+			&lt;div class="btn-toolbar" role="toolbar">
+				&lt;div class="btn-group btn-group-sm">
+					&lt;button type="button" class="btn btn-default">按钮1&lt;/button>
+					&lt;button type="button" class="btn btn-default">按钮2&lt;/button>
+					&lt;button type="button" class="btn btn-default">按钮3&lt;/button>
+					&lt;button type="button" class="btn btn-default">按钮4&lt;/button>
+				&lt;/div>
+				&lt;div class="btn-group  btn-group-sm">
+					&lt;button type="button" class="btn btn-default">按钮1&lt;/button>
+					&lt;button type="button" class="btn btn-default">按钮2&lt;/button>
+					&lt;button type="button" class="btn btn-default">按钮3&lt;/button>
+					&lt;button type="button" class="btn btn-default">按钮4&lt;/button>
+				&lt;/div>
+			&lt;/div>
+		</pre>
+	</div>
+	
+	
+	<h4>禁用按钮</h4>
+	<div class="btn-group btn-group-sm">
+		<button type="button" class="btn btn-default" disabled="disabled">本来就不能点</button>
+		<button id="testbtn_1" type="button" class="btn btn-default" onclick="$('#testbtn_1').attr('disabled','disabled')">点一下就不能点</button>
+	</div>
+	<div class="row"></div>
+	<div class="row">
+		<a id="btn_disable" class="toggler">显示代码</a>
+	</div>
+	<div id="btn_disable_div" style="display:none">
+		<p>禁用一个按钮有两种方式，一是直接为按钮的html代码添加disabled属性，二是通过jQuery的attr函数添加（移除属性使用removeAttr函数）。</p>
+		<pre class="brush: xml;">
+			<button type="button" class="btn btn-default" disabled="disabled">本来就不能点</button>
+			<button id="testbtn_1" type="button" class="btn btn-default" onclick="$('#testbtn_1').attr('disabled','disabled')">点一下就不能点</button>
+		</pre>
+	</div>
+	
+
+
+	<h4>修改按钮的颜色</h4>
+
+	
+	<div class="btn-group-sm">
+		<button type="button" class="btn btn-success">默认按钮</button>
+		<button type="button" class="btn btn-primary">主要功能</button>
+		<button type="button" class="btn btn-info">信息</button>
+		<button type="button" class="btn btn-warning">警报</button>
+		<button type="button" class="btn btn-danger">危险功能</button>
+	</div>
+	<div class="row">
+		<a id="btn_color" class="toggler">显示代码</a>
+	</div>
+	<div id="btn_color_div" style="display:none">
+		<p>通过将类btn-default替换为btn-success或者其他色彩样式，可以更换按钮的颜色。</p>
+		<pre class="brush:xml;">
+			&lt;button type="button" class="btn btn-success">默认按钮&lt;/button>
+			&lt;button type="button" class="btn btn-primary">主要功能&lt;/button>
+			&lt;button type="button" class="btn btn-info">信息&lt;/button>
+			&lt;button type="button" class="btn btn-warning">警报&lt;/button>
+			&lt;button type="button" class="btn btn-danger">危险功能&lt;/button>
+		</pre>
+	</div>
+
+	<h4>单击事件</h4>
+	
+	<div class="btn-group btn-group-sm">
+		<button type="button" id="testbtn_2" class="btn btn-default" onclick="alert(123)">触发事件</button>
+		<button type="button" id="testbtn_2" class="btn btn-default" onclick="$('#testbtn_2').attr('disabled','disabled')">禁用左侧按钮</button>
+		<button type="button" id="testbtn_2" class="btn btn-default" onclick="$('#testbtn_2').removeAttr('disabled')">恢复按钮状态</button>
+	</div>
+	<div class="row">
+		<a id="btn_event" class="toggler">显示代码</a>
+	</div>
+	<div id="btn_event_div" style="display:none">
+		<p>你可以直接使用onclick绑定按钮事件，disabled属性无论在页面创建时添加还是后期通过attr函数添加，都会正确的禁用使onclick事件失效。
+		</p>
+		<pre class="brush:xml">
+			&lt;button type="button" id="testbtn_2" class="btn btn-default" onclick="alert(123)">触发事件&lt;/button>
+			&lt;button type="button" id="testbtn_2" class="btn btn-default" onclick="$('#testbtn_2').attr('disabled','disabled')">禁用左侧按钮&lt;/button>
+			&lt;button type="button" id="testbtn_2" class="btn btn-default" onclick="$('#testbtn_2').removeAttr('disabled')">恢复按钮状态&lt;/button>
+		</pre>
+	</div>
+
+	<h4>为按钮附加菜单</h4>
+	<p>点击按钮任何一处都出现菜单：</p>
+	<div class="btn-group btn-group-sm">
+		<button type="button" class="btn btn-default">新建</button>
+		<button type="button" class="btn btn-default">删除</button>
+		<div class="btn-group btn-group-sm">
+			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			更多功能
+			<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				<li><a href="#">转发</a></li>
+				<li><a href="#">存至草稿</a></li>
+				<li><a href="#">以附件下载</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="row">
+		<a id="btn_menu" class="toggler">显示代码</a>
+	</div>
+	<div id="btn_menu_div" style="display:none">
+		<pre class="brush:xml">
+			&lt;div class="btn-group btn-group-sm">
+				&lt;button type="button" class="btn btn-default">新建&lt;/button>
+				&lt;button type="button" class="btn btn-default">删除&lt;/button>
+				&lt;div class="btn-group btn-group-sm">
+					&lt;button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+					更多功能
+					&lt;span class="caret">&lt;/span>
+					&lt;/button>
+					&lt;ul class="dropdown-menu">
+						&lt;li>&lt;a href="#">转发&lt;/a>&lt;/li>
+						&lt;li>&lt;a href="#">存至草稿&lt;/a>&lt;/li>
+						&lt;li>&lt;a href="#">以附件下载&lt;/a>&lt;/li>
+					&lt;/ul>
+				&lt;/div>
+			&lt;/div>
+		</pre>
+	</div>
+	<p>只有点击下箭头才弹出菜单：</p>
+	<div class="btn-group btn-group-sm">
+		<button type="button" class="btn btn-default">转发邮件</button>
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height:28px">
+			<span class="caret"></span>		
+		</button>
+		<ul class="dropdown-menu" role="menu">
+			<li><a href="#">转发到163邮箱</a></li>
+			<li><a href="#">转发到QQ邮箱</a></li>
+			<li><a href="#">转发到SINA邮箱</a></li>
+			<li class="divider"></li>
+			<li><a href="#">转发到GMAIL</a></li>
+		</ul>
+	</div>
+	<div class="row">
+		<a id="btn_split_menu" class="toggler">显示代码</a>
+	</div>
+	<div id="btn_split_menu_div" style="display:none">
+		<p>请注意，和官方说明不同，由于样式修改，这里要为下拉箭头添加高度。</p>
+		<pre class="brush:xml">
+			&lt;div class="btn-group btn-group-sm">
+				&lt;button type="button" class="btn btn-default">转发邮件&lt;/button>
+				&lt;button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height:28px">
+					&lt;span class="caret">&lt;/span>		
+				&lt;/button>
+				&lt;ul class="dropdown-menu" role="menu">
+					&lt;li>&lt;a href="#">转发到163邮箱&lt;/a>&lt;/li>
+					&lt;li>&lt;a href="#">转发到QQ邮箱&lt;/a>&lt;/li>
+					&lt;li>&lt;a href="#">转发到SINA邮箱&lt;/a>&lt;/li>
+					&lt;li class="divider">&lt;/li>
+					&lt;li>&lt;a href="#">转发到GMAIL&lt;/a>&lt;/li>
+				&lt;/ul>
+			&lt;/div>
+		</pre>
+	</div>
+
+	<h4>凹陷状态的按钮</h4>
+	<div class="btn-group btn-group-sm fl" data-toggle="buttons">
+		<label class="btn btn-default">
+		    <input type="radio" name="swTask" >我的任务
+		</label>
+		<label class="btn btn-default">
+		    <input type="radio" name="swTask">我部门的任务
+		</label>
+		<label class="btn btn-default active">
+		    <input type="radio" name="swTask">全部任务
+		</label>		
+	</div>
+	<div class="btn-group btn-group-sm fl">
+		<button type="button" class="btn btn-default" data-toggle="button">可以设置凹陷的按钮</button>
+	</div>
+	
+	<div class="row">
+		<a id="btn_toggle" class="toggler">显示代码</a>
+	</div>
+	<div id="btn_toggle_div" style="display:none">
+		<p>通过为按钮组添加data-toggle="buttons"，可以让该组按钮具有凹陷效果，带有active类的按钮将默认凹陷。如果需要一组按钮中每次只有一个可以按下，需要在按钮中嵌套一个radio。</p>
+		<pre class="brush:xml">
+			&lt;div class="btn-group btn-group-sm fl" data-toggle="buttons">
+				&lt;label class="btn btn-default" onclick="javascript:Project.changeViewMode(1,'52')">
+				    &lt;input type="radio" name="swTask" >我的任务
+				&lt;/label>
+				&lt;label class="btn btn-default" onclick="javascript:Project.changeViewMode(2,'52')">
+				    &lt;input type="radio" name="swTask">我部门的任务
+				&lt;/label>
+				&lt;label class="btn btn-default active" onclick="javascript:Project.changeViewMode(3,'52')" >
+				    &lt;input type="radio" name="swTask">全部任务
+				&lt;/label>
+			&lt;/div>
+			&lt;div class="btn-group btn-group-sm fl">
+				&lt;button type="button" class="btn btn-default" data-toggle="button">可以设置凹陷的按钮&lt;/button>
+			&lt;/div>
+		</pre>
+	</div>
+</body>
+</html>

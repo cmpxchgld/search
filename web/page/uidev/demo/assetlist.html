@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html style="height:100%;width:100%">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>UI演示系统</title>
+<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" />	
+<title>双树操作演示 - 资产列表</title>
+<style>
+
+</style>
+<script>
+	$(document).ready(function(){
+		initAssetTree();
+		$("#test_grid1").iDatagrid("init",{
+			pageSize : 10,
+			url : "testlist.json"
+		});
+		var btns = [
+		    {
+		        "title":"新建",
+		        "style":"btn-success",
+		        "menu":[[{title:"固定资产（演示新选项卡）",onclick:"addAssetTab()"},{title:"备件"},{title:"区域/系统"}]]
+		    }
+		];
+		$("#toolbar1").iBtnbar("init",btns);
+	});
+	
+	function addAssetTab(){
+		var prefix = new Date().getTime() + "" + Math.floor(Math.abs(Math.random()*100));
+	    FW.addTabWithTree({
+	        id : "treeDemo_" + prefix,
+	        url : "http://www.baidu.com",
+	        name : "添加资产",
+	        tabOpt : {
+	            closeable : true,
+	            afterClose : function(id){
+	                FW.deleteTab(id),
+	                FW.activeTabById("treeDemo");
+	            }
+	        }
+	    });
+	}
+	
+	function initAssetTree(){
+		//这里需要注意自己要给自己的树改名字 否则几个人都做了这个功能会冲突 假设树的ID为wtAssetTree
+		var assetTree = _parent().$("#wtAssetTree");
+		if(assetTree.length>0){
+			return;
+		}
+		var mc = _parent().$("#mainframe_content");
+		//留出一个230px的宽度 用于放置资产树
+		mc.addClass("pleft230");
+		//创建树的容器
+		$("<iframe id='wtAssetTree' frameborder='no' border='0'></iframe>").prependTo(mc).css({
+			width : "230px",
+			height : "100%",
+			position : "absolute",
+			display : "block",
+			top : "0px",
+			left : "0px"
+		}).attr("src","demo/tree.html");//demo/tree.html为树的页面
+	};
+</script>
+</head>
+<body style="height:100%;width:100%" class="bbox">
+	<div class="bbox toolbar-with-pager" id="toolbar_wrap">
+	    <!-- 这里可以在分页器的同排渲染一个按钮工具栏出来 在下面的toolbar1中 -->
+	    <div id="toolbar1">
+
+	    </div>
+	    <!-- 上分页器部分 这里可以通过属性bottompager指定下分页器的DIV-->
+	    <div id="pagination_1" class="toolbar-pager" bottompager="#bottomPager">        
+	    </div>
+	</div>
+	<div id="grid1_wrap" style="width:100%">
+	    <table id="test_grid1" pager="#pagination_1">
+	        <thead>
+	            <tr>
+	                <th data-options="field:'id',width:100,fixed:true">设备编号</th>
+	                <th data-options="field:'type',width:80,fixed:true">资产类型</th>
+	                <th data-options="field:'name',width:150">设备名称</th>
+	                <th data-options="field:'position',width:100">位置</th>
+	            </tr>
+	        </thead>
+	    </table>
+	</div>
+</body>
+</html>

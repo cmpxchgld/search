@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    <script src="../react/jquery.min.js"></script>
+<script type="text/javascript" src="../uploadify/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="../uploadify/jquery.uploadify.js"></script>
+<link rel="stylesheet" type="text/css"  href="../uploadify/uploadify.css">
+<link title="style1" rel="stylesheet" href="../css/file-style.css" type="text/css" />
+<title>文件上传</title>
+</head>
+<body>
+	<div class="form_content">
+    <fieldset>
+        <legend>索引属性</legend>
+        <div class="form-row">
+            <div class="field-label"><label for="v">站点ID</label>:</div>
+            <div class="field-widget"><input name="site" id="site" class="required" /></div>
+        </div>
+        <div class="form-row">
+            <div class="field-label"><label for="label">标签</label>:</div>
+            <div class="field-widget"><input name="label" id="label" class="required" /></div>
+        </div>
+      <div class="form-row">
+            <div class="field-label"><label for="user">用户名</label>:</div>
+            <div class="field-widget"><input name="user" id="user" class="required" /></div>
+        </div>
+        <div class="form-row">
+            <div class="field-label"><label for="userid">用户ID</label>:</div>
+            <div class="field-widget"><input name="userid" id="userid" class="required" /></div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend class="optional">文件列表</legend>
+        <div style="padding:5px;">
+            <input type="file" name="file" id="file_upload" />
+        </div>
+        <div class="form-row-select">
+            <fieldset>
+                <legend class="optional">文件列表</legend>
+                <label class="left">
+                <div id="file_queue" style="height:250px"></div>
+                </label>
+            </fieldset> 
+         
+        </div>
+    </fieldset>
+    <input id="submit" type="button" class="submit" value="提交" /> 
+    
+    </div>
+    <script type="text/javascript">
+    var formdata=null;
+	$(function() {
+		$("#file_upload").uploadify({//上传文件
+			'method' : 'post',
+			'uploader' : '/solrsearch/solr/upload.do', //文件上传的请求
+			'swf' : '../uploadify/uploadify.swf',//动态控件
+			'queueID' : 'file_queue',//与下面的id对应    文件上传队列显示的地方
+			'fileDesc' : 'rar文件或zip文件',
+			'fileExt' : '*.rar;*.zip;*.jpg;*.png;*.exe;*.gif', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc  
+			'auto' : false, //是否自动上传
+			'multi' : true, //是否多文件上传
+			'progressData ' : 'percentage',//显示上传进度方式
+			'buttonText' : '选择文件',//文件选择按钮名称
+			'fileObjName':'file'
+		});
+		$("#submit").click(function(){
+		    formdata={site:$("#site").val(),label:$("#label").val(),user:$("#user").val(),userid:$("#userid").val()}
+		    $('#file_upload').uploadify('settings','formData',formdata)
+		    $('#file_upload').uploadify('upload','*')
+		})
+		
+	});
+</script>
+</body>
+</html>

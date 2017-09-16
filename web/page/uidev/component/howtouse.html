@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushJava.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/shBrushPython.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script type="text/javascript" src="js/itcui_ext.js"></script>
+	<link rel="stylesheet" href="css/font-awesome.min.css" />
+	<link rel="stylesheet" href="../css/itcui.css" />
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" media="all"/>
+	<title>如何使用</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+
+	</script>
+</head>
+<body style="margin:16px">
+	<div class="alert alert-warning">
+		itcui_ext.js已经正式废弃，现在所有功能均集成在itcui.dev.js和itcui_frame.dev.js以及对应css中。
+    </div>
+	<h4>下载</h4>
+	<p>目前UI组件库的最新版本是r4，包括EasyUI和Bootstrap的最新修改版，JS文件提供min和开发版，均未混淆。</p>
+	
+	<h4>JQuery</h4>
+	<p>组件库中判断浏览器版本使用了$.support系列函数，因而需要JQuery1.9以上某些组件方能正常工作。</p>
+	
+	<h4>特别注意</h4>
+	<ul>
+		<li><strong>为了保护自己的权益，对于非集团内部的系统要使用压缩（必要时进行混淆）的代码。</strong></li>
+		<li>在使用DIV方式（EasyUI使用）的方式加载对话框时，必须避免重加载BS/EasyUI/JQuery的JS代码，否则容易出现各种难以解决的问题。</li>
+		<li>在线发布的版本裁剪了BS/EasyUI的大量组件，如果需要可以自行下载完整版或者联系我们获得其他被裁剪组件的代码。</li>
+		<li style="color:#FF0000">如果某些组件的样式异常，请尝试在外层div加上样式bbox，因为现在border-box不是默认样式了</li>
+	</ul>
+
+	<h4>命名要求</h4>
+	<p>大多数封装会根据用户提供的ID拼接出组件内各个元素，以加快选择器选择速度，如myid_title、myid_column等，所以不要使用会干扰jQuery选择器的字符串作为(field)ID和name，如#argvalue，myobject.property，this>element等。</p>
+
+	<h4>在线引用</h4>
+	<p>从r4版以后，只有nightly和r4版支持在线引用，其余版本均需要下载，请参考首页-下载一节。</p>
+	<p>开发版（任意页面）：</p>
+	<pre class="brush:xml">
+		&lt;script type="text/javascript" src="http://10.0.250.52/uidev/package/js/itcui.dev.js">&lt;/script>
+		&lt;link rel="stylesheet" type="text/css" href="http://10.0.250.52/uidev/package/css/itcui.dev.css" media="all"/>
+	</pre>
+	<p>压缩后的版本（任意页面）：</p>
+	<pre class="brush:xml">
+		&lt;script type="text/javascript" src="http://10.0.250.52/uidev/package/js/itcui.min.js">&lt;/script>
+		&lt;link rel="stylesheet" type="text/css" href="http://10.0.250.52/uidev/package/css/itcui.min.css" media="all"/>
+	</pre>
+	<p>开发版（主框架）：</p>
+	<pre class="brush:xml">
+		&lt;script type="text/javascript" src="http://10.0.250.52/uidev/package/js/itcui_frame.dev.js">&lt;/script>
+		&lt;link rel="stylesheet" type="text/css" href="http://10.0.250.52/uidev/package/css/itcui_frame.dev.css" media="all"/>
+	</pre>
+	<p>压缩后的版本（主框架）：</p>
+	<pre class="brush:xml">
+		&lt;script type="text/javascript" src="http://10.0.250.52/uidev/package/js/itcui_frame.min.js">&lt;/script>
+		&lt;link rel="stylesheet" type="text/css" href="http://10.0.250.52/uidev/package/css/itcui_frame.min.css" media="all"/>
+	</pre>
+	<p>b0版引用：</p>
+	<pre class="brush:xml">
+		&lt;script type="text/javascript" src="http://10.0.250.52/uidev/package/js/itcui_frame_b0.dev.js">&lt;/script>
+		&lt;script type="text/javascript" src="http://10.0.250.52/uidev/package/js/itcui_b0.dev.js">&lt;/script>
+	</pre>
+	<p>任何涉及表单验证的页面需要手动引入jQuery validation</p>
+	<pre class="brush:xml">
+		&lt;script type="text/javascript" src="http://10.0.250.52/uidev/package/js/jquery.validate.js">&lt;/script>
+	</pre>
+
+	<p>该版本包括如下组件：</p>
+	<p>EasyUI：</p>
+	<ul>
+		<li>Parser</li>
+		<li>Datagrid</li>
+		<li>Panel</li>
+		<li>Window</li>
+		<li>Dialog</li>
+		<li>Resizeable</li>
+		<li>Splitbutton</li>
+		<li>Tree</li>
+		<li>Layout</li>
+	</ul>
+
+	<p>Bootstrap：</p>
+	<ul>
+		<li>Input</li>
+		<li>Button</li>
+		<li>Menu</li>
+		<li>栅格系统/响应式布局</li>
+		<li>Dialog</li>
+		<li>Resizeable</li>
+		<li>Splitbutton</li>
+		<li>Tree</li>
+	</ul>
+
+	<p>ITCUI：</p>
+	<ul>
+		<li>Combobox</li>
+		<li>Input扩展</li>
+		<li>Datagrid扩展</li>
+		<li>翻页器</li>
+		<li>导航选项卡</li>
+		<li>导航树</li>
+		<li>主框架</li>
+		<li>折叠区域</li>
+	</ul>
+
+	<p>第三方组件：</p>
+	<ul>
+		<li>iCheck</li>
+		<li>Respond.js</li>
+		<li>JQuery validation</li>
+	</ul>
+
+	
+	<h4>链式调用</h4>
+	<p>由于第一版封装比较仓促，暂时只保证可用性和最少的bug，目前版本不支持链式调用，即$(xxx).ITCUI_xxxx().attr(xxx)是行不通的。</p>
+
+	<h4>分模块引用</h4>
+	<p>你可以在自主打包版的source目录中找到每个模块的脚本和依存文件，或者修改package.py来选择所需的模块。为了使用打包脚本，你需要安装python2.7（python3.0不支持），并配置好环境变量，以便在任何目录下都能执行java.exe（用于压缩JS和CSS脚本。）</p>
+	<p>在package目录下执行python package.py可以生成一般页面的整合版，执行python package_frame.py可以生成框架版（包括导航树、导航选项卡以及依存代码）。</p>
+	<p>配置方法：</p>
+	<p>在package.py（package_frame.py的代码功能完全一样，只不过模块依存和最终生成文件不一样。）：</p>
+	<pre class="brush:py">
+		#打包的输出路径
+		JS_PATH = "js"
+		IMG_PATH = "images"
+		CSS_PATH = "css"
+		selected_components = ["bs_core","bs_ext","bs_grid","bs_form","bs_button","bs_menu","itc_input","eu_datagrid","itc_pagination","itc_combo"];
+	</pre>
+	<p>三个常量定义了最终脚本、图片、样式表的输出文件，默认下会在当前目录下生成js、images、css三个目录（font目录不需要打包，也无法修改）。</p>
+	<p>selected_components里定义了要打包的组件，只要写出主组件的名字，依存的组件会自动打包进去。</p>
+	<p>默认情况下，打包会生成以下4个文件（以及images/font目录下的资源）：</p>
+	<ul>
+		<li>js/itcui.dev.js</li>
+		<li>js/itcui.min.js</li>
+		<li>css/itcui.dev.css</li>
+		<li>css/itcui.min.css</li>
+	</ul>
+	<p>jQuery不属于打包的对象，需要自行加载。</p>
+
+	<h4>权限支持</h4>
+	<p>通过为button,span,div添加privilege=xxx的参数，同时在页面的document.ready中执行priv()可以隐藏无权限的组件，而priv(true)则直接将无权限的组件移除。</p>
+	<p>开启权限支持必须定义全局变量privMapping，如果当前页面没有这个变量，则尝试去主框架中读取，否则权限控制无效。</p>
+	<p>建议在页面创建时就创建privMapping，不要使用异步方法，防止页面闪动。</p>
+	<p>例子</p>
+	<pre class="brush:xml">
+		&lt;div class="btn-group btn-group-sm" id="edit" privilege="F-PROJ-EDIT">
+	        &lt;button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+	      	填报
+	        	&lt;span class="caret">&lt;/span>
+	        &lt;/button>
+	        &lt;ul class="dropdown-menu" id="menu_edit">&lt;/ul>
+	    &lt;/div> 
+	       
+	    &lt;div class="btn-group  btn-group-sm">
+	        &lt;button privilege="F-PROJ-EDIT" id="publish" type="button" class="btn btn-default" onclick="javascript:Project.publishProject('&lt;%=id%>')">发布&lt;/button>
+	        &lt;button privilege="F-PROJ-EDIT" id="endproj" type="button" class="btn btn-default" onclick="javascript:Project.endProject('&lt;%=id%>')">结项&lt;/button>
+	        &lt;div class="btn-group btn-group-sm">
+				&lt;button id="btn_moreopt" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			      	更多操作
+			        &lt;span class="caret">&lt;/span>	        
+		        &lt;/button>
+		        &lt;ul class="dropdown-menu" id="menu_moreopt">	
+			    &lt;/ul>
+		    &lt;/div>
+	    &lt;/div>
+	</pre>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>
+	<style>
+	</style>
+	<link rel="stylesheet" type="text/css" href="../package/css/itcui.dev.css" media="all"/>	
+	<script type="text/javascript" src="../package/js/itcui.dev.js"></script>
+
+	<title>表单</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();			
+		});			
+	</script>
+	<style>
+
+	</style>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>页内导航选项卡</h4>
+	<p>你可以使用如下代码创建页内选项卡：</p>
+	<pre class="brush:xml">
+		&lt;ul class="nav nav-tabs">
+			&lt;li class="active">&lt;a href="#tab_course" data-toggle="tab">课程&lt;/a>&lt;/li>
+			&lt;li>&lt;a href="#tab_teacher" data-toggle="tab">讲师&lt;/a>&lt;/li>
+			&lt;li>&lt;a href="#tab_device" data-toggle="tab">设备&lt;/a>&lt;/li>
+			&lt;li>&lt;a href="#tab_student" data-toggle="tab">学员&lt;/a>&lt;/li>
+		&lt;/ul>
+		
+		&lt;div class="tab-content">
+			&lt;div class="tab-pane active" id="tab_course">
+				&lt;span class="nodata" id="no_course">本项目暂无相关课程&lt;/span>
+				&lt;div id="table_course_wrap" style="width:100%">
+					&lt;table id="table_course" style="height:180px">
+					&lt;/table>
+				&lt;/div>
+			&lt;/div>
+			&lt;div class="tab-pane" id="tab_teacher">
+				&lt;span class="nodata" id="no_teacher">本项目暂无相关教师&lt;/span>
+				&lt;div id="table_teacher_wrap" style="width:100%">
+					&lt;table id="table_teacher" style="height:180px">
+					&lt;/table>
+				&lt;/div>
+			&lt;/div>
+			&lt;div class="tab-pane" id="tab_device">
+				&lt;span class="nodata" id="no_equip">本项目暂无相关设备&lt;/span>
+				&lt;div id="table_equip_wrap" style="width:100%">
+					&lt;table id="table_equip" style="height:180px">
+					&lt;/table>
+				&lt;/div>
+			&lt;/div>
+			&lt;div class="tab-pane" id="tab_student">
+				&lt;span class="nodata" id="no_student">本项目暂无报名学员&lt;/span>
+				&lt;div id="table_student_wrap" style="width:100%">
+					&lt;table id="table_student" style="height:180px">
+					&lt;/table>
+				&lt;/div>
+			&lt;/div>
+		&lt;/div>
+	</pre>
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#tab_course" data-toggle="tab">课程</a></li>
+		<li><a href="#tab_teacher" data-toggle="tab">讲师</a></li>
+		<li><a href="#tab_device" data-toggle="tab">设备</a></li>
+		<li><a href="#tab_student" data-toggle="tab">学员</a></li>
+	</ul>
+	
+	<div class="tab-content">
+		<div class="tab-pane active" id="tab_course">
+			<span class="nodata" id="no_course">本项目暂无相关课程</span>
+			<div id="table_course_wrap" style="width:100%">
+				<table id="table_course" style="height:180px">
+				</table>
+			</div>
+		</div>
+		<div class="tab-pane" id="tab_teacher">
+			<span class="nodata" id="no_teacher">本项目暂无相关教师</span>
+			<div id="table_teacher_wrap" style="width:100%">
+				<table id="table_teacher" style="height:180px">
+				</table>
+			</div>
+		</div>
+		<div class="tab-pane" id="tab_device">
+			<span class="nodata" id="no_equip">本项目暂无相关设备</span>
+			<div id="table_equip_wrap" style="width:100%">
+				<table id="table_equip" style="height:180px">
+				</table>
+			</div>
+		</div>
+		<div class="tab-pane" id="tab_student">
+			<span class="nodata" id="no_student">本项目暂无报名学员</span>
+			<div id="table_student_wrap" style="width:100%">
+				<table id="table_student" style="height:180px">
+				</table>
+			</div>
+		</div>
+	</div>
+	<ul>
+		<li>nav-tabs和nav-justified样式一起使用可以让选项卡铺满宽度</li>
+		<li>只需让a href指向目标div的ID并设置data-toggle="tab"即可完成选项卡切换绑定</li>
+		<li>li/a上均可以使用onclick绑定事件</li>
+		<li>带有active样式的选项卡默认被激活</li>
+		<li>可以通过调整.nav > li > a的样式（padding）来调整选项卡的高度和宽度</li>
+	</ul>
+
+	<h4>事件绑定</h4>
+	<p>你可以使用如下代码对某个选项卡绑定切换事件：</p>
+	<pre class="brush:js">
+		$("#tab_link_file").on('shown.bs.tab', function (e) {
+			showProjAttchments();
+		});
+	</pre>
+	<p>需要注意的是，如果在选项卡中使用datagrid，表格的初始化函数需要在事件中执行，这是因为被隐藏的选项卡无法获取尺寸，导致datagrid计算大小错误。</p>
+</body>
+</html>

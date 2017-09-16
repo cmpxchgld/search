@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+		
+	</script>
+	<style type="text/css">
+		.row{margin-top:4px;margin-bottom:4px;}
+		p{text-indent:2em;}
+		h4{margin-top:18px;}
+		.toggler{font-size:12px}
+	</style>
+	<title>事件和消息</title>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>关于EventHandler</h4>
+	<p>EventHandler是ITC组件库的核心组件之一，用于在整个框架内处理事件和消息，默认情况下，组件会初始化变量_event_handler，用户无需手动初始化该模块。</p>
+
+	<h4>绑定事件</h4>
+	<p>使用_event_handler.registerEvent(eventId,f,deepcopy)可以注册一个事件，其中eventId为事件标识符，f为事件触发执行的函数（参数不定，具体跟事件有关），deepcopy为是否深拷贝函数，默认为false表示只传函数指针。</p>
+	<p>如：</p>
+	<pre class="brush:js">
+		_event_handler.registerEvent("tabSwitch", _ITC.switchTab);
+		_event_handler.registerEvent("navTreeItemClick", _ITC.switchTreeItem);
+	</pre>
+	<p>该函数有一个返回值，表示事件编号，注销事件时需要该编号。</p>
+	
+	<h4>注销事件</h4>
+	<p>使用_event_handler.unregisterEvent(eventNo)可以注销某事件。</p>
+
+	<h4>触发事件</h4>
+	<p>使用_event_handler.triggerEvent(eventId,args)可以触发事件，其中eventId为事件标识符，args为传入的参数，目前只允许传入一个参数，多参数请用Object传入。</p>
+
+</body>
+</html>

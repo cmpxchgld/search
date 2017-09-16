@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/shBrushCss.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<title>实用工具 - 按钮</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			var menu = [[
+					        {title:"新建"},
+					        {title:"打开"},
+					        {title:"关闭"},
+					        {title:"-"},
+					        {
+					            title:"文字大小",
+					            submenu:[
+					                {title:"小",group:"fontsize",select:true},
+					                {title:"中",group:"fontsize",select:true,selected:true},
+					                {title:"大",group:"fontsize",select:true}
+					            ]
+					        },
+					        {
+					            title:"段落设置",
+					            submenu:[
+					                {title:"自动换行",check:true,checked:true},
+					                {title:"自动行距",check:true},
+					                {title:"首字母自动大写",check:true,checked:true},
+					                {title:"英文单词不换行",check:true,checked:true}
+					            ]
+					        }
+					    ]];
+			ITCUtil.createBtn("#btn1",{"title":"测试独立按钮","onclick":"alert('你点了这个按钮')"});
+			ITCUtil.createMnuBtn("#btn2",{
+				"title":"测试独立按钮",
+				"menu" : menu
+			});
+			ITCUtil.createSpltMnuBtn("#btn3",{
+				"title":"测试独立按钮",
+				"menu" : menu
+			});
+			var btns = [
+				{"title":"新建","style":"btn-success"},
+				{"title":"保存","break":true},
+				{"title":"删除"},
+				{"title":"复制"},
+				{"title":"人员名单","break":true},
+				{"title":"上传附件"},
+				{"title":"字体","break":true},
+				{
+					"title":"段落设置",
+					"menu":[[{title:"PDF"},{title:"Word文档"},{title:"Excel电子表格"}]]
+				},
+				{
+					"title":"导出为Xls",
+					"menu":[[{title:"PDF文档"},{title:"Word文档"},{title:"逗号分隔的数据（CSV）"}]],
+					"break":true,
+					"split":true
+				}
+			];
+			ITCUtil.createBtnToolBar("#btn4",btns);
+		});
+
+		
+	</script>
+
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>关于实用工具 - 按钮</h4>
+	<p>所有实用工具都位于itc_util.js中，该文件需要单独引用，不在基础库中。但是在r04以后的版本中，itc_util.js被默认打包进itcui.dev.js中，不需要额外引用。</p>
+
+	<h4>使用JS创建独立按钮</h4>
+	<p>需要注意的是，创建连续的2个以上的按钮不应该使用ITCUtil.createBtn方法，而是使用下面介绍的按钮工具栏API。</p>
+	<div id="btn1"></div>
+	<pre class="brush:js">
+		ITCUtil.createBtn("#btn1",{"title":"测试独立按钮","onclick":"alert('你点了这个按钮')"});
+	</pre>
+	<p>你需要准备一个DIV用于生成按钮</p>
+	<pre class="brush:xml">
+		<div id="btn1"></div>
+	</pre>
+	<p>除了最基本的title之外，opts还可以设置width（不带px）和style（默认为btn-default，具体参考按钮一节的定义）</p>
+
+	<h4>使用JS创建带有下拉菜单的按钮（不分裂）</h4>
+	<p>只要在opts中增加menu这个参数，就可以为按钮添加下拉菜单，具体的定义参考实用工具-菜单一节。需要注意的是，按钮中menu的定义为二维数组，其中第一个元素是菜单项本身，第二个元素为菜单的选项，可以为空。</p>	
+	<div id="btn2"></div>
+	<p>需要注意的是，无论是分裂还是不分裂，对于带菜单的按钮，Bootstrap要求按钮必须有确定的postion（不为默认值），如果按钮没有指定positon，则封装代码会自动将其设置为position:relative。</p>
+
+	<h4>使用JS创建带有下菜单的按钮（分裂）</h4>
+	<p>分裂按钮的创建方式和不分裂一样，只不过API变为ITCUtil.createSpltMnuBtn</p>
+	<div id="btn3"></div>
+
+	<h4>创建按钮组（工具栏）</h4>
+	<p>创建按钮工具栏需要显式指定split选项以区分分裂菜单和非分裂菜单，同时，由于样式决定，分裂菜单按钮必须独立成组（增加break参数可以让按钮进入新分组）。按钮工具栏支持权限绑定，同其他封装一样，为每个元素增加privilege参数并且提供全局变量privMapping即可。</p>
+	<div id="btn4"></div>
+	<pre class="brush:js">
+		var btns = [
+			{"title":"新建","style":"btn-success"},
+			{"title":"保存","break":true},
+			{"title":"删除"},
+			{"title":"复制"},
+			{"title":"人员名单","break":true},
+			{"title":"上传附件"},
+			{"title":"字体","break":true},
+			{
+				"title":"段落设置",
+				"menu":[[{title:"PDF"},{title:"Word文档"},{title:"Excel电子表格"}]]
+			},
+			{
+				"title":"导出为Xls",
+				"menu":[[{title:"PDF文档"},{title:"Word文档"},{title:"逗号分隔的数据（CSV）"}]],
+				"break":true,
+				"split":true
+			}
+		];
+		ITCUtil.createBtnToolBar("#btn4",btns);
+	</pre>
+</body>
+</html>

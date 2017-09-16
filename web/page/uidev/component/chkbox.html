@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script src="js/icheck.js"></script>
+	<link href="js/skins/flat/blue.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" media="all"/>
+	<title>单选框和复选框</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			$('input').iCheck({
+			    checkboxClass: 'icheckbox_flat-blue',
+			    radioClass: 'iradio_flat-blue',
+			});
+		});
+
+		function addControl(){
+			$("#row_controls").html("");
+			$("#row_controls").append('<input type="checkbox" id="checkbox_3">')
+			.append('<label for="checkbox_3">默认未选择的单选框</label>')
+			.append('<input type="checkbox" checked id="checkbox_4">')
+			.append('<label for="checkbox_4">默认已选择的单选框</label>');
+		}
+
+		function addControlStyle(){
+			$("#checkbox_3").iCheck({
+			    checkboxClass: 'icheckbox_flat-blue',
+			    radioClass: 'iradio_flat-blue',
+			});
+			$("#checkbox_4").iCheck({
+			    checkboxClass: 'icheckbox_flat-blue',
+			    radioClass: 'iradio_flat-blue',
+			});
+		}
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>创建一个单选/复选框</h4>
+	<pre class="brush: xml;">
+		&lt;div class="row">
+			&lt;input type="checkbox" id="checkbox_1">
+			&lt;label for="checkbox_1">默认未选择的单选框&lt;/label>
+			&lt;input type="checkbox" checked id="checkbox_2">
+			&lt;label for="checkbox_2">默认已选择的单选框&lt;/label>
+		&lt;/div>
+		&lt;div class="row">
+			&lt;input type="radio" name="iCheck" id="radio_1">
+			&lt;label for="radio_1">选项1&lt;/label>
+			&lt;input type="radio" name="iCheck" checked  id="radio_2">
+			&lt;label for="radio_2">选项2（默认选择）&lt;/label>
+		&lt;/div>
+	</pre>
+	<pre class="brush:js">
+		$(document).ready(function(e){
+			//在实际写的时候请不要对所有input使用iCheck方法，因为该页面的input都是单选框，才可以这么用
+			$('input').iCheck({
+			    checkboxClass: 'icheckbox_flat-blue',
+			    radioClass: 'iradio_flat-blue',
+			});
+		});
+	</pre>
+	<div class="row">
+		<input type="checkbox" id="checkbox_1">
+		<label for="checkbox_1">默认未选择的单选框</label>
+		<input type="checkbox" checked id="checkbox_2">
+		<label for="checkbox_2">默认已选择的单选框</label>
+	</div>
+	<div class="row">
+		<input type="radio" name="iCheck" id="radio_1">
+		<label for="radio_1">选项1</label>
+		<input type="radio" name="iCheck" checked  id="radio_2">
+		<label for="radio_2">选项2（默认选择）</label>
+	</div>
+	<p>需要注意的是，在默认情况下，点击控件和控件的Label具有同等效果。</p>
+	<h4>动态添加一个单选/复选框</h4>
+	<p>单选/复选框的样式实际上是在document.ready事件触发时，调用iCheck方法应用样式的。如果需要动态添加控件，则需要手动调用该函数。</p>
+	<p>请注意，<strong>不要省略参数中指定的style</strong>（实际上可以通过修改参数在页面中实现不同样式的选择框）</p>
+	<pre class="brush: js;">
+		function addControl(){
+			$("#row_controls").html("");
+			$("#row_controls").append('&lt;input type="checkbox" id="checkbox_3">')
+			.append('&lt;label for="checkbox_3">默认未选择的单选框&lt;/label>')
+			.append('&lt;input type="checkbox" checked id="checkbox_4">')
+			.append('&lt;label for="checkbox_4">默认已选择的单选框&lt;/label>');
+		}
+
+		function addControlStyle(){
+			$("#checkbox_3").iCheck({
+			    checkboxClass: 'icheckbox_flat-blue',
+			    radioClass: 'iradio_flat-blue',
+			});
+			$("#checkbox_4").iCheck({
+			    checkboxClass: 'icheckbox_flat-blue',
+			    radioClass: 'iradio_flat-blue',
+			});
+		}
+	</pre>
+	<div class="row" id="row_controls">
+	</div>
+	<div class="row">
+		<a href="#" onclick="addControl()">单击这里添加一些控件</a>
+		<a href="#" onclick="addControlStyle()">单击这里为控件应用事件</a>
+	</div>
+
+	<h4>获取控件的值</h4>
+	<p>使用组件库提供的表单封装可以很方便的取值，但是取值只能判断$(input).parent().hasClass("checked")</p>
+	<p>赋值请使用$('input').iCheck('check')方法（取消使用uncheck），否则会导致组件行为异常。</p>
+	
+	<h4>动态调整控件的值</h4>
+	<p>说明中的选择器可以随意替换。</p>
+	<pre class="brush: js;">
+		$('input').iCheck('check'); — 将输入框的状态设置为checked
+		$('input').iCheck('uncheck'); — 移除 checked 状态
+		$('input').iCheck('toggle'); — 切换选择状态
+		$('input').iCheck('disable'); — 将输入框的状态设置为 disabled
+		$('input').iCheck('enable'); — 移除 disabled 状态
+		$('input').iCheck('update'); — 当通过参数修改控件样式时，可以使用该函数应用新的样式
+		$('input').iCheck('destroy'); — 移除控件样式
+	</pre>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+	<title>对话框操作</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+		function createDivDialog(){
+			var pb = _parent().$("body");
+			$("#itcDlgDiv").appendTo(pb);
+			$("#itcDlgDivBtn").appendTo(pb);
+			//使用appendTo方法后，本页就不再有这两个对象了
+			_parent().$("#testDivCombo").iCombo("init");
+			FW.dialog("init",{
+			    src : "about:blank",			    
+			    dlgOpts : {idSuffix : "Div",title:"测试DIV对话框",height:150}
+			});
+		}
+
+		function testCross(){
+			FW.dialog("init",{
+			    src : "newdemo/embbed_combo.html",			    
+			    dlgOpts : {title:"测试对话框",height:150,width:400}
+			});
+		}
+	</script>
+</head>
+<body style="font-size:14px">
+	<h4>为什么要使用iframe</h4>
+	<p>简单一句，这是约定。</p>
+	<p>详细的原因大概有以下：</p>
+	<ul>
+		<li>现在的FW.dialog函数已经可以自动把对话框从内层iframe移植到主框架中，真正做到全屏意义上居中，所以如果要遵循这一做法，即便是要用div弹出对话框，第一点要做的就是把DIV从内层页面放到外层去，在这种情况下DIV操作的便利已经不再。</li>
+		<li>DIV弹出的页面适用于比较简单的操作，但是当操作比较复杂时，页面中会有大量的JS代码，甚至需要引入新的JS和CSS文件，而显然主框架里的引用不能满足这以需求。</li>
+		<li>iframe之间彼此独立，开发者的函数/变量定义没有任何冲突，甚至可以使用自己的css和js引用，但是在DIV中，如果引入外部js，尤其是EasyUI这种带有loader的文件，很容易导致事件绑定失效，最大的问题，你可能打开了别人的对话框出了问题，但是以为问题在你自己这。</li>
+		<li>DIV和iframe方式可以做到同样的操作，而iframe还有div很多不具备的特性，比如跨域打开文件等。iframe内外交互有固定套路可循，只需要多写一行代码而已，而这行还可以粘贴来。</li>
+		<li>iframe不能跨越的缺陷是无法修改的，也就是说在iframe里弹出下拉框或者自定义菜单可能会出现滚动条，但是这可以通过设计上避免，比如调整下拉框的位置让下拉框有足够高度显示列表，甚至是后期的支持，比如根据下拉框的位置自动向上/下弹出。</li>
+	</ul>
+
+	<h4>约定</h4>
+	<p>无论最开始的设计也好，还是现在的实现也好，取消和打X都是直接关闭对话框，不进行任何操作。显然，处理一个确定的事件比要再加一个按钮更容易。</p>
+	<p sytle="color:#f00">jQuery从iframe内访问外层元素很简单，用提供的封装_parent().$进行选择就可以，但是在iframe外选择内部元素，jQuery无法办到，只能通过源生方法拿到window对象。</p>
+
+	<h4>示例1</h4>
+	<p>该示例描述了这样一个需求：</p>
+	<ul>
+		<li>页面A（主页面）中有表单，有一个按钮（也可以是任何动作），可以打开对话框B</li>
+		<li>弹出的对话框B中也有一个表单C，而且这个表单C需要表单验证</li>
+		<li>点击对话框的确定按钮，将表单C中的数据进行验证，如果通过的话，将数据提交到服务器，获得一个结果</li>
+		<li>判断提交的结果，如果提交成功，则关闭对话框，并根据结果修改页面A中表单的字段值。</li>
+	</ul>
+	<p>这应该是实际开发中最复杂的例子，因为不仅涉及对话框与框架页的交互，还有异步请求，当然最终的数据修改和获取可以换成任何对话框内或者框架页内的操作，比如在对话框中用树或者列表选择结果，或者在框架页中的表格增加行等。本示例更侧重于交互流程。</p>
+	<p>框架页使用如下JS代码打开对话框：</p>
+	<pre class="brush:js">
+		function showEditProfile(){
+		    var src = basePath + "user?method=feditprof";//对话框B的页面
+		    var btnOpts = [{
+		            "name" : "取消",
+		            "onclick" : function(){
+		                return true;
+		            }
+		        },{
+		            "name" : "确定",
+		            "style" : "btn-success",
+		            "onclick" : function(){
+		                //itcDlgContent是对话框默认iframe的id
+		                var p = _parent().window.document.getElementById("itcDlgContent").contentWindow;
+		                var form = p.getRegForm();
+		                if(form){
+		                    $.ajax({
+		                        url : basePath + "user?method=fedituser",//向后台提交数据，验证对话框内表单的有效性
+		                        dataType: "json",
+		                        type:"post",
+		                        data:form,
+		                        success:function(result){
+		                            if(result&amp;&amp;result.status==1){
+		                            	//修改框架页表单#myform的值，服务器返回的json形如{"status":1,"msg":"xxxxx"}，可以任意定义
+		                            	$("#myform").iForm("setVal",{"myfield":result.msg})
+		                            	//异步操作需要手动关闭对话框 
+		                            	//对话框的默认选择器id为itcDlg，可以用于执行大多数EasyUI dialog源生方法
+		                                _parent().$("#itcDlg").dialog("close");         
+		                            }
+		                        }
+		                    });                         
+		                }
+		            }
+		        }
+		    ];
+		    var dlgOpts = {
+		        width : 400,
+		        height:350,
+		        title:"修改个人信息",
+		    };
+		    FW.dialog("init",{"src":src,"dlgOpts":dlgOpts,"btnOpts":btnOpts);
+		}
+	</pre>
+	<p>getRegForm函数定义在弹出的对话框中，需要开发者自行编写，这个函数有用于验证表单的合法性，如果表单不合法返回null，合法则返回表单要提交的值。这个函数最简单的形式为：</p>
+	<pre class="brush:js">
+		function getRegForm(){
+			if(!$("#form").valid()){
+				return null;
+			}
+			return $("#form").iForm("getVal");
+		}
+	</pre>
+	<p>如果弹出对话框内的页面比较复杂，取的数据比较多，这个函数也会更复杂写，当然getRegForm可以换成任何你喜欢的名字，比如go()</p>
+	<p>如果数据不需要经过远程服务器处理，只是单单从对话框里拿出来，那操作就简单的多：</p>
+	<pre class="brush:js">
+		var btnOpts = [{
+	            "name" : "取消",
+	            "onclick" : function(){
+	                return true;
+	            }
+	        },{
+	            "name" : "确定",
+	            "style" : "btn-success",
+	            "onclick" : function(){
+	                //itcDlgContent是对话框默认iframe的id
+	                var p = _parent().window.document.getElementById("itcDlgContent").contentWindow;
+	                var form = p.getRegForm();
+	                if(form){
+                    	$("#myform").iForm("setVal",{"myfield":form.someField})
+                    	return true; //同步操作可以直接return true关闭对话框
+                    }
+	            }
+	        }
+	    ];
+	</pre>
+	<p>其余的代码照抄就可以。</p>
+
+	<h4>示例2</h4>
+	<p>该示例来源于乐学网的用户注册流程，需求如下：</p>
+	<ul>
+		<li>页面A打开了对话框B，这个对话框是一个用户注册页面，而且只有一个绿色的居中按钮。</li>
+		<li>点击按钮后，对表单数据验证，并提交到服务器完成注册</li>
+		<li>如果注册成功，对话框B关闭，再打开对话框C，这个对话框无按钮，里面有一些链接指引新用户操作</li>
+		<li>用户点击对话框C中的链接，主页面发生跳转，对话框C关闭。</li>
+	</ul>
+	<p>实际上，在TIMSS中不太可能出现类似的情景，因为TIMSS多以选项卡打开页面，但是作为已有的场景，还是加到例子中。页面A打开对话框的JS代码如下：</p>
+	<pre class="brush:js">
+		var src = basePath + "login?method=showreg";
+		var btnOpts = [{
+		    name : "立即注册",
+		    width : 200,
+		    style : "btn-success",
+		    float : "middle",//按钮居中显示
+		    onclick : function(){
+		    	//因为第一个对话框设置了id后缀Reg，所以iframe的id从默认的itcDlgContent变为itcDlgRegContent
+		    	//这主要是考虑到乐学网中已经有早先代码占了itcDlgContent的名字
+		    	//实际开发的时候第一个对话框如果带按钮可以不设置后缀，而继续用默认的名字
+		        var p = _parent().window.document.getElementById("itcDlgRegContent").contentWindow;
+		        var g = p.getRegForm();
+		        if(!g){
+		            return;
+		        }
+		        $.post(basePath + "user?method=regfromguest",g,function(result){
+		        	//evalxxx这是JSON.parse的ie6-7兼容写法，老的开发者可能看的更亲切
+		            result = eval("(" + result + ")");
+		            //注册成功
+		            if(result.status==1){
+		                //关闭第一个对话框
+		                _parent().$("#itcDlgReg").dialog("close");
+		                //打开欢迎页面
+		                var src1 = basePath + "pages/ext/welcome.jsp";
+		                var dlgOpts1 = {
+		                    title:"欢迎来到乐学网",
+		                    width:550,
+		                    height:280, 
+		                    idSuffix : "Welcome",
+		                    noButtons : true//该参数设定对话框无按钮
+		                };
+		            }
+		            FW.dialog({"src":src1,"dlgOpts":dlgOpts1);
+		        });
+		    }
+		}];
+		var dlgOpts = {
+		    title:"注册成为乐学网成员",
+		    idSuffix : "Reg",//这里使用idSuffix参数修改了对话框的ID
+		    width:450,
+		    height:430
+		};
+		FW.dialog({"src":src,"dlgOpts":dlgOpts,"btnOpts":btnOpts);
+	</pre>
+	<p>主页面A（乐学的用户主页面类似校内网，没有框架结构）有一个函数用于跳转和关闭欢迎对话框：</p>
+	<pre class="brush:js">
+		function closeDialog(url){
+			//这里的对话框id也因为后缀的关系变为itcDlgWelecome
+			//但是仔细想一下？这句话完全可以没有，因为主页面跳转走了对话框自然不复存在，但是作为说明用还是写在这里
+			$("#itcDlgWelcome").dialog("close");
+			if(url){
+				window.location.href = url;
+			}
+		}
+	</pre>
+	<p>对话框内的跳转逻辑大概是这样的：</p>
+	<pre class="brush:js">
+		function jump(i){
+			var url ="";
+			if(i==1){
+				url = null;
+			}
+			else if(i==2){
+				url = basePath + "pages/ext/course/courseList.jsp";
+			}
+			else if(i==3){
+				url = basePath + "pages/ext/teacher/teacherList.jsp";
+			}
+			else if(i==4){
+				url = basePath + "pages/ext/equipment/equipmentList.jsp";
+			}
+			window.parent.closeDialog(url);
+		}
+	</pre>
+	<p>对应的html例子如下：</p>
+	<pre class="brush:xml">
+		&lt;span style="color:#df8300">&lt;%=userName %>&lt;/span>
+		&lt;span>，您已成功注册乐学网帐号，我们会尽快与您联系开通您的乐学之旅。在此期间，您可以继续以下操作：&lt;/span>
+		&lt;div class="twrap" style="margin-top:8px">
+			&lt;span class="goicon">&lt;/span>
+			&lt;span class="act" onclick="jump(1)">返回首页&lt;/span>
+		&lt;/div>
+		&lt;div class="twrap">
+			&lt;span class="goicon">&lt;/span>
+			&lt;span class="act" onclick="jump(2)">看看热门的课程&lt;/span>
+		&lt;/div>
+		&lt;div class="twrap">
+			&lt;span class="goicon">&lt;/span>
+			&lt;span class="act" onclick="jump(3)">看看乐学的讲师&lt;/span>
+		&lt;/div>
+		&lt;div class="twrap">
+			&lt;span class="goicon">&lt;/span>
+			&lt;span class="act" onclick="jump(4)">看看有趣的设备&lt;/span>
+		&lt;/div>
+	</pre>
+
+	<h4>如果我喜欢DIV打开对话框？</h4>
+	<p>理论上，只要能做到效果，使用任何手段实现都不成问题，但是，在1024x768下，因为导航树的宽度足足有200px，全屏居中和内屏居中的效果还是很明显的。当然，单单用EasyUI打开一个DIV作为对话框很简单，现在的问题不仅仅是居中，我们把对话框的按钮也换成了bootstrap的，这样你又要自己定义一条按钮出来，还不如用iframe的封装简单。</p>
+	<p>下面的例子演示了如何使用DIV弹出一个对话框（EasyUI源生方法），这个对话框里只有combo，作为演示。暂时不提供封装方法，但是可以使用某些手段让FW.dialog方法生效。</p>
+	<a onclick="createDivDialog()">查看演示</a>
+	<a onclick="testCross()">测试跨过对话框的combo</a>
+	
+	<p>首先，你需要模拟带后缀的对话框，自行创建一个div：</p>
+	<pre class="brush:xml">
+		&lt;div id="itcDlgDiv">
+			&lt;!--这段必须有 iframe找不到出错了都白玩-->
+			&lt;iframe style="width:0px;height:0px;display:none" id="itcDlgDiv">
+			&lt;/iframe>
+			&lt;select id="testDivCombo" style="width:200px">
+				&lt;option id="a" selected="">选项1&lt;/option>
+				&lt;option id="b">选项2&lt;/option>
+				&lt;option id="c">选项3&lt;/option>
+				&lt;option id="d">选项4&lt;/option>
+				&lt;option id="e">选项5&lt;/option>
+				&lt;option id="f">选项6&lt;/option>
+				&lt;option id="g">选项7&lt;/option>
+			&lt;/select>
+	    &lt;/div>
+		&lt;div id="itcDlgDivBtn" style="height:40px;display:none;padding-top:4px" class="bbox">
+			&lt;div id="itcDlgDivBtnWrap" style="width:100%;height:100%">
+
+			&lt;/div>
+		&lt;/div>
+	</pre>
+	<p>然后，使用下面的代码初始化对话框，这里设置了idSuffix，让FW.dialog方法使用我们提供的HTML初始化对话框：</p>
+	<pre class="brush:js">
+		function createDivDialog(){
+			var pb = _parent().$("body");
+			$("#itcDlgDiv").appendTo(pb);
+			$("#itcDlgDivBtn").appendTo(pb);
+			//使用appendTo方法后，本页就不再有这两个对象了
+			_parent().$("#testDivCombo").iCombo("init");
+			FW.dialog("init",{
+			    src : "about:blank",			    
+			    dlgOpts : {idSuffix : "Div",title:"测试DIV对话框",height:150}
+			});
+		}
+	</pre>
+	<p>从演示结果可以看出，由于panel对象设置了大量的overflow:hidden，里面的combo还是弹不到外面去，所以有一点优势也不存在了。</p>
+	<p>--------------下面是用于演示的代码 不要管他----------</p>
+	<div id="itcDlgDiv">
+		<!--这段必须有 iframe找不到出错了都白玩-->
+		<iframe style="width:0px;height:0px;display:none" id="itcDlgDiv">
+		</iframe>
+		<select id="testDivCombo" style="width:200px">
+			<option id="a" selected="">选项1</option>
+			<option id="b">选项2</option>
+			<option id="c">选项3</option>
+			<option id="d">选项4</option>
+			<option id="e">选项5</option>
+			<option id="f">选项6</option>
+			<option id="g">选项7</option>
+		</select>
+    </div>
+	<div id="itcDlgDivBtn" style="height:40px;display:none;padding-top:4px" class="bbox">
+		<div id="itcDlgDivBtnWrap" style="width:100%;height:100%">
+
+		</div>
+	</div>
+
+	
+</body>
+</html>

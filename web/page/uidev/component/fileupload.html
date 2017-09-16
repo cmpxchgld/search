@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/shBrushJava.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<script type="text/javascript" src="../nightly/js/jquery.uploadify.js"></script>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bs_doc_ext.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/uploadify.css" media="all"/>
+	<title>文件上传</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			var initFiles = [{"fileID":"f0001","fileName":"已上传文件.docx","fileSize":123456},
+			{"fileID":"f0002","fileName":"已上传文件（假）.zip","fileSize":654321}];
+			$("#file_upload1").ITCUI_FileUpload({
+				"uploader" : "http://10.0.250.52/uidev/upload?method=upload",
+				"initFiles":initFiles,
+				"delFileUrl":"http://10.0.250.52/uidev/upload?method=delete"//假的不能用
+			});
+		});
+
+		
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>如何使用</h4>	
+	<p><strong>演示页面中不限制文件类型，最大可以上传10MB的附件，请不要大量上传无用文件。</strong></p>
+	<div id="file_upload1" style="width:800px">
+		
+	</div>
+
+
+	<p style="clear:both">JS代码：</p>
+	<pre class="brush:js">
+		$("#file_upload1").ITCUI_FileUpload({"uploader" : "http://10.0.250.52/uidev/upload?method=upload","fileSizeLimit":10*1024});
+	</pre>
+	<p><strong>根据uploadify的设计，初始化组件必须使用ID选择器。</strong></p>
+
+	<p>JAVA代码：</p>
+	<pre class="brush:java">
+	package com.gdyd.servlet;
+
+	import java.io.File;
+	import java.io.IOException;
+	import java.util.Iterator;
+	import java.util.List;
+
+	import javax.servlet.ServletException;
+	import javax.servlet.http.HttpServletRequest;
+	import javax.servlet.http.HttpServletResponse;
+
+	import org.apache.commons.fileupload.FileItem;
+	import org.apache.commons.fileupload.FileUploadException;
+	import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+	import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+	/**
+	 * @author http://xzb09.blog.51cto.com/7243998/1213990
+	 *
+	 */
+	public class FileUploadServlet extends BaseServlet{
+
+		private static final long serialVersionUID = 6483459832266605299L;
+		private static final String savePath = "c:/uploadify_temp"; 
+
+		protected void service(HttpServletRequest request,
+				HttpServletResponse response) throws ServletException, IOException {
+			String method = request.getParameter("method");
+			if(method.equals("upload")){
+				upload(request,response);
+			}
+			else if(method.equals("del")){
+				outputStatus(response, 1, "删除成功");
+			}
+		}
+		
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		private void upload(HttpServletRequest request,
+				HttpServletResponse response){
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+	        // 缓存大小为512KB
+	        factory.setSizeThreshold(524288);
+	        // 临时文件夹
+	        factory.setRepository(new File(savePath + "/temp"));
+	        // 初始化上传控件
+	        ServletFileUpload upload = new ServletFileUpload(factory);
+	        // 文件大小最大10MB
+	        upload.setFileSizeMax(10*1024*1024);
+	        upload.setHeaderEncoding("UTF-8");
+	        List fileList = null;
+	        try {
+	            fileList = upload.parseRequest(request);
+	        } catch (FileUploadException e) {
+	            e.printStackTrace();
+	        }
+	        Iterator&LT;FileItem> it = fileList.iterator();
+	        String name = "";
+	        String filename = "";
+	        while (it.hasNext()) {
+	            FileItem item = it.next();
+	            if (!item.isFormField()) {
+	                name = item.getName();
+	                if (name != null && !name.trim().equals("")) {
+	                	if(name.contains("err")){
+	                		outputStatus(response, -1, "莫须有的失败");
+	                		return;
+	                	}
+	                    filename = generateFileName(name);
+	                    File file = new File(savePath + "/" + filename);
+	                    try {
+	                        item.write(file);
+	                        outputStatus(response, 1, "../upload?method=del&n=" + Math.abs(Math.random()));
+	                    } catch (Exception e) {
+	                    	outputStatus(response, -1, "系统错误");
+	                        e.printStackTrace();
+	                    }
+	                }
+	            }
+	        }
+		}
+		
+	    /*
+	     * 生成文件名
+	     */
+	    private String generateFileName(String name) {
+	        long currentTime = System.currentTimeMillis();
+	        int i = (int) (Math.random() * 1000D + 1.0D);
+	        long result = currentTime + i;
+	        String filename = String.valueOf(result) + getFileExt(name);
+	        return filename;
+	    }
+	    /*
+	     * 获取文件格式
+	     */
+	    private String getFileExt(String name) {
+	        int pos = name.lastIndexOf(".");
+	        if (pos > 0) {
+	            return name.substring(pos);
+	        } else {
+	            return name;
+	        }
+	    }
+	}
+
+	}
+		
+	</pre>
+	<p>后端的标准返回是一个json，格式为{status:状态标识符,msg:附加信息}，若status=1表示操作成功。</p>
+
+	<h4 style="clear:both">兼容性</h4>
+	<p>本组件基于uploadify开发，并修改为网易邮箱的样式。目前，系统中必须安装flash方能正常使用本组件。</p>
+
+	<h4>显示已经上传过的文件</h4>
+	<p>在初始化时传入参数initFiles可以显示已上传的文件，其中fileID为文件的标识符，用于和delFileUrl构造删除文件的链接。</p>
+	<pre class="brush:js">
+		var initFiles = [{"fileID":"f0001","fileName":"已上传文件.docx","fileSize":123456}];
+		$("#file_upload1").ITCUI_FileUpload({
+				"uploader" : "http://10.0.250.52/uidev/upload?method=upload",
+				"initFiles":initFiles,
+				//假的链接不能用
+				"delFileUrl":"http://10.0.250.52/uidev/upload?method=delete"
+		});
+	</pre>
+	<p>该删除按钮点击并允许后会访问http://10.0.250.52/uidev/upload?method=delete&amp;id=f0001（get方法）。如果不传入delFileUrl，由于无法构建删除链接，则不会显示删除按钮。</p>
+
+	<h4>使用自定义样式</h4>
+	<p>“选择文件”按钮通过以下几个参数实现：</p>
+	<ul>
+		<li>buttonText：按钮显示的文字</li>
+		<li>buttonClass：按钮应用的样式</li>
+		<li>width：按钮宽度</li>
+		<li>height：按钮高度</li>
+	</ul>
+	<p>通过覆盖构造函数中itemTemplate的值，可以自定义每个文件条目的样式。</p>
+	<p>其中，</p>
+	<ul>
+		<li>${fileName}为不包含路径的文件名</li>
+		<li>${instanceID}为去掉#号的uploadify实体的ID</li>
+		<li>${fileSize}为带有单位的文件大小</li>
+		<li>${fileID}为自动创建的文件标识符，由上传批次和文件编号组成，用于删除、停止等操作</li>
+	</ul>
+	<p>封装中对应JS代码：</p>
+	<pre class="brush:js">
+		options.itemTemplate = options.itemTemplate || '&lt;div class="itcui_upload_wrap" fileID="${fileID}">' + 
+				'&lt;div class="itcui_upload_icon_demo ml8">' +
+				'&lt;/div>' +
+				'&lt;div class="itcui_upload_detail_wrap ml4">' +
+					'&lt;div class="itcui_upload_filename">' +
+						'&lt;span>${fileName}&lt;/span> &lt;a onclick="$(\'#${instanceID}\').uploadify(\'cancel\',\'${fileID}\')" class="itcui_link fr">取消&lt;/a>' +
+					'&lt;/div>' +
+					'&lt;div style="clear:both" class="itcui_upload_progress_line">' +
+						'&lt;div class="itcui_upload_progress_txt" style="margin-left:-4px">' +
+							'&lt;span class="fl">${fileSize}&lt;/span>' +
+						'&lt;/div>' +
+					'&lt;/div>' +
+				'&lt;/div> ' +
+			'&lt;/div>';
+	</pre>
+
+	<h4>错误/成功处理</h4>
+	<p>默认情况下，uploadify会将任何非200的HTTP返回视为错误，可以通过回调函数的errorCode, errorMsg, errorString参数获取信息。如果不想区分HTTP状态码，也可以使用onUploadSuccess回调函数，并根据data, response两个参数区分成功还是失败。如果不做任何特殊返回，uploadify认为所有文件均上传成功。</p>
+	<p>正常情况下，如果按照说明在前台设置了文件大小和扩展名检查，后台一般不会出现错误，除非网络中断或者磁盘空间满。为了演示起见，用户只要在本页面上传文件名中带有<code>err</code>字样的文件（一个或者多个），即可收到错误信息，也可以在上传文件时切断网络。</p>
+	<p>在本封装中，如果显式返回成功，则需要返回一个JSON对象或者JSON字符串，其中status=1</p>
+
+	<h4>重传文件</h4>
+	<p>由于uploadfiy的设计问题，以及swf的闭源，本组件暂时不支持失败重传，只能手动重新选择文件后再次上传。</p>
+
+	
+	<h4>删除文件</h4>
+	<p>如果在上传文件后，返回status=1的同时，也返回msg，对于msg，有两种返回形式，一是直接返回删除文件的链接，二是在初始化时设置参数delFileUrl，此时组件会将msg认为是一个id，并将该id以id=?形式的参数附加在url上。对于删除操作，若结果为status=1则表示删除成功</p>
+	
+	<h4>跨域上传</h4>
+	<p>uploadify允许跨域上传文件，但是必须在目标域的根下放置crossdomain.xml，本演示页面设置了跨域，但是在实际生产环境中请避免，因为这样会带来安全隐患。</p>
+	<pre class="brush:xml">
+		&lt;?xml version="1.0" encoding="UTF-8"?>
+		&lt;!DOCTYPE cross-domain-policy SYSTEM  
+		    "http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd" >  
+		&lt;cross-domain-policy>  
+		    &lt;site-control permitted-cross-domain-policies="all" />  
+		    &lt;allow-access-from domain="*" />  
+		    &lt;allow-http-request-headers-from domain="*" headers="*"/>
+		&lt;/cross-domain-policy>
+	</pre>
+
+	<h4>常用参数</h4>
+	<p>下面是uploadify的常用参数：</p>
+	<ul>
+		<li>auto：是否在选择文件后自动开始上传</li>
+		<li>fileSizeLimit：单次文件上传的最大大小，数字格式，单位KB</li>
+		<li>fileTypeExts：允许的扩展名，形如<code>*.jpg;*.rar;*.doc;*.docx</code>，需要注意的是，即便是前台限制了扩展名，后台也需要做相应校验，对于安全要求较高的系统还需要做文件头检察。</li>
+		<li>fileTypeDesc：在对话框中对文件类型的描述，比如“所有图片”</li>
+		<li>queueSizeLimit：允许上传的最大文件个数，默认999</li>
+	</ul>
+	<p>开发者可以阅读ITCUI_FileUpload函数的代码以了解如何自定义uploadify的样式和行为，需要注意的是，一旦修改了封装中的样式和命名方式，则删除、取消、成功、进度显示、失败提示等所有内置功能将失效，这些样式必须用户手动实现。更多内容可以参考官网http://www.uploadify.com/documentation/</p>
+
+	<h4>定义任意样式的上传组件</h4>
+	<p>下面一段代码介绍了如何将uploadify封装入一个菜单，并且实现对应的功能，最终结果如下：</p>
+	<img src="images/upload1.png" />
+	<p>首先，需要定义一段CSS，让上传按钮具有菜单的样式：</p>
+	<pre class="brush:xml">
+		li>.uploadify {
+			position: relative;
+		}
+		li>.uploadify>.uploadify-button  {
+			font-size: 12px;
+			cursor: pointer;
+			height: 25px;
+			color:#000000;
+			padding-left:20px;
+		}
+		li>.uploadify:hover>.uploadify-button {
+			background-color: rgb(51, 102, 204);
+			color: #ffffff;
+			font-weight: bold;
+		}
+	</pre>
+	<p>接下来，将uploadify放入Bootstrap的菜单中，这个下拉菜单由按钮触发。</p>
+	<pre class="brush:xml">
+		&lt;div class="btn-group-sm btn-group" id="projUpload" privilege="F-PROJ-EDIT">
+		    &lt;button id="btn_moreopt" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		      	上传附件
+		        &lt;span class="caret">&lt;/span>	        
+	        &lt;/button>
+	        &lt;ul class="dropdown-menu" id="menu_upload">
+	        	&lt;li>&lt;div id="mnu_upload_file">&lt;/div>&lt;/li>
+				&lt;li>&lt;div id="mnu_upload_image">&lt;/div>&lt;/li>
+	        &lt;/ul>
+        &lt;/div>
+	</pre>
+	<p>然后，通过JS初始化uploadify</p>
+	<pre class="brush:js">
+		$("#mnu_upload_file").uploadify({
+	        height        : 25,
+	        swf           : basePath + 'uploadify/uploadify.swf',
+	        uploader      : basePath + 'ProjectServlet?method=upprojfile&projId=' + id,
+	        width         : 140,
+	        buttonText    : "上传项目文档",
+	        queueID       : "nouse_q2",//这个div真实存在，但是display=none，因为我们不需要显示上传进度
+	        onQueueComplete : function(queueData){
+	        	//在所有文件上传之查询服务器得到最终结果，因为有文件可能上传失败（原因不定）
+	        	$.post(basePath + "ProjectServlet?method=recentfile",{},function(result){
+	        		if(result==null){
+	        			return;
+	        		}
+	        		result = eval("(" + result + ")");
+	        		for(var i=0;i&lt;result.length;i++){
+	        			if(currProjAttach==null){
+	        				currProjAttach = [];
+	        			}
+	        			var obj = {};
+	        			obj.fn = result[i].filename;
+	        			obj.size = result[i].size;
+	        			obj.ctime = {"time":new Date().getTime()};
+	        			obj.attachId = result[i].id;
+	        			obj.owner = secUserName;
+	        			currProjAttach.push(obj);
+	        		}
+	        		if(result.length>1){
+	        			Notice.successTopNotice(result[0].filename + "等文件上传完毕");
+	        		}
+	        		else{
+	        			Notice.successTopNotice(result[0].filename + "上传完毕");
+	        		}
+	        		showProjAttchments();
+	        	});
+	        }
+	    });
+	</pre>
+	<p>需要注意的是，这段代码为最简单实现方法，在实际使用中需要更多内容，比如在文件上传时告诉用户上传开始（必要时显示进度），以某种形式提示文件上传仍然未完成，不要进行其他操作。upprojfile方法会将上传的结果写入session中，这样recentfile就可以得到上传的结果了。</p>
+</body>
+</html>

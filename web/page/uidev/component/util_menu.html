@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/shBrushCss.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bs_doc_ext.css" media="all"/>
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<title>实用工具 - 菜单</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			createJsonMenu1();
+		});
+
+		function getChk(){
+			alert("自动换行的选择结果:" + ITCUtil.getMenuCheckVal("para1"));
+		}
+
+		function getSelect(){
+			alert("文字大小：" + ITCUtil.getMenuSelectVal("#jsonmenu1","fontsize"));
+		}
+
+		function createJsonMenu1(){
+			var menu = [
+				{title:"新建",onclick:"alert('点了新建菜单')"},
+				{title:"打开"},
+				{title:"关闭"},
+				{title:"-"},
+				{
+					title:"文字大小",
+					submenu:[
+						{title:"小",group:"fontsize",select:true,id:"fs_small"},
+						{title:"中",group:"fontsize",select:true,selected:true,id:"fs_mid"},
+						{title:"大",group:"fontsize",select:true,id:"fs_big"}
+					]
+				},
+				{
+					title:"段落设置",
+					submenu:[
+						{title:"自动换行",check:true,checked:true,id:"para1"},
+						{title:"自动行距",check:true,id:"para2"},
+						{title:"首字母自动大写",check:true,checked:true,id:"para3"},
+						{title:"英文单词不换行",check:true,checked:true,id:"para4"}
+					]
+				}
+			];
+			ITCUtil.createMenu("#jsonmenu1",menu);
+			ITCUtil.createMenu("#jsonmenu2",menu,{"id":"menu_trad","direction":"left"});
+			ITCUtil.createMenu("#btnmenu",menu);
+		}
+	</script>
+	
+	<style>
+		.my_icon{
+			background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAMAAAAolt3jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAA////pdmf3QAAADhJREFUeNpcjkkKAAAIAqf/fzqItMVTpgwSR3zLqKw7so7KgiKV50PfG8VGNXvIcdOLequ8PwUYADeoAIJRiA9PAAAAAElFTkSuQmCC");
+			width:14px;
+			height: 14px;
+			display: inline-block;
+		}
+		.toggler{font-size:12px}
+	</style>
+</head>
+<body style="margin:16px;font-size:14px">
+	<h4>关于实用工具 - 菜单</h4>
+	<p>所有实用工具都位于itc_util.js中，该文件需要单独引用，不在基础库中。但是在r04以后的版本中，itc_util.js被默认打包进itcui.dev.js中，不需要额外引用。</p>
+
+	<h4>使用JSON创建菜单</h4>
+	<div class="dropdown" id="jsonmenu1">
+		<a data-toggle="dropdown">显示菜单</a>
+	</div>
+	<a id='jsonmenu2' style='margin-left:200px'>显示菜单（经典方式）</a>
+	<p>API：</p>
+	<pre class="brush:js">
+		createMenu(target,menu,opts)
+	</pre>
+	<p>使用JSON创建菜单有两种方法，一是按照Bootstrap默认的方式，此时用户需要准备包含dropdown样式的外框和触发元素：</p>
+	<pre class="brush:xml">
+		&lt;div class="dropdown" id="jsonmenu1">
+			&lt;a data-toggle="dropdown">显示菜单&lt;/a>
+		&lt;/div>
+	</pre>
+	<p>而另外一种方式，就是通过参数将菜单放在body中，此时菜单可以附着于任何元素。组件会根据dropdown样式判断以何种方式初始化，不需要用户提供参数。但是用户需要在opts通过设置参数id来指定菜单ul层的标识符，必要时需要设置offsetFunc，该函数需要返回target的绝对坐标（默认使用offset方法返回），即：</p>
+	<pre class="brush:js">
+		opts.offsetFunc = opts.offsetFunc || function(target){
+			return $(target).offset();
+		};
+	</pre>
+	<p>Json方式创建菜单的代码如下：</p>
+	<pre class="brush:js">
+		function createJsonMenu1(){
+			var menu = [
+				{title:"新建",onclick:"alert('点了新建菜单')"},
+				{title:"打开"},
+				{title:"关闭"},
+				{title:"-"},
+				{
+					title:"文字大小",
+					submenu:[
+						{title:"小",group:"fontsize",select:true,id:"fs_small"},
+						{title:"中",group:"fontsize",select:true,selected:true,id:"fs_mid"},
+						{title:"大",group:"fontsize",select:true,id:"fs_big"}
+					]
+				},
+				{
+					title:"段落设置",
+					submenu:[
+						{title:"自动换行",check:true,checked:true,id:"para1"},
+						{title:"自动行距",check:true,id:"para2"},
+						{title:"首字母自动大写",check:true,checked:true,id:"para3"},
+						{title:"英文单词不换行",check:true,checked:true,id:"para4"}
+					]
+				}
+			];
+			ITCUtil.createMenu("#jsonmenu1",menu);
+			ITCUtil.createMenu("#jsonmenu2",menu,{"id":"menu_trad","direction":"left"});
+			ITCUtil.createMenu("#btnmenu",menu);
+		}
+	</pre>
+	<p>你可以使用下面的API来获取菜单中某一项（组）的选择情况：</p>
+	<pre class="brush:js">
+		getMenuCheckVal(id);
+		getMenuSelectVal(target,group);
+	</pre>
+	<p>无论单选还是多选，在设置菜单项时必须指定id，对于单选，将直接返回ID对应的是否选中（true/false），而多选则返回组内选中元素的id，多个以逗号分隔</p>
+	<p><a href="javascript:getChk()">显示“自动换行”一项的选择情况</a></p>
+	<p><a href="javascript:getSelect()">显示“文字大小”一项的选择情况</a></p>
+	<pre class="brush:js">
+		function getChk(){
+			alert("自动换行的选择结果:" + ITCUtil.getMenuCheckVal("para1"));
+		}
+
+		function getSelect(){
+			alert("文字大小：" + ITCUtil.getMenuSelectVal("#jsonmenu1","fontsize"));
+		}
+	</pre>
+	<p>请注意，ITCUtil.getMenuCheckVal函数需要ID的唯一性（因此不需要传入菜单ID），但是在演示页面里我们创建了3个一模一样的菜单，请以第一个菜单的操作结果为准。</p>
+	<p>除了上面的演示之外，该封装支持BS源生的各种菜单，推荐使用BS风格初始化</p>
+    <div class="btn-group btn-group-sm" id="btnmenu">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        更多功能
+        <span class="caret"></span>
+        </button>
+    </div>
+    <pre class="brush:xml">
+    	&lt;div class="btn-group btn-group-sm" id="btnmenu">
+	        &lt;button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+	        更多功能
+	        &lt;span class="caret">&lt;/span>
+	        &lt;/button>
+	    &lt;/div>
+    </pre>
+
+    <h4>参数</h4>
+    <p>menu的参数如下：</p>
+    <ul>
+	    <li>id - 标识符</li>
+	    <li>title - 显示文字，当设置为-时将显示一条分割线</li>
+	    <li>check - 该项是否为复选</li>
+	    <li>checked - 该项是否被选中，与check一起使用</li>
+	    <li>select - 该项是否为单选</li>
+	    <li>selected - 该项是否被选中，与select一起使用</li>
+	    <li>group - 单选项的分组，与select一起使用</li>
+	    <li>onclick - 单击时的动作，字符串描述的函数</li>
+    </ul>
+    <p>opts的参数如下：</p>
+    <ul>
+    	<li>id - 菜单外框的标识符，经典模式下必须</li>
+    	<li>direction - 菜单的展开方向，默认多层菜单向右展开，可以设置为left</li>
+    </ul>
+</body>
+</html>

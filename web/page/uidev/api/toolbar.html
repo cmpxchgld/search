@@ -1,0 +1,250 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>API - 按钮与菜单</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bs_doc_ext.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+	</script>
+
+</head>
+<body style="font-size:14px">
+	<div class="alert alert-warning">
+		为了保证菜单显示正确，无论何种菜单，其外层容器（以及各parent级别）不能有overflow:hidden属性，否则菜单无法正常弹出。
+    </div>
+	<h4>按钮/按钮工具栏与菜单</h4>
+	<p>本页中的是对以前FW.createBtnXX系列的重新封装，为了使用方便，改成使用$选择器初始化，但是注意的是对于按钮工具栏必须用id选择器初始化。</p>
+	<p>iDatagrid的API页面中，例子里在分页器边上放置了id为toolbar1的DIV，这个DIV可以用于初始化按钮工具栏。</p>
+
+	<h4>隐藏按钮工具条的按钮</h4>
+	<p>如果隐藏了按钮工具条首位的按钮，因为伪类的局限性，按钮的圆角将会被破坏，此时需要执行FW.fixRoundButtons来修复这个效果，如FW.fixRoundButtons("#myToolbar")，显示时一样需要执行。</p>
+
+	<h4>HTML方法初始化按钮</h4>
+	<p>标准代码</p>
+	<pre class="brush:xml">
+		&lt;div class="btn-toolbar" role="toolbar">
+			&lt;div class="btn-group btn-group-sm">
+			    &lt;button type="button" class="btn btn-default">单个按钮&lt;/button>
+			    &lt;button type="button" class="btn btn-default" style="width:120px">定长120px&lt;/button>   
+			&lt;/div>
+			&lt;div class="btn-group btn-group-xs">
+			    &lt;button type="button" class="btn btn-success">用于表单中的小按钮&lt;/button>
+			&lt;/div>
+		&lt;/div>
+	</pre>
+	<p style="color:#f00">为按钮附加动作只需要直接在button标签上写onclick="xxxxxx"即可</p>
+	<p>原则：</p>
+	<ul>
+		<li>就算只有一个按钮，也必须放在btn-group中，这是为了各种封装扩展的统一，也是BS的编写风格（btn-group控制分组,btn-group-sm控制大小，btn控制按钮特性，btn-default控制颜色样式）。</li>
+		<li>多个按钮必须使用按钮工具栏btn-toolbar</li>
+		<li>一般情况下，不要直接改变button的display和position样式，如需改变请在btn-group或者btn-toolbar上做文章。</li>
+		<li>由于btn-group会根据内部DOM元素个数和顺序控制按钮的边角变化，所以请不要在其中放入<strong style="color:#f00">包括display:none</strong>的按钮在内的其他元素（如hidden input），但是API以及样例文档提到的菜单等组合允许。</li>
+	</ul>
+	<p>其他可用颜色（除绿色按钮外，仅作支持，<strong style="color:#f00">请不要滥用颜色</strong>）：</p>
+	<pre class="brush:xml">
+		&lt;button type="button" class="btn btn-success">默认按钮（绿色）&lt;/button>
+		&lt;button type="button" class="btn btn-primary">主要功能（深蓝色）&lt;/button>
+		&lt;button type="button" class="btn btn-info">信息（浅蓝色）&lt;/button>
+		&lt;button type="button" class="btn btn-warning">警报（橘红色）&lt;/button>
+		&lt;button type="button" class="btn btn-danger">危险功能（深红色）&lt;/button>
+	</pre>
+	<div class="btn-toolbar">
+		<div class="btn-group btn-group-sm">
+			<button type="button" class="btn btn-success">默认按钮（绿色）</button>
+			<button type="button" class="btn btn-primary">主要功能（深蓝色）</button>
+			<button type="button" class="btn btn-info">信息（浅蓝色）</button>
+			<button type="button" class="btn btn-warning">警报（橘红色）</button>
+			<button type="button" class="btn btn-danger">危险功能（深红色）</button>
+		</div>
+	</div>
+	<p>凹陷按钮效果：</p>
+	<pre class="brush:xml">
+		&lt;div class="btn-group btn-group-sm" data-toggle="buttons">
+			&lt;label class="btn btn-default" onclick="javascript:Project.changeViewMode(1,'52')">
+			    &lt;input type="radio" name="swTask" >我的任务
+			&lt;/label>
+			&lt;label class="btn btn-default" onclick="javascript:Project.changeViewMode(2,'52')">
+			    &lt;input type="radio" name="swTask">我部门的任务
+			&lt;/label>
+			&lt;label class="btn btn-default active" onclick="javascript:Project.changeViewMode(3,'52')" >
+			    &lt;input type="radio" name="swTask">全部任务
+			&lt;/label>
+		&lt;/div>
+		&lt;div class="btn-group btn-group-sm">
+			&lt;button type="button" class="btn btn-default" data-toggle="button">可以设置凹陷的按钮&lt;/button>
+		&lt;/div>
+	</pre>
+	<p>上述代码做到的效果是，前三个按钮只有一次只有一个按钮可以按下，第四个按钮按下后会保持凹陷状态，再次按下会弹起。<strong style="color:#f00">请注意代码里添加的data-toggle参数。</strong></p>
+	<div class="btn-toolbar">
+		<div class="btn-group btn-group-sm" data-toggle="buttons">
+		    <label class="btn btn-default">
+		        <input type="radio" name="swTask" >我的任务
+		    </label>
+		    <label class="btn btn-default">
+		        <input type="radio" name="swTask">我部门的任务
+		    </label>
+		    <label class="btn btn-default active">
+		        <input type="radio" name="swTask">全部任务
+		    </label>
+		</div>
+		<div class="btn-group btn-group-sm">
+		    <button type="button" class="btn btn-default" data-toggle="button">可以设置凹陷的按钮</button>
+		</div>
+	</div>
+
+	<h4>方法 - 菜单</h4>
+	<p>下面介绍的方法和参数均为$.iMenu的</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">方法</td>
+				<td width="150px">参数类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>init</td>
+				<td>object</td>
+				<td>初始化一个菜单，参入如下:
+					<ul>
+						<li>id - 菜单的外框id，经典模式下必须，$.iMenu支持两种初始化方式，一是BS的推荐格式，开发者需要提供如下样式的HTML代码：
+						<pre class="brush:xml">
+							<div class="dropdown" id="jsonmenu1">
+							    <a data-toggle="dropdown">显示菜单</a>
+							</div>
+						</pre>
+						另外一种是经典模式，可以附着于任意使用ID选择器的DOM元素上。</li>
+						<li>direction - 多级菜单的展开方向，默认向右展开，可以设置为"left"</li>
+						<li>menu - array，具体的菜单内容，每个元素为一个object，包含以下参数：
+							<ul>
+								<li>id - 标识符，可选参数，当使用单选和复选时必须指定，此ID用于dom操作，不能和页内其他元素的ID重复</li>
+							    <li>title - 显示文字，当设置为-时将显示一条分割线</li>
+							    <li>check - 该项是否为复选，boolean</li>
+							    <li>checked - 该项是否默认被选中，与check一起使用</li>
+							    <li>select - 该项是否为单选，boolean</li>
+							    <li>selected - 该项是否被默认选中，与select一起使用</li>
+							    <li>group - 单选项的分组，string，与select一起使用</li>
+							    <li>onclick - 单击时的动作，string，如"doaction('aaa')"</li>
+							    <li>submenu - 下级子菜单，array</li>
+							</ul>
+							一个菜单的例子如下：
+							<pre class="brush:js">
+								[
+							        {title:"新建",onclick:"alert('点了新建菜单')"},
+							        {title:"打开"},
+							        {title:"关闭"},
+							        {title:"-"},
+							        {
+							            title:"文字大小",
+							            submenu:[
+							                {title:"小",group:"fontsize",select:true,id:"fs_small"},
+							                {title:"中",group:"fontsize",select:true,selected:true,id:"fs_mid"},
+							                {title:"大",group:"fontsize",select:true,id:"fs_big"}
+							            ]
+							        },
+							        {
+							            title:"段落设置",
+							            submenu:[
+							                {title:"自动换行",check:true,checked:true,id:"para1"},
+							                {title:"自动行距",check:true,id:"para2"},
+							                {title:"首字母自动大写",check:true,checked:true,id:"para3"},
+							                {title:"英文单词不换行",check:true,checked:true,id:"para4"}
+							            ]
+							        }
+							    ]
+							</pre>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td>getVal</td>
+				<td>string</td>
+				<td>获得一组单选项或者某个复选项的选择状态，可以传入菜单ID或者单选项的group，如根据上面的菜单例子，传入"fontsize"可以得到文字大小的值（fs_small，fs_mid或者fs_big），传入"para4"可以知道英文单词不换行一项是否打钩。</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4>方法 - 按钮与按钮工具栏</h4>
+
+	<p>为了和其他封装一致，下面的jQuery方法都是双参数方法，且第一个参数固定为init，表中的参数仅介绍第二个参数，如</p>
+	<pre class="brush:js">
+		$("#btn1").iButton("init",options);
+	</pre>
+
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">方法</td>
+				<td width="150px">参数类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>$.iButton</td>
+				<td>object</td>
+				<td>
+					该方法用于初始化一个按钮，选择器需要作用于一个带有id的DIV，需要注意的是，对于不附加菜单的按钮，使用JS初始化可能比使用html初始化麻烦。
+					<br/>
+					支持的参数如下：
+					<ul>
+						<li>title - 按钮显示的文字，必须</li>
+						<li>style - string，按钮样式，默认为btn-default，具体样式参考“按钮”一节</li>
+						<li>width - int，按钮宽度，一般情况下使用自动大小即可</li>
+						<li>onclick - string，按钮动作，该参数等价于直接在button上附加onclick="xxxxx"</li>
+						<li>menu - array[2]{array,object}，这是一个<strong style="color:#f00">2个或者1个元素数组</strong>，第一个元素为附加菜单，类型为array，其中每一个元素为一个object，描述菜单项的内容，具体参数参考iMenu的参数。第二个元素可以为空，如果需要修改菜单的参数，可以将选项的object放在第二个元素内。</li>
+						<li>split - boolean，附加菜单是否和原有按钮分裂，默认为false</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td>$.iBtnbar</td>
+				<td>array</td>
+				<td>
+					该方法用于初始化按钮工具栏，选择器需要作用于一个带有id的DIV（不需要任何附加style和class），传入参数为array，其中每一个都是$.iButton支持的对象，一个按钮工具条的实例如下：
+					<pre class="brush:js">
+						var btns = [
+						    {"title":"新建","style":"btn-success"},
+						    {"title":"保存","break":true},
+						    {"title":"删除"},
+						    {"title":"复制"},
+						    {"title":"人员名单","break":true},
+						    {"title":"上传附件"},
+						    {"title":"字体","break":true},
+						    {
+						        "title":"段落设置",
+						        "menu":[[{title:"PDF"},{title:"Word文档"},{title:"Excel电子表格"}]]
+						    },
+						    {
+						        "title":"导出为Xls",
+						        "menu":[[{title:"PDF文档"},{title:"Word文档"},{title:"逗号分隔的数据（CSV）"}]],
+						        "break":true,
+						        "split":true
+						    }
+						];
+						$("#toolbar1").iBtnbar("init",btns);
+					</pre>
+					可以看出，这里每个按钮多了一个参数break，该参数为true时当前按钮将创建在新的分组内。
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>

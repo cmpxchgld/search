@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../package/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../package/css/itcui.dev.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bs_doc_ext.css" media="all"/>
+	<title>更新日志</title>
+
+</head>
+<body style="margin:16px;font-size:14px">
+	<p>2014/7/9（nightly/beta7）</p>
+	<ul>
+		<li>自动表单所有字段现在都支持通过value参数设置初值了（但是对于大量数据还是推荐使用setVal方法直接加载json）</li>
+		<li>自动表单可以通过设置dataType="password"将文本框变为密码框</li>
+		<li>带树创建选项卡的iframe默认有和传入id一样的id了，可以用于dom操作</li>
+		<li>修正了通过loadData为combo赋值时无法选择的bug</li>
+	</ul>
+
+	<p>2014/7/7（nightly/beta7）</p>
+	<ul>
+		<li>修正了自动表单无法校验日期时间的bug</li>
+		<li>修正了自动表单日期时间校验时对%f2字段替换错误的bug</li>
+		<li>修正了只读模式下对iForm进行setVal动作无法更新显示的bug</li>
+		<li>表单验证新增greateEqualThan规则，可以进行日期、数字的大于等于验证</li>
+	</ul>
+
+	<p>2014/7/1（nightly/beta6）</p>
+	<ul>
+		<li>表头搜索现在支持combobox类型了（对于复杂高级搜索，请参考新版例子）</li>
+		<li>修正了EasyUI datagrid显示loading信息为英文的问题</li>
+		<li>文件上传封装现在新增了一个参数，允许用户为文件名指定一个用于打开而不是下载的链接</li>
+		<li>自动表单现在和源生表单一样，getVal/getdata时使用name作为json的key（但是setVal/loaddata时还必须用id）。默认情况下，name的前缀由f_改为空白，即name等同于未加前缀的id，可以通过以前提供的参数namePrefix控制name的命名规则，具体参考新版API的演示例子。</li>
+		<li>自动表单新增hidden类型字段</li>
+		<li>表头搜索修正了当存在hidden列时依然显示搜索框的bug</li>
+		<li>表头搜索新增了noSearchColumns参数，可以控制不对哪些列进行搜索，但是需要注意，有时候该方法会让布局显示的很丑，为了美观或者有特殊搜索需求还是需要自己构建搜索框和相关函数。</li>
+	</ul>
+	
+	<p>2014/6/11（nightly/beta6）</p>
+	<ul>
+		<li>修正了主框架的结构和初始化方式，现在折叠按钮更加明显了（nightly）</li>
+		<li>表单的date/datetime现在可以识别时间戳了</li>
+		<li>表单的label现在可以正确的取值和赋值了</li>
+		<li>表单的label添加了dataType属性，可以用于将时间戳自动转换为字符串</li>
+		<li>iHint现在可以支持标准的bootstrap input，并且能自动添加放大镜了</li>
+		<li>iCombo现在支持加载远程数据源了</li>
+		<li>现在iDatagrid无数据时不会初始化分页器了</li>
+		<li>整合了drag&drop功能(easy ui)</li>
+		<li>combobox数据源不再要求第三项必须为selected/multichecked(json初始化)</li>
+		<li>comobox支持loadData方法</li>
+		<li>适配器的一些API修正</li>
+	</ul>
+
+	<p>2014/6/11（nightly）</p>
+	<ul>
+		<li>自动表单现在和源生表单一样，getVal/getdata时使用name作为json的key（但是setVal/loaddata时还必须用id）。默认情况下，name的前缀由f_改为空白，即name等同于未加前缀的id，可以通过以前提供的参数namePrefix控制name的命名规则，具体参考新版API的演示例子。</li>
+		<li>自动表单新增hidden类型字段</li>
+		<li>表头搜索修正了当存在hidden列时依然显示搜索框的bug</li>
+		<li>表头搜索新增了noSearchColumns参数，可以控制不对哪些列进行搜索，但是需要注意，有时候该方法会让布局显示的很丑，为了美观或者有特殊搜索需求还是需要自己构建搜索框和相关函数。</li>
+	</ul>
+
+	<p>2014/6/9（nightly）</p>
+	<ul>
+		<li>修正了文件上传组件（封装）在多文件上传后删除文件错误的bug</li>
+		<li>文件上传组件（封装）现在可以通过传入参数显示已上传的文件了</li>
+		<li>文件上传组件（封装）现在支持以url+文件ID拼接删除文件链接了</li>
+	</ul>
+
+	<p>2014/6/5（nightly）</p>
+	<ul>
+		<li>修正了combotree某些情况下需要单击2次才弹出树的bug</li>
+		<li>修正了combotree的部分接口</li>
+		<li>修正了combo在多选时取值不正确的bug</li>
+		<li>下方分页器已经实现，本组件预计在b5版（6月第二周）发布。</li>
+		<li>新版API开始重构</li>
+	</ul>
+
+	<p>2014/5/27</p>
+	<ul>
+		<li>修正了自动表单对date/datetime取值、赋值不正确的bug</li>
+		<li>现在combobox使用absolute+padding调整大小，不需要定时器来resize了</li>
+		<li>修正了IE8下因为css自动大写问题导致无法正确获取元素百分比宽度的bug</li>
+	</ul>
+
+	<p>2014/5/20</p>
+	<ul>
+		<li>修正了自动表单的一点样式bug</li>
+		<li>修正了自动表单在readonly模式下不能正确隐藏空label类型字段的bug</li>
+		<li>根据新版UI规范调整，移除了折叠区域的折叠功能，只保留标题栏部分</li>
+		<li>移除了datagrid的外侧边框线</li>
+	</ul>
+
+	<p>2014/5/09</p>
+	<ul>
+		<li>修复了IE8下文本框默认文字溢出的bug</li>
+		<li>现在combobox默认会自动添加一个wrap div，以适应对位函数的修改</li>
+		<li>下拉列表可以手动传入函数以调整其位置了</li>
+	</ul>
+
+	<p>2014/5/04</p>
+	<ul>
+		<li>修正了下拉提示不兼容IE8的bug</li>		
+		<li>修正了上弹出提示(Notice.xxxTopNotice)的对位错误</li>
+		<li>Datagrid本地搜索现在不在对关键词进行严格大小写匹配</li>
+	</ul>
+
+	<p>2014/5/04</p>
+	<ul>
+		<li>修正了自动表单在验证上的一些bug，补全了默认的验证成功/失败函数</li>
+		<li>自动表单在验证required规则时会自动为标签添加一个红色星号</li>
+	</ul>
+
+	<p>2014/4/29</p>
+	<ul>
+		<li>修正了自动表单在类别判断上的bug</li>
+		<li>自动表单增加了一个nouse字段，可以根据需要选择性的跳过某些字段</li>
+		<li>修正了行搜索时误把第一列checkbox也算进去的bug</li>
+		<li>[第三方组件]EasyUi tree更新到1.3.6版，修正了远程数据时onlyLeafCheck不能用的bug</li>
+	</ul>
+
+	<p>2014/4/25</p>
+	<ul>
+		<li>修正了在某些浏览器下选项卡afterClose事件无法正确执行的bug</li>
+		<li>修正了Combobox（单选）在连续选择同一值时取值和文字显示不正常的bug</li>
+		<li>Combobox多了一个API：getSelectedText用于返回选择值的文字表述</li>
+		<li>自动表单多了一个API，可以将表单设置为只读状态</li>
+	</ul>
+
+	<p>2014/4/21</p>
+	<ul>
+		<li>修正了当第一个选项卡无导航树时空指针的错误</li>
+		<li>按钮组、菜单封装正式上线（请添加引用itc_util.js）</li>
+		<li>分页器提供了本地排序的逻辑封装，现在本地排序更简单了</li>
+	</ul>
+
+	<p>2014/4/18</p>
+	<ul>
+		<li>略微修改了button的样式，现在渐变效果不依赖图片，和timss应该很像了</li>
+		<li>实现了本地表头搜索的功能（需要更多测试）</li>
+		<li>修正了本地分页当总条目数不能被每页条目整除时无法显示最后一页的bug</li>
+		<li>修正了老版本本地分页接口无法使用的bug</li>
+	</ul>
+
+	<p>2014/4/17</p>
+	<ul>
+		<li>分页器现在自带本地分页的逻辑封装，本地分页更简单了</li>
+		<li>增加了凹陷按钮（独立）的演示</li>
+		<li>折叠区域提供自动隐藏无内容部分的功能</li>
+		<li>Combobox提供了onChange事件</li>
+	</ul>
+
+	<p>2014/4/16</p>
+	<ul>
+		<li>Datagrid现在支持onRenderFinish事件，服务端翻页的方法更简单了（如有问题请及时反馈）</li>
+		<li>增加了和多级菜单相关的封装（位于章节“实用工具 - 菜单”中，支持选项图标）</li>
+	</ul>
+
+	<p>2014/4/15</p>
+	<ul>
+		<li>修改了Combobox和Combotree的部分代码，现在下拉框不对ITC_GetAbsPos函数依赖了</li>
+		<li>基本完成了自动表单部分</li>
+		<li>自动表单多次生成后不再会误修改name和id的值了</li>
+		<li>略微调整了对话框和按钮的样式</li>
+		<li>确认对话框现在和规范一样，支持2行消息提示了</li>
+		<li>修复了位置计算机制改变后选项卡菜单弹出不正常的bug</li>
+		<li>修复了当已激活选项卡被关闭时整理选项卡错误的bug（需要更多测试）</li>
+		<li>主框架关闭导航树的按钮又回来了</li>
+		<li>更新了部分文档</li>
+	</ul>
+	<p>2014/4/9</p>
+	<ul>
+		<li>组件发布版默认包含EasyUi的Layout</li>
+		<li>重做了163风格的主框架代码，目前发布版本为b2</li>
+		<li>修正了导航树和页面容器的一些API bug</li>
+		<li>折叠区域提供了更多的api</li>
+	</ul>
+
+	<p>2014/3/24</p>
+	<ul>
+		<li>修正了导航树默认有节点展开时，打开其他节点该节点不能正确收回的bug</li>
+		<li>修正了导航树第一层节点不能关联动作和正确被点击的bug</li>
+		<li>加入了凹陷按钮（toggle button）的例子</li>
+	</ul>
+
+	<p>2014/3/12</p>
+	<ul>
+		<li>加入bs的tab</li>
+		<li>允许控制是否对combobox进行位置矫正</li>
+		<li>折叠区域加入回调函数</li>
+	</ul>
+	<p>2014/3/6</p>
+	<ul>
+		<li>修正了在某些布局下combobox显示位置不正确的bug</li>
+		<li>修正了没有元素时combobox下拉框显示无宽度的bug</li>
+	</ul>
+	<p>2014/3/4</p>
+	<ul>
+		<li>微微修改了菜单的配色，现在应该和TIMSS一致</li>
+		<li>修改了分页器的样式，完成了表格行样式设置功能（可能需要额外编写后台代码以记忆设置）</li>
+		<li>修复了二级菜单弹出时一级菜单右侧的小箭头消失的bug</li>
+	</ul>
+	<p>2014/1/29</p>
+	<ul>
+		<li>文本框开发完成（包括只读、IE8占位文字、图标）</li>
+		<li>修复了中英文混合时ComboBox计算文本长度不准确的bug</li>
+	</ul>
+	
+	<p>2014/1/28</p>
+	<ul>
+		<li>文件上传组件封装基本完成，由于flash部分的限制，以及无法找到对应部分的源代码，取消和重传还有遗留问题，如果有更好的方案欢迎提供给我们。</li>
+		<li>加强了Dialog的阴影效果</li>
+	</ul>
+	<p>2014/1/23</p>
+	<ul>
+		<li>增加内容：页内导航菜单</li>
+		<li>导航选项卡开发完成，修改了框架的一些bug</li>
+	</ul>
+	
+	<p>2014/1/22</p>
+	<ul>
+		<li>导航选项卡代码和示例基本编写完成，演示系统在线版正式更换新组件。新选项卡基本实现了网易邮箱选项卡的所有功能（包括添加、移除、整理、打叉关闭、事件绑定），和原选项卡不同的是，新组件的选项卡在数量过多时会自动将老选项卡收入菜单，而不是一味缩小。</li>
+	</ul>
+	
+	<p>2014/1/21</p>
+	<ul>
+		<li>导航树、选项卡、多页面切换容器、事件系统完善中</li>		
+		<li>UI演示页面的主框架使用组件库中的组件重写</li>		
+	</ul>
+	
+	<p>2014/1/17</p>
+	<ul>
+		<li>调整了EasyUi对话框和按钮的样式</li>
+		<li>修复了多个翻页器时出现的冲突（但是目前可能存在性能问题）</li>
+		<li>Datagrid浏览器端排序撰写完成</li>
+		<li>提供了一种可能的方法，解决在iframe中弹出对话框的问题</li>		
+	</ul>
+	
+	<p>2014/1/16</p>
+	<ul>
+		<li>修复了菜单向右侧弹出时的问题</li>
+		<li>[菜单]一节说明已经整理好</li>
+		<li>修复了当出现多个复选ComboBox时显示文字错乱的问题</li>
+		<li>翻页器编写基本完毕，表格样式设置需要和Styler一起开发</li>
+	</ul>
+</body>
+</html>

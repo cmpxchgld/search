@@ -1,0 +1,357 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../package/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../package/css/itcui.dev.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bs_doc_ext.css" media="all"/>
+	<title>日期选择器</title>
+	<script type="text/javascript">
+		var currMonth = 
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+    		$('#dtp2').datetimepicker({
+		        language:  'ch',
+		        weekStart: 1,
+		        todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 0,
+				forceParse: 1
+    		});	
+			$("#test_uispec_picker").ITCUI_LazyLoadPicker({"inputId":"testlzdtp"});
+		});
+
+		
+	</script>
+	<style>
+	
+	</style>
+</head>
+<body style="margin:16px;font-size:14px">
+	<div class="alert alert-warning">
+		本组件适用于不精确的时间选择，步进为5分钟，如果需要精确时间选择可以直接使用下拉框或者输入框。
+    </div>
+    <div class="alert alert-danger">
+		Datetime系列组件（无论本组件还是EasyUI自带）存在性能瓶颈，平均单个组件渲染IE8下需要100-200ms，
+		建议平时只渲染Datetime的样式（文本框、按钮），在点击或者focus时才触发$.datetimepicker，
+		并立刻调用选择器的show事件来达到效果。
+    </div>
+	<h4>如何使用</h4>
+	<p>（以下样式为官方原始文档中的例子，仅用于说明用法，不代表UI规范的要求：）</p>	
+
+    <div class="row bbox" style="width:300px">
+        <label for="dtp_input2" class="col-xs-4 control-label">选择时间</label>
+        <div class="input-group-sm col-xs-8">
+        	<input id="dtp2" class="form-control" size="14" type="text" value="" />
+        </div>
+    </div>
+    <p>日期选择器的输入框体最简单附加在一个input上，也可以附加在一组控件上：</p>
+    <ul>
+    	<li>外层DIV，带有date样式；</li>
+    	<li>一个可以没有ID和任何样式的文本框，用于显示选择的结果；</li>
+    	<li>带有glyphicon-remove样式的按钮，用于在禁用文本框时清除选择结果；</li>
+    	<li>带有glyphicon-calendar样式的按钮，点击后弹出选择器，如果该按钮不存在，请将选择器直接绑定在input上；</li>
+    	<li>位于DIV外面的一个input，通过id和data-link-field和选择器关联，所选时间的另一种格式表示将会赋值于此。</li>
+    </ul>
+    <p>当将日期选择器附加在一个空的DIV上时，日期选择器会一直出现。</p>
+    
+    <h4>符合UI规范的时间选择器</h4>
+    <p>下面代码创建了一个具有延迟加载（点击后延后200ms弹出）的日期选择器，在页面中日期选择器个数大于3个以上，推荐使用此封装方法，否则会带来比较严重的加载延迟。</p>
+    <div id="test_uispec_picker" style="width:180px"></div>    
+    <pre class="brush:js">
+    $("#test_uispec_picker").ITCUI_LazyLoadPicker();
+    </pre>
+    <a onclick="alert($('#testlzdtp').val())">显示选择的时间</a>
+    <p>如果需要在点击文本框时触发选择器，直接对整个DIV应用datetimepicker事件即可。</p>
+    <p>说明：</p>
+    <ul>
+    	<li>ITCUI_LazyLoadPicker可以传入两个参数，分别为optTextBox和optDatePicker，默认均可以为空，其中optTextBox为补充参数，optDatePicker为原有datatimepicker的参数，具体参考http://www.bootcss.com/p/bootstrap-datetimepicker/</li>
+    	<li>当optTextBox为空时，input的ID将取为itc_dp#，其中#为编号，从0开始取，具体编法为计算itcui_btn_calander类的个数</li>
+    	<li>可以对封装内的input取val()函数来获得所选的时间。</li>
+    </ul>
+
+    
+	<h4>格式化</h4>
+	<p>下列UTC格式的时间可以被直接解析，而无需单独设置format</p>
+	<ul>
+		<li>yyyy-mm-dd</li>
+		<li>yyyy-mm-dd hh:ii</li>
+		<li>yyyy-mm-ddThh:ii</li>
+		<li>yyyy-mm-dd hh:ii:ss</li>
+		<li>yyyy-mm-ddThh:ii:ssZ</li>
+	</ul>
+	<p>或者使用下列标识符组合</p>
+	<ul>
+		<li>p : meridian in lower case ('am' or 'pm') - according to locale file</li>
+		<li>P : meridian in upper case ('AM' or 'PM') - according to locale file</li>
+		<li>s : seconds without leading zeros</li>
+		<li>ss : seconds, 2 digits with leading zeros</li>
+		<li>i : minutes without leading zeros</li>
+		<li>ii : minutes, 2 digits with leading zeros</li>
+		<li>h : hour without leading zeros - 24-hour format</li>
+		<li>hh : hour, 2 digits with leading zeros - 24-hour format</li>
+		<li>H : hour without leading zeros - 12-hour format</li>
+		<li>HH : hour, 2 digits with leading zeros - 12-hour format</li>
+		<li>d : day of the month without leading zeros</li>
+		<li>dd : day of the month, 2 digits with leading zeros</li>
+		<li>m : numeric representation of month without leading zeros</li>
+		<li>mm : numeric representation of the month, 2 digits with leading zeros</li>
+		<li>M : short textual representation of a month, three letters</li>
+		<li>MM : full textual representation of a month, such as January or March</li>
+		<li>yy : two digit representation of a year</li>
+		<li>yyyy : full numeric representation of a year, 4 digits</li>
+	</ul>
+	
+	<h4>使用标签</h4>
+
+	<h4>API</h4>
+	<p>初始化选项（更多内容请参考官方文档）</p>
+	<table class="table table-bordered table-striped" style="width:650px">
+		<thead>
+			<tr>
+				<th width="30%">字段名</th>
+				<th width="70%">说明</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>autoclose</td>
+				<td>当选择一个日期后，是否自动关闭选择器</td>
+			</tr>
+			<tr>
+				<td>beforeShowDay</td>
+				<td>在显示选择器之前的一个处理函数，该函数传入一个Date数据类型，接受以下四种返回值（未定义不做处理）：
+				<ul>
+					<li>boolean，表示该日是否可以选择;</li>
+					<li>string，表示要附加给日期单元格上的额外样式;</li>
+					<li>object，包含enabled和classes两个字段。</li>
+				</ul>
+				</td>
+			</tr>
+			<tr>
+				<td>startDate</td>
+				<td>开始时间</td>
+			</tr>
+			<tr>
+				<td>endDate</td>
+				<td>结束时间</td>
+			</tr>
+			<tr>
+				<td>forceParse</td>
+				<td>对于一个带有输入框的日期选择器，设置该项为true会使选择器在显示之前，解析用户的输入并设置为当前时间。</td>
+			</tr>
+			<tr>
+				<td>format</td>
+				<td>格式化字符串</td>
+			</tr>
+			<tr>
+				<td>language</td>
+				<td>语言，默认为英文en，这里扩展了中文ch</td>
+			</tr>
+			<tr>
+				<td>minView</td>
+				<td>最小颗粒度，注意此处源文档有误：
+					<ul>
+						<li>0 - 5分钟时间</li>
+						<li>1 - 小时级时间</li>	
+						<li>2 - 日</li>	
+						<li>3 - 月</li>	
+						<li>4 - 年</li>	
+					</ul>
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+
+	<h4>事件</h4>
+	<p>除了原有事件之外，此处增加了事件dateFill，该事件于选择器框体刷新（包括显示、翻页、切换月/年份）时触发，可以在该事件触发时对每个方格绑定事件。</p>
+
+	<h4>高级应用</h4>
+	<p>本实例演示了如何在“特定”的时间上加一个标记，该例子应用于乐学网的首页中，由于CSS冲突，这里只给出图片效果。</p>
+	<div class="row" style="width:300px">
+        <img src="images/dtpadv.png" />
+    </div>
+
+    <p>相关样式：</p>
+    <pre class="brush:xml">
+    	.underdot{
+			background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAdCAYAAAC5UQwxAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADtJREFUeNpi/P//PwM9ARMDncGohaMWjlo4auGohaMWjlo4auGohcPawjB3p/8gPOh9yDja8qY2AAgwAAVkCe+jJmuOAAAAAElFTkSuQmCC");
+		}
+		.popover{
+			z-index:18888;
+		}
+		.lx_th1{
+			background-color: #91b6d8;
+		}
+		.lx_th1>th{
+			border-radius: 0px;
+		}
+		#dtp3>*{
+			font-size:12px;
+		}
+		.table-condensed>tbody>tr>td{
+			background-color: #f8f8f8;
+			border-width: 1px;
+			border-style: solid;
+			border-color:#f2f2f2;
+			width: 30px;
+			height:26px;
+		}
+		.table-condensed>thead>tr>.dow{
+			color: #a1a1a1;
+		}
+
+		table{
+			border-collapse: collapse;
+			border-spacing: 0!important;
+		}
+		.table-condensed > thead > tr > th,
+		.table-condensed > tbody > tr > th,
+		.table-condensed > tfoot > tr > th,
+		.table-condensed > thead > tr > td,
+		.table-condensed > tbody > tr > td,
+		.table-condensed > tfoot > tr > td {
+		  padding: 5px;
+		}
+    </pre>
+    <p>JS代码：</p>
+    <pre class="brush:js">
+    	//首页日历
+		var courseDays = [];
+		$(document).ready(function(){
+			//必须在渲染之前加载一次课程的初始数据
+			var now = new Date();
+			$.post(basePath + "CalendarServlet?method=coursedays",{
+				year : now.getFullYear(),
+				month : now.getMonth()+1,
+				"uid" : lxUid
+			},function(result){
+				if(result){
+					var result = eval("(" + result + ")");
+					for(var i=0;i&lt;result.length;i++){
+						courseDays.push([result[i].dfrom,result[i].dto])
+					}
+				}
+				initDtp();
+			});	
+		});
+
+		function showPopup(){	
+			$("#dtp3").find(".underdot").each(function(){
+				var classes = $(this).attr("class");
+				var clsSplit = classes.split(" ");
+				var month = -1;
+				var year = -1;
+				for(var i=0;i&lt;clsSplit.length;i++){
+					var cls = clsSplit[i];
+					if(cls.substr(0,6)=="month_"){
+						month = cls.substr(6);
+					}
+					if(cls.substr(0,5)=="year_"){
+						year = cls.substr(5);
+					}
+				}
+				var day = $(this).html();
+				var _this = $(this);
+				_this.attr("year",year);
+				_this.attr("month",month);
+				_this.attr("day",day);
+				_this.mouseover(function(){
+					var __this = $(this);
+					var y = __this.attr("year");
+					var m = __this.attr("month");
+					var d = __this.attr("day");day
+					var cStr = y + "-" + m + "-" + d;
+					$.post(basePath + "CalendarServlet?method=courseday",{"ctime":cStr,"uid" : lxUid},function(result){
+						var _this = $(this);
+						if(!result){
+							return;
+						}
+						result = eval("(" + result + ")");
+						var popTitle = y + "年" + m + "月" + d + "日";
+						$("body").children(".popover").remove();
+						var popContent = "";
+						for(var i=0;i&lt;result.length;i++){
+							var rs = result[i];
+							popContent += "&lt;div style='clear:both' class='blue_tri'>&lt;/div>";
+							popContent += "&lt;div class='pop_class_title'>" + rs.pName + "&lt;/div>";
+							popContent += "&lt;div style='clear:both;width:100%;margin-top:4px'>&lt;/div>";
+							popContent += "&lt;div style='color: #666666;float:left'>" + rs.dfrom + "至" + rs.dto + "&lt;/div>";
+							popContent += "&lt;div style='color: #666666;margin-left:12px;float:left'>" + rs.baseStr + "&lt;/div>";
+							popContent += "&lt;div style='clear:both;width:100%;margin-top:4px'>&lt;/div>";
+						}				
+						__this.popover({
+							"html":true,
+							"title":popTitle,
+							"content":popContent,
+							"trigger":"hover",
+							"placement":"left",
+							"container":"body"});
+						__this.popover("show");
+					});
+				});	
+			});
+		}
+
+		function initDtp(){
+			$('#dtp3').datetimepicker({
+		        language:  'ch',
+		        weekStart: 1,
+		        todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 2,
+				maxView:2,
+				forceParse: 0,
+				todayBtn:false,
+				beforeShowDay : function(date){
+					var day = date.getDate();
+					var month = date.getMonth();
+					var year = date.getFullYear();
+					var smonth = month&lt;10? "0" + month:month;
+					for(var i=0;i&lt;courseDays.length;i++){
+						var d = courseDays[i];
+						if(date.getTime()>=d[0] && date.getTime()&lt;=d[1]){
+							return "underdot month_" + (month + 1) + " year_" + year;
+						}
+					}						
+				}
+			}).on("dateFill",function(d){
+				showPopup();
+				$.post(basePath + "CalendarServlet?method=coursedays",{
+					year : d.date.getFullYear(),
+					month : d.date.getMonth()+1,
+					"uid" : lxUid
+				},function(result){
+					if(result){
+						courseDays = [];
+						var result = eval("(" + result + ")");
+						for(var i=0;i&lt;result.length;i++){
+							courseDays.push([result[i].dfrom,result[i].dto])
+						}
+					}
+				});	
+			});
+			showPopup();
+		}
+    </pre>
+    <p>这段代码需要注意以下几点：</p>
+    <ul>
+    	<li>日期选择器是同步渲染，而查询当天是否需要打标记是异步请求，因而需要估计网速缓存一定长度的数据</li>
+    	<li>由于渲染器不支持attr，只能使用class记录当前的年、月（日不需要记录，.html()就可以获得到）</li>
+    	<li>popover方法由bootstrap提供</li>
+    	<li>除了上面提到的样式之外，图中的日期选择器还需要做更多的样式修改。</li>
+    </ul>
+</body>
+</html>

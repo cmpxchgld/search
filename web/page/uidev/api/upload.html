@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>API - 文件上传/下载</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../component/js/shCore.js"></script>
+	<script type="text/javascript" src="../component/js/shLegacy.js"></script>
+	<script type="text/javascript" src="../component/js/shAutoloader.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../component/js/shBrushCss.js"></script>
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" type="text/css" href="../component/css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../component/css/bs_doc_ext.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+		$(document).ready(function(){
+			
+		}); 
+
+	</script>
+
+</head>
+<body style="font-size:14px">
+	<h4>文件上传/下载组件</h4>
+	<p>ITC组件库使用uploadify作为基础组件，实际上uploadify的基础也是swfupload。基于flash，uploadify可以提供各种炫酷的效果，包括在IE8下实现多文件上传、进度条显示等。</p>
+	<h4>使用</h4>
+	<p>默认的封装包括一个选择文件和开始上传的链接，以及模仿网易邮箱的队列显示，和通过参数打开的删除/下载文件功能。该封装可以直接在表单里使用，参数一致。</p>
+	<p>通过$.iUpload("init",options)方式可以将一div初始为文件上传组件。</p>
+	<pre class="brush:js">
+		$("#upload1").iUpload("init",{...});
+	</pre>
+	<p>需要注意，uploadify/iUpload必须以id选择器初始化。</p>
+
+	<h4>特别强调</h4>
+	<p>由于flash的限制，引用的uploadify.swf必须和网站在同一域名下，否则会引起跨域问题。</p>
+
+	<h4>缺憾</h4>
+	<p>由于uploadify的flash部分代码闭源，封装无法实现真正意义上的失败重传（官网的重传是无限重传，这比不能重传还要恶心）。</p>
+
+	<h4>参数</h4>
+	<p>options支持的参数为：</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">属性</td>
+				<td width="150px">类型</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>swf</td>
+				<td>string</td>
+				<td>flash文件的位置，默认情况下为../package/js/uploadify.swf，建议在使用时手动设置该路径。</td>
+			</tr>
+			<tr>
+				<td>fileSizeLimit</td>
+				<td>int/string</td>
+				<td>单个文件允许的文件大小，可以是带单位的字符串，比如100KB，如果数字，默认单位为KB，设置为0表示不限制大小。</td>
+			</tr>
+			<tr>
+				<td>fileTypeExts</td>
+				<td>string</td>
+				<td>允许上传的扩展名，多个扩展名以分号隔开，如"'*.gif; *.jpg; *.png"。</td>
+			</tr>
+			<tr>
+				<td>fileTypeDesc</td>
+				<td>string</td>
+				<td>扩展名显示的描述文字，如"所有图片"，该功能需要浏览器支持，未必有效。</td>
+			</tr>
+			<tr>
+				<td>buttonText</td>
+				<td>string</td>
+				<td>选择文件链接的文字，默认为“选择文件”</td>
+			</tr>
+			<tr>
+				<td>buttonClass</td>
+				<td>string</td>
+				<td>选择文件链接的样式，默认为itc_link</td>
+			</tr>
+			<tr>
+				<td>auto</td>
+				<td>boolean</td>
+				<td>是否在选择文件后自动开始上传，默认为false</td>
+			</tr>
+			<tr>
+				<td>initFiles</td>
+				<td>array</td>
+				<td>初始化显示的文件列表，每一个元素为object，包含三个属性：
+				<ul>
+					<li>fileID - 文件ID，用于删除和下载文件</li>
+					<li>fileName - 文件名，不包含路径</li>
+					<li>fileSize - 文件大小，单位是字节</li>
+				</ul></td>
+			</tr>
+			<tr>
+				<td>delFileUrl</td>
+				<td>string</td>
+				<td>删除文件的地址，如果指定该参数，则上传文件后，组件会显示删除按钮，点击后文件id将作为参数名为id的参数提交到服务器，返回结果是一个json object，其中当status=1时，删除成功，否则显示删除失败的信息。在不指定delFileUrl的情况下，如果object中有msg字段，则组件会将msg字段认作下载链接。</td>
+			</tr>
+			<tr>
+				<td>delFileAfterPost</td>
+				<td>-</td>
+				<td>是否在提交表单时删除文件，选择是后删除按钮只会移除文件的图标，并不会真正删除服务器上的文件，需要在后台获取根据被移除的文件ID解除文件关联，则未关联的文件会自动被清理掉。</td>
+			</tr>
+			<tr>
+				<td>downloadFileUrl</td>
+				<td>string</td>
+				<td>下载文件的地址，如果指定该参数，上传的文件会显示下载链接，点击后文件id将作为参数名为id的参数提交到服务器，并尝试进行文件下载。</td>
+			</tr>
+			<tr>
+				<td>uploader</td>
+				<td>string</td>
+				<td>文件上传的入口url，必须指定，返回值为json object，其中status=1时表示上传成功，status=-1时上传失败，并显示msg字段作为错误信息。</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<h4>方法</h4>
+	<p>除了init方法，$.iUpload还支持以下方法。</p>
+	<table style="width:100%" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<td width="150px">方法</td>
+				<td width="150px">参数</td>
+				<td>说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>getVal</td>
+				<td>-</td>
+				<td>获取已上传文件的id（可以直接用于服务器操作），返回结果为逗号分隔的字符串。需要注意的是，由于安全原因，文件上传必须用户手动选择，因此iUpload没有setVal方法。</td>
+			</tr>
+			<tr>
+				<td>isUploadFinish</td>
+				<td>-</td>
+				<td>判断是否所有文件上传完毕，是则返回true</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

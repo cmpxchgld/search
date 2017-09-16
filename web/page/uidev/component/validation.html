@@ -1,0 +1,369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script type="text/javascript" src="js/itcui_ext.js"></script>
+	<script type="text/javascript" src="js/jquery.validate.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../css/itcui.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" media="all"/>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			$(".toggler").click(function(e){
+				var id = $(this).attr("id");
+				if($(this).html()=="显示代码"){
+					$(this).html("隐藏代码");
+					$("#" + id + "_div").show();
+				}
+				else{
+					$(this).html("显示代码");
+					$("#" + id + "_div").hide();
+				}
+			});
+			$("#test_form1").validate();
+			$("#test_form2").validate({
+				rules: {
+					f_email2: {
+						required: true,
+						email: true
+					}
+				},
+				messages: {
+					f_email2: {
+						required: "请输入电子邮箱地址",
+						email: "您的邮箱地址不合法，请重新输入"
+					}
+				}
+			});
+			$("#test_form3").validate({
+				rules: {
+					f_email2: {
+						required: true,
+						email: true
+					}
+				},
+				messages: {
+					f_email2: {
+						required: "请输入电子邮箱地址",
+						email: "您的邮箱地址不合法，请重新输入"
+					}
+				},
+				errorPlacement: function(label, element) {
+					//获取被验证元素的绝对位置 因为某些表单布局在文本框后面没有空间 直接用相对位置无法插入
+					var pos = ITC_GetAbsPos(element);
+					//这里的长度还要加上文本框的长度
+					var objWidth = parseInt($(element).css("width"));
+					//注意这里如果用display:none会被后续代码覆盖，因而无效，用remove会导致信息无法刷新
+					label.children("label").css("width","0px");
+					label.children("label").css("overflow","hidden");
+					//为标签加上惊叹号图标
+					label.addClass('itcui_icon_warn_mid').css({
+						left: pos.left+ 6 +objWidth,
+						top: pos.top+2
+					});
+					//这里的placement如果不改 也就是默认显示在图标上面 会出现对齐问题
+					var myTooltip = $(label).tooltip({"title":"info","placement":"right"});
+					myTooltip.on("shown.bs.tooltip",function(e){
+						var info = $(this).children("label").html();
+						//错误验证信息第二次出现不会重新触发errorPlacement 因而只能动态刷新内容
+						$(this).next("div").find(".tooltip-inner").html(info);
+					});
+					label.insertAfter(element);
+				},
+		    wrapper: 'span'
+			});
+		//需要自定义regex方法才能使用正则表达式
+		$.validator.addMethod(
+	        "regex",
+	        function(value, element, regexp) {
+	            var re = new RegExp(regexp);
+	            return this.optional(element) || re.test(value);
+	        },
+	        "Please check your input."
+		);
+		$("#test_form4").validate({
+				rules: {
+					pswd1: {
+						required: true,
+						minlength : 8,
+						regex : /^(?!\d+$)(?![A-Za-z]+$)[a-zA-Z0-9]{8,}/
+					},
+					pswd2: {
+						required: true,
+						minlength : 8,
+						equalTo: "#pswd1"//需要为第一次的密码框指定一个选择器
+					}
+				},
+				messages: {
+					pswd1: {
+						required: "请输入密码",
+						minlength: "密码需要至少8位",
+						regex: "密码不能为纯数字或者纯字母"
+					},
+					pswd2: {
+						required: "请再次输入您的输入密码",
+						minlength: "密码需要至少8位",
+						equalTo : "两次输入的密码需要一致"
+					}
+				},
+				errorPlacement: function(label, element) {
+					ITC_AddValidationStyle(label, element);	
+				},
+		    wrapper: 'span'
+			});
+		});
+
+		
+	</script>
+	<style type="text/css">
+		.row{margin-top:4px;margin-bottom:4px;}
+		p{text-indent:2em;}
+		.toggler{font-size:12px}
+	</style>
+	<title>表单验证</title>
+</head>
+<body style="margin:16px;font-size:14px">
+	<div class="alert alert-warning">
+		由于不同客户对验证样式要求不同，本节保留了插件原始样式的演示。
+    </div>
+	<h4>实现简单表单验证</h4>
+	<form id="test_form1">
+		<div style="width:400px">
+			<fieldset>
+				<div class="row">
+					<div class="input-group-sm">
+						<label for="input1" class="col-xs-4 control-label">姓名</label>
+						<input type="text" class="form-control input-group-sm" style="width:200px" minlength=2 required="请输入姓名">
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-group-sm">
+						<label for="input2" class="col-xs-4  control-label">年龄</label>
+						<input type="text" class="form-control input-group-sm" style="width:200px" digits="true">
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-group-sm">
+						<label for="f_email" class="col-xs-4 control-label">电子邮件</label>
+						<input name="f_email" type="text" class="form-control input-group-sm" style="width:200px" email="true" required>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-group-sm">
+						<label for="input4" class="col-xs-4 control-label">密码</label>
+						<input type="text" class="form-control input-group-sm" style="width:200px" minlength=6 required>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-group-sm">
+						<label for="input5" class="col-xs-4 control-label">再次输入密码</label>
+						<input type="text" class="form-control input-group-sm" style="width:200px" minlength=6 required>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+		<input class="submit" type="submit" value="Submit"/>
+	</form>
+	<p>请特别注意表单中属性的写法，经测试新版JQuery Validation中类似type="email"的写法已经失效</p>
+	<p>JS代码：</p>
+	<p>HTML代码：</p>
+	<pre class="brush:xml">
+		&lt;form id="test_form1">
+			&lt;div style="width:400px">
+				&lt;fieldset>
+					&lt;div class="row">
+						&lt;div class="input-group-sm">
+							&lt;label for="input1" class="col-xs-4 control-label">姓名&lt;/label>
+							&lt;input type="text" class="form-control input-group-sm" style="width:200px" minlength=2 required="请输入姓名">
+						&lt;/div>
+					&lt;/div>
+					&lt;div class="row">
+						&lt;div class="input-group-sm">
+							&lt;label for="input2" class="col-xs-4  control-label">年龄&lt;/label>
+							&lt;input type="text" class="form-control input-group-sm" style="width:200px" digits="true">
+						&lt;/div>
+					&lt;/div>
+					&lt;div class="row">
+						&lt;div class="input-group-sm">
+							&lt;label for="f_email" class="col-xs-4 control-label">电子邮件&lt;/label>
+							&lt;input name="f_email" type="text" class="form-control input-group-sm" style="width:200px" email="true" required>
+						&lt;/div>
+					&lt;/div>
+					&lt;div class="row">
+						&lt;div class="input-group-sm">
+							&lt;label for="input4" class="col-xs-4 control-label">密码&lt;/label>
+							&lt;input type="text" class="form-control input-group-sm" style="width:200px" minlength=6 required>
+						&lt;/div>
+					&lt;/div>
+					&lt;div class="row">
+						&lt;div class="input-group-sm">
+							&lt;label for="input5" class="col-xs-4 control-label">再次输入密码&lt;/label>
+							&lt;input type="text" class="form-control input-group-sm" style="width:200px" minlength=6 required>
+						&lt;/div>
+					&lt;/div>
+				&lt;/div>
+			&lt;/fieldset>
+			&lt;input class="submit" type="submit" value="Submit"/>
+		&lt;/form>
+	</pre>
+
+	<h4>通过JS进行验证</h4>
+	<form id="test_form2">
+		<div style="width:400px">
+			<div class="row">
+				<div class="input-group-sm">
+					<label for="f_email2" class="col-xs-4 control-label">电子邮件</label>
+					<input name="f_email2" type="text" class="form-control input-group-sm" style="width:200px">
+				</div>
+			</div>
+		</div>
+		<input class="submit" type="submit" value="Submit"/>
+	</form>
+
+	<h4>修改验证的样式1：UI规范风格的图标验证</h4>
+	<form id="test_form3">
+		<div style="width:400px">
+			<div class="row">
+				<div class="input-group-sm">
+					<label for="f_email2" class="col-xs-4 control-label">电子邮件</label>
+					<input name="f_email2" type="text" class="form-control input-group-sm" style="width:200px">
+				</div>
+			</div>
+		</div>
+		<input class="submit" type="submit" value="Submit"/>
+	</form>
+	<p>JS代码：</p>
+	<p>这里使用的tooltip由bootstrap提供。</p>
+	<pre class="brush:js">
+		$("#test_form3").validate({
+				rules: {
+					f_email2: {
+						required: true,
+						email: true
+					}
+				},
+				messages: {
+					f_email2: {
+						required: "请输入电子邮箱地址",
+						email: "您的邮箱地址不合法，请重新输入"
+					}
+				},
+				errorPlacement: function(label, element) {
+					//获取被验证元素的绝对位置 因为某些表单布局在文本框后面没有空间 直接用相对位置无法插入
+					var pos = ITC_GetAbsPos(element);
+					//这里的长度还要加上文本框的长度
+					var objWidth = parseInt($(element).css("width"));
+					//注意这里如果用display:none会被后续代码覆盖，因而无效，用remove会导致信息无法刷新
+					label.children("label").css("width","0px");
+					label.children("label").css("overflow","hidden");
+					//为标签加上惊叹号图标
+					label.addClass('itcui_icon_warn_mid').css({
+						left: pos.left+ 6 +objWidth,
+						top: pos.top+2
+					});
+					//这里的placement如果不改 也就是默认显示在图标上面 会出现对齐问题
+					var myTooltip = $(label).tooltip({"title":"info","placement":"right"});
+					myTooltip.on("shown.bs.tooltip",function(e){
+						var info = $(this).children("label").html();
+						//错误验证信息第二次出现不会重新触发errorPlacement 因而只能动态刷新内容
+						$(this).next("div").find(".tooltip-inner").html(info);
+					});
+					label.insertAfter(element);
+				},
+		    wrapper: 'span'
+			});
+	</pre>
+
+	<h4>自定义规则</h4>
+	<p>下面的代码定义了如下验证规则，密码两次输入一致，且密码必须由数字和字母混合组成，最小长度为8位。</p>
+	<form id="test_form4">
+		<div style="width:400px">
+			<div class="row">
+				<div class="input-group-sm">
+					<label for="input4" class="col-xs-4 control-label">密码</label>
+					<input name="pswd1" id="pswd1" type="text" class="form-control input-group-sm" style="width:200px">
+				</div>
+			</div>
+			<div class="row">
+				<div class="input-group-sm">
+					<label for="input5" class="col-xs-4 control-label">再次输入密码</label>
+					<input name="pswd2" type="text" class="form-control input-group-sm" style="width:200px">
+				</div>
+			</div>
+		</div>
+		<input class="submit" type="submit" value="Submit"/>
+	</form>
+	<p>需要注意的是，例子中的正则已经可以检查8位的长度要求，但是为了在长度不足时给出另外的错误信息，这里还是用了minlength</p>
+	<pre class="brush:js">
+		//需要自定义regex方法才能使用正则表达式
+		$.validator.addMethod(
+	        "regex",
+	        function(value, element, regexp) {
+	            var re = new RegExp(regexp);
+	            return this.optional(element) || re.test(value);
+	        },
+	        "Please check your input."
+		);
+		$("#test_form4").validate({
+			rules: {
+				pswd1: {
+					required: true,
+					minlength : 8,
+					regex : /^(?!\d+$)(?![A-Za-z]+$)[a-zA-Z0-9]{8,}/
+				},
+				pswd2: {
+					required: true,
+					minlength : 8,
+					equalTo: "#pswd1"//需要为第一次的密码框指定一个选择器
+				}
+			},
+			messages: {
+				pswd1: {
+					required: "请输入密码",
+					minlength: "密码需要至少8位",
+					regex: "密码不能为纯数字或者纯字母"
+				},
+				pswd2: {
+					required: "请再次输入您的输入密码",
+					minlength: "密码需要至少8位",
+					equalTo : "两次输入的密码需要一致"
+				}
+			},
+			errorPlacement: function(label, element) {
+				ITC_AddValidationStyle(label, element);	
+			},
+	    wrapper: 'span'
+		});
+	</pre>
+
+	<h4>使用函数验证表单</h4>
+	<p>通过$(form).valid()即验证表单，返回值为false表示验证失败。</p>
+
+	<h4>支持的方法</h4>
+	<p>组件中的jquery validation支持以下验证方法（包括扩展）：</p>
+	<ul>
+		<li>minlength - 最小长度（按字符个数计算，不区分中英文）</li>
+		<li>maxlength - 最大长度</li>
+		<li>mail - 邮件地址</li>
+		<li>alphanumeric - 数字和字母（可用于验证ID）</li>
+		<li>regex - 参数中需要输入具体正则</li>
+		<li>require - 必须输入</li>
+		<li>greaterThan - 比xx大（参数输入第二个对象的选择器，如#password2）</li>
+		<li>equalTo - 和xx一致</li>
+		<li>digits - 0-9纯数字</li>
+		<li>number - 数字（可以带小数点）</li>
+		<li>range - 数字范围（用于验证年龄、金额等），写法为range:[min,max]</li>
+		<li>rangelength - 字符串长度范围，写法为rangelength:[l1,l2]</li>
+	</ul>
+</body>
+</html>

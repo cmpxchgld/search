@@ -1,0 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>	
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+		});
+
+		function showConfirm(){
+			Notice.confirm("豆腐脑是咸的",function(){
+				alert("你选择了确认按钮");
+			});
+		}
+
+		function showConfirm1(){
+			Notice.confirm("清空数据无法恢复，要继续么",function(){
+				alert("你选择了确认按钮");
+			},null,"error");
+		}
+
+		function showConfirm2(){
+			Notice.confirm("创建成功，是否还要继续创建",function(){
+				alert("你选择了确认按钮");
+			},null,"ok");
+		}
+
+		function showConfirm3(){
+			Notice.confirm("确定删除|确定删除该文件么？该操作无法删除。",function(){
+				alert("你选择了确认按钮");
+			},null,"info");	
+		}
+
+		function showInput(){
+			Notice.input("请输入您的邮件地址",function(v){
+				alert("您输入的内容为：" + v);
+			});
+		}
+		
+
+		function show163InIframe(){
+			var src = "http://news.163.com";
+			var btnOpts = [{
+					"name" : "取消",
+					"float" : "right",
+					"style" : "btn-default",
+					"onclick" : function(){
+						return true;
+					}
+				},{
+					"name" : "确定",
+					"float" : "right",
+					"style" : "btn-success",
+					"onclick" : function(){
+						return true;
+					}
+				}
+			];
+			var dlgOpts = {
+				width : 640,
+				height:480,
+				closed : false,
+				title:"网易新闻",
+				modal:true
+			};
+			Notice.dialog(src,dlgOpts,btnOpts);
+		}
+
+		function showMultiButton(){
+			var btnOpts = [{
+					"name" : "取消",
+					"float" : "right",
+					"style" : "btn-default",
+					"onclick" : function(){
+						return true;
+					}
+				},{
+					"name" : "确定",
+					"float" : "right",
+					"style" : "btn-success",
+					"onclick" : function(){
+						return true;
+					}
+				},{
+					"name" : "导出为Excel",
+					"float" : "left",
+					"style" : "btn-default",
+					"onclick" : function(){
+						return true;
+					}
+				}
+				,{
+					"name" : "以PDF格式下载",
+					"float" : "left",
+					"style" : "btn-default",
+					"onclick" : function(){
+						return true;
+					}
+				}
+			];
+			var dlgOpts = {
+				width : 640,
+				height:480,
+				closed : false,
+				title:"测试多按钮",
+				modal:true
+			};
+			Notice.dialog("about:blank",dlgOpts,btnOpts);
+		}
+	</script>
+	<style type="text/css">
+		.row{margin-top:4px;margin-bottom:4px;}
+		p{text-indent:2em;}
+		h4{margin-top:18px;}
+		.toggler{font-size:12px}
+	</style>
+	<title>实用工具通知</title>
+</head>
+<body style="font-size:14px">
+	<h4>关于本组工具</h4>
+	<p>itc_notify.js封装了常用的交互操作，包括确认、要求输入、弹出对话框、弹出提示信息等，所有函数均为Notice.xxxx，静态方法可以直接调用，可以用于单个页面，也可以用于框架中，不需要对原有页面做任何改动。这些功能都依赖itcui.(dev.)js和itcui.(dev.)css</p>
+
+	<h4>确认框</h4>
+	<p><a onclick="showConfirm()">显示Info图标的确认框</a></p>
+	<p><a onclick="showConfirm1()">显示Error图标的确认框</a></p>
+	<p><a onclick="showConfirm2()">显示OK图标的确认框</a></p>
+	<p><a onclick="showConfirm3()">显示两行信息的确认框</a></p>
+	<p>Notice.confirm()有四个参数，分别为：</p>
+	<ul>
+		<li>msg - 提示消息，当需要分两行信息显示时，需要用|分割，如“确认删除|是否删除该文件？该操作无法恢复。”</li>
+		<li>funcs - 点击确认后执行的函数</li>
+		<li>arg - 确认函数的附加参数</li>
+		<li>icon - 图标，默认为info，可以选择ok或者error</li>
+	</ul>
+	
+	<h4>输入框</h4>
+	<a onclick="showInput()">单击这里显示确认框</a>
+	<pre class="brush:js">
+		function showInput(){
+			Notice.input("请输入您的邮件地址",function(v){
+				alert("您输入的内容为：" + v);
+			});
+		}
+	</pre>
+	<p>input方法只有2个参数，分别为提示的信息和点击确认后执行的函数，不提供校验。</p>
+
+	<h4>弹出对话框</h4>
+	<a onclick="show163InIframe()">单击这里弹出网易新闻页面</a>
+	<p>默认情况下，对话框中的页面以iframe显示，并且允许交互，这是一个带有交互的对话框例子：</p>
+	<pre class="brush:js">
+		function showEditProfile(){
+			var src = basePath + "user?method=feditprof";
+			var btnOpts = [{
+					"name" : "取消",
+					"float" : "right",
+					"style" : "btn-default",
+					"onclick" : function(){
+						_parent().$("#itcDlg").dialog("close");
+					}
+				},{
+					"name" : "确定",
+					"float" : "right",
+					"style" : "btn-success",
+					"onclick" : function(){
+						//请特别注意这里的写法 其中getRegForm是定义在feditprof方法对应页面下的函数，用于返回表单信息
+						var p = _parent().window.document.getElementById("itcDlgContent").contentWindow;
+						var form = p.getRegForm();
+						if(form){
+							$.ajax({
+								url : basePath + "user?method=fedituser",
+								dataType: "json",
+								type:"post",
+								data:form,
+								success:function(result){
+									if(result&&result.status==1){
+										_parent().$("#itcDlg").dialog("close");			
+									}
+								}
+							});							
+						}
+					}
+				}
+			];
+			var dlgOpts = {
+				width : 400,
+				height:350,
+				closed : false,
+				title:"修改个人信息",
+				modal:true
+			};
+			Notice.dialog(src,dlgOpts,btnOpts);
+		}
+	</pre>
+	<p>需要说明几点</p>
+	<ul>
+		<li>按钮必须设置float为left或者right，否则按钮将居中显示，为按钮增加width参数可以控制按钮的宽度,<a onclick="showMultiButton()">单击这里显示多按钮对话框</a></li>
+		<li>默认情况下，对话框的ID为itcDlg，iframe的ID为itcDlgContent，但是在多对话框弹出的情况下可以设置dlgOpts.idSuffix来改变这些ID，如设置idSuffix=News，则两个ID分别变为<code>itcDlgNews</code>和<code>itcDlgNewsContent</code></li>
+		<li>对话框的所有操作都在外层页面，即_parent()函数指向的对象，包括jquery提供data函数存储数据的位置，请特别注意这些！</li>
+		<li>除了自行设置的参数外，dlgOpts兼容jEasyUi的所有参数，具体参考官方帮助手册</li>		
+		<li style="color:#ff0000">当btnOpts.noButtons=true时（默认情况下如果不设置btnOpts则会自动创建一个名为“关闭”的按钮），允许显示无按钮的对话框（如用于用户前台），但是特别注意，使用无按钮对话框必须设置ID后缀idSuffix，否则其他对话框弹出时将无法显示按钮！</li>
+		<li>当设置src为#开头的字符串时，将以DIV形式弹出指定的层（必须事先准备在当前页面中）</li>
+	</ul>
+	<p>EasyUI源生支持多对话框以及遮罩效果，下面一个例子（只提供代码）演示了如何通过修改idSuffix做到多对话框的效果，其中第一个按钮设置了长度和居中。</p>
+	<pre class="brush:js">
+		var src = basePath + "login?method=showreg";
+		var btnOpts = [{
+			name : "立即注册",
+			width : 200,
+			style : "btn-success",
+			float : "middle",
+			onclick : function(){
+				var p = _parent().window.document.getElementById("itcDlgRegContent").contentWindow;
+				var g = p.getRegForm();
+				if(!g){
+					return;
+				}
+				$.post(basePath + "user?method=regfromguest",g,function(result){
+					result = eval("(" + result + ")");
+					if(result.status==1){
+						//关闭第一个对话框
+						_parent().$("#itcDlgReg").dialog("close");
+						var src1 = basePath + "pages/ext/welcome.jsp";
+						var dlgOpts1 = {
+							closed : true,
+							title:"欢迎来到乐学网",
+							width:550,
+							height:280,	
+							modal:true,
+							idSuffix : "Welcome",
+							noButtons : true
+						};
+					}
+					Notice.dialog(src1,dlgOpts1,null);
+				});
+			}
+		}];
+		var dlgOpts = {
+			closed : false,
+			title:"注册成为乐学网成员",
+			idSuffix : "Reg",
+			width:450,
+			height:430,	
+			modal:true
+		};
+		Notice.dialog(src,dlgOpts,btnOpts);
+	</pre>
+	<p>虽然对于任何idSuffix，dialog函数都可以创建出对话框来，但是为了减少DOM树中不必要的DIV，除非命名冲突或者使用无按钮的对话框，请不要指定idSuffix参数。</p>
+
+	<h4>屏幕上方的提示信息</h4>
+	<p>使用Notice.screenTopMsg函数可以在屏幕上方显示提示信息，该函数参数如下：</p>
+	<ul>
+		<li>msg - 要显示的内容</li>
+		<li>msgtype - 提示类型，success为成功，error为失败，loading为加载中（灰色）</li>
+	</ul>
+	<p>也可以使用以下封装：</p>
+	<ul>
+		<li>Notice.successTopNotice(msg)</li>
+		<li>Notice.errorTopNotice(msg)</li>
+	</ul>
+	<p><a onclick="Notice.successTopNotice('操作成功')">显示一条信息</a></p>
+</body>
+</html>

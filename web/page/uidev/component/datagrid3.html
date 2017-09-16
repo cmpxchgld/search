@@ -1,0 +1,384 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/itcui_datagrid.js"></script>
+	<script type="text/javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" src="js/shLegacy.js"></script>
+	<script type="text/javascript" src="js/shAutoloader.js"></script>
+	<script type="text/javascript" src="js/shBrushJScript.js"></script>
+	<script type="text/javascript" src="js/shBrushXml.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/bs_doc_ext.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="../nightly/css/itcui.dev.css" media="all"/>	
+	<script type="text/javascript" src="../nightly/js/itcui.dev.js"></script>
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="css/shCoreDefault.css" media="all"/>	
+
+	<title>Datagrid</title>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			SyntaxHighlighter.all();
+			var footer_data = [{"id":"89757","name":"林俊杰","phone":"不知道","remark":"大家都懂的"}];
+			$('#test_datagrid1').datagrid('reloadFooter',footer_data);
+			$('#test_datagrid2').datagrid({
+				rowStyler: function(index,row){
+					if (row.phone%2==0){
+						return 'background-color:#BB0000;';
+						// 在这里也可以返回Object格式，来为行应用样式或者类
+						// return {class:'r1', style:{'color:#fff'}};	
+					}
+				}
+			});
+			//可以用任何方式创建数据，不一定用push
+			var test_datagrid3_columns = [];
+			test_datagrid3_columns.push({"field":"id","title":"编号","width":100});
+			test_datagrid3_columns.push({"field":"name","title":"姓名","width":150});
+			test_datagrid3_columns.push({"field":"mobile","title":"移动电话","width":200});
+			test_datagrid3_columns[2].formatter = function(value,row,index){
+				var s = value + "";
+				var s1 = s.substr(0,3);
+				var s2 = s.substr(8,11);
+				return s1 + "*****" + s2;
+			};
+			test_datagrid3_columns[2].styler = function(value,row,index){
+				//这里也可以返回Object，设置class和style
+				return "color:#ff0000";
+			};
+			var test_datagrid3_data = {};
+			test_datagrid3_data["total"] = 1;
+			test_datagrid3_data["rows"] = [{"id":1,"name":"路人甲","mobile":"13800138000"}];
+			$("#test_datagrid3").datagrid({"columns":[test_datagrid3_columns],"data":test_datagrid3_data});
+
+			var test_datagrid4_columns = [];
+			test_datagrid4_columns[0] = [];
+			test_datagrid4_columns[1] = [];
+			test_datagrid4_columns[0].push({"title":"列分组1","colspan":2});
+			test_datagrid4_columns[0].push({"title":"列分组2","colspan":2});
+			test_datagrid4_columns[0].push({"title":"跨行表头","rowspan":2,"width":100,"field":"col7"});
+			test_datagrid4_columns[0].push({"title":"列分组3","colspan":2});
+			test_datagrid4_columns[1].push({"field":"col1","title":"列1","width":60})
+			test_datagrid4_columns[1].push({"field":"col2","title":"列2","width":60})
+			test_datagrid4_columns[1].push({"field":"col3","title":"列3","width":60})
+			test_datagrid4_columns[1].push({"field":"col4","title":"列4","width":60})
+			test_datagrid4_columns[1].push({"field":"col5","title":"列5","width":60})
+			test_datagrid4_columns[1].push({"field":"col6","title":"列6","width":60})
+			var test_datagrid4_data = {};
+			test_datagrid4_data["total"] = 1;
+			test_datagrid4_data["rows"] = [{"col1":"1","col2":"2","col3":"3","col4":"4","col5":"5","col6":"6","col7":7}];
+			$("#test_datagrid4").datagrid({"columns":test_datagrid4_columns,"data":test_datagrid4_data});
+			$("#test_datagrid5").datagrid("mergeCells",{"index":0,"field":"id","rowspan":2});
+			$("#test_datagrid5").datagrid("mergeCells",{"index":2,"field":"id","rowspan":2});
+		});	
+	</script>
+</head>
+<body style="margin:16px;font-size:14px">
+	<div class="alert alert-warning">
+		将th中data-options中的参数写在columns的Array中同样有效。
+    </div>
+
+    <h4>脚注(行锁定)</h4>
+    <p>脚注的出现是为了解决行锁定的需求，当设置脚注时，对应的数据会固定显示在表格的下方，且不受滚动条影响。</p>
+    	
+	<table id="test_datagrid1" class="easyui-datagrid" style="width:650px;height:300px" data-options="showFooter:true">
+		<thead>
+			<tr>
+				<th data-options="field:'id',width:100">编号</th>
+				<th data-options="field:'name',width:100">姓名</th>
+				<th data-options="field:'phone',width:100">电话</th>
+				<th data-options="field:'remark',width:300">备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>路人1</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>路人2</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>路人3</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>路人4</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td>路人5</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td>路人6</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td>路人7</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>8</td>
+				<td>路人8</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>9</td>
+				<td>路人9</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>10</td>
+				<td>路人10</td>
+				<td>13400134000</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+		</tbody>	
+	</table>
+	HTML代码：
+	<pre class="brush:xml">
+		&lt;table id="test_datagrid1" class="easyui-datagrid" style="width:650px;height:300px" data-options="showFooter:true">
+	</pre>
+	JS代码：
+	<pre class="brush:js">
+		var footer_data = [{"id":"89757","name":"林俊杰","phone":"不知道","remark":"大家都懂的"}];
+		$('#test_datagrid1').datagrid('reloadFooter',footer_data);
+	</pre>
+	<p>因为脚注的意图是突出显示某值，一般用于对比，因而脚注没有常规的某些操作，如无法选中某条脚注。</p>
+
+	<h4>行样式</h4>
+	<p>下列代码演示如何将手机尾号为偶数的对应行设置为红色</p>
+	<pre class="brush:js">
+		$('#test_datagrid2').datagrid({
+			rowStyler: function(index,row){
+				//index返回行号，row对应该行的完整数据
+				if (row.phone%2==0){
+					return 'background-color:#BB0000;';
+					// 在这里也可以返回Object格式，来为行应用样式或者类
+					// return {class:'r1', style:{'color:#fff'}};	
+				}
+			}
+		});
+	</pre>
+	<table id="test_datagrid2" class="easyui-datagrid" style="width:650px;height:300px">
+		<thead>
+			<tr>
+				<th data-options="field:'id',width:100">编号</th>
+				<th data-options="field:'name',width:100">姓名</th>
+				<th data-options="field:'phone',width:100">电话</th>
+				<th data-options="field:'remark',width:300">备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>路人1</td>
+				<td>13400134001</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>路人2</td>
+				<td>13400134002</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>路人3</td>
+				<td>13400134003</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>路人4</td>
+				<td>13400134004</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td>路人5</td>
+				<td>13400134005</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td>路人6</td>
+				<td>13400134006</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td>路人7</td>
+				<td>13400134007</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>8</td>
+				<td>路人8</td>
+				<td>13400134008</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>9</td>
+				<td>路人9</td>
+				<td>13400134009</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>10</td>
+				<td>路人10</td>
+				<td>134001340010</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+		</tbody>	
+	</table>
+	<p>行样式为全局属性，只能为一个表格统一设置行样式渲染函数。</p>
+
+	<h4>单元格样式与格式化</h4>
+	<p>下列代码演示了如何为手机号的中间几位打"马赛克"，并设置为红色显示：</p>
+	<pre class="brush:js">
+		//可以用任何方式创建数据，不一定用push
+		var test_datagrid3_columns = [];
+		test_datagrid3_columns.push({"field":"id","title":"编号","width":100});
+		test_datagrid3_columns.push({"field":"name","title":"姓名","width":150});
+		test_datagrid3_columns.push({"field":"mobile","title":"移动电话","width":200});
+		test_datagrid3_columns[2].formatter = function(value,row,index){
+			var s = value + "";
+			var s1 = s.substr(0,3);
+			var s2 = s.substr(8,11);
+			return s1 + "*****" + s2;
+		};
+		test_datagrid3_columns[2].styler = function(value,row,index){
+			//这里也可以返回Object，设置class和style
+			return "color:#ff0000";
+		};
+		var test_datagrid3_data = {};
+		test_datagrid3_data["total"] = 1;
+		test_datagrid3_data["rows"] = [{"id":1,"name":"路人甲","mobile":"13800138000"}];
+		$("#test_datagrid3").datagrid({"columns":[test_datagrid3_columns],"data":test_datagrid3_data});
+	</pre>
+	<p>和行样式不同，单元格样式的参数中多了value参数，表示本单元格的值。</p>
+	<table id="test_datagrid3" style="width:650px;height:300px">
+	</table>
+
+	<h4>合并表头/单元格</h4>
+	<p>下列代码演示如何创建一个合并了部分单元格的表头，需要注意的是如果第一行设置了rowspan跨行，则第二列对应位置的单元格将自动被占据，同时仅用于合并或者显示文字的单元和不要设置field。</p>
+	<pre class="brush:js">
+		var test_datagrid4_columns = [];
+		test_datagrid4_columns[0] = [];
+		test_datagrid4_columns[1] = [];
+		test_datagrid4_columns[0].push({"title":"列分组1","colspan":2});
+		test_datagrid4_columns[0].push({"title":"列分组2","colspan":2});
+		test_datagrid4_columns[0].push({"title":"跨行表头","rowspan":2,"width":60,"field":"col7"});
+		test_datagrid4_columns[0].push({"title":"列分组3","colspan":2});
+		test_datagrid4_columns[1].push({"field":"col1","title":"列1","width":60})
+		test_datagrid4_columns[1].push({"field":"col2","title":"列2","width":60})
+		test_datagrid4_columns[1].push({"field":"col3","title":"列3","width":60})
+		test_datagrid4_columns[1].push({"field":"col4","title":"列4","width":60})
+		test_datagrid4_columns[1].push({"field":"col5","title":"列5","width":60})
+		test_datagrid4_columns[1].push({"field":"col6","title":"列6","width":60})
+		var test_datagrid4_data = {};
+		test_datagrid4_data["total"] = 1;
+		test_datagrid4_data["rows"] = [{"col1":"1","col2":"2","col3":"3","col4":"4","col5":"5","col6":"6","col7":7}];
+		$("#test_datagrid4").datagrid({"columns":test_datagrid4_columns,"data":test_datagrid4_data});
+	</pre>
+	<table id="test_datagrid4" style="width:650px;height:300px">
+		
+	</table>
+	<p>下列代码演示了如何合并单元格</p>
+	<pre class="brush:js">
+		$("#test_datagrid5").datagrid("mergeCells",{"index":0,"field":"id","rowspan":2});
+		$("#test_datagrid5").datagrid("mergeCells",{"index":2,"field":"id","rowspan":2});
+	</pre>
+	<p>注意，单元格的合并不支持Array的数据类型，一次合并多个单元格需要手动编写循环。</p>
+	<table id="test_datagrid5" class="easyui-datagrid" style="width:650px;height:300px">
+		<thead>
+			<tr>
+				<th data-options="field:'id',width:100">编号</th>
+				<th data-options="field:'name',width:100">姓名</th>
+				<th data-options="field:'phone',width:100">电话</th>
+				<th data-options="field:'remark',width:300">备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>路人1</td>
+				<td>13400134001</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>路人2</td>
+				<td>13400134002</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>路人3</td>
+				<td>13400134003</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>路人4</td>
+				<td>13400134004</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td>路人5</td>
+				<td>13400134005</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td>路人6</td>
+				<td>13400134006</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td>路人7</td>
+				<td>13400134007</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>8</td>
+				<td>路人8</td>
+				<td>13400134008</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>9</td>
+				<td>路人9</td>
+				<td>13400134009</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+			<tr>
+				<td>10</td>
+				<td>路人10</td>
+				<td>134001340010</td>
+				<td>备注XXXXXXXXXXXXXXXXX</td>
+			</tr>
+		</tbody>	
+	</table>
+</body>
+</html>
