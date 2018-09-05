@@ -15,6 +15,7 @@ public class QResult {
     List<Doc> rows;
     String msg;
     int retcode;
+	
     int code;
 
     public int getCode() {
