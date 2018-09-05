@@ -30,6 +30,7 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:spring/*.xml"})
+
 public class TestSolrUsersService {
 
     @Autowired
